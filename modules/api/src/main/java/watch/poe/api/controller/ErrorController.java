@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @Controller
 public class ErrorController implements org.springframework.boot.web.servlet.error.ErrorController {
-    @RequestMapping(value = "/error", produces = "application/json")
+    @RequestMapping(value = "error", produces = "application/json")
     @ResponseBody
     public Object error(HttpServletRequest request, HttpServletResponse response) {
         Exception ex = (Exception) request.getAttribute("javax.servlet.error.exception");
@@ -24,7 +24,7 @@ public class ErrorController implements org.springframework.boot.web.servlet.err
                 : (String) request.getAttribute(RequestDispatcher.ERROR_MESSAGE);
 
         if (message.isEmpty() && errorCode == 404) {
-            message = "Requested resource wasn't found.";
+            message = "Requested resource was not found.";
         } else if (message.isEmpty()) {
             message = "Unexpected error.";
         }

@@ -1,44 +1,32 @@
 package watch.poe.api.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import watch.poe.api.response.FailResponse;
-import watch.poe.api.response.SuccessResponse;
 import watch.poe.api.service.ApiService;
+import watch.poe.persistence.model.League;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Slf4j
 @RestController
 public class ApiController {
 
-    private final ApiService apiService;
+    // todo: set up caching
+    // todo: add stats repository
 
-    public ApiController(ApiService apiService) {
-        this.apiService = apiService;
-    }
+    @Autowired
+    private ApiService apiService;
 
-    @Cacheable("calculations")
     @ResponseBody
-    @RequestMapping(
-            value = "/calculate",
-            method = {RequestMethod.GET, RequestMethod.POST},
-            params = {"type=averageWithoutMinmax"}
-    )
-    public SuccessResponse<Double> getAverage(@RequestParam(value = "values") int[] values) {
-        String loggedValues = Arrays.stream(values)
-                .mapToObj(String::valueOf)
-                .collect(Collectors.joining(", "));
-        log.info("GET request on \"/calculate\" value=[" + loggedValues + "] was initiated.");
-
-        double average = 5.8d;
-
-        log.info("GET request on \"/calculate\" value=[" + loggedValues + "] resulted with " + average + ".");
-        return new SuccessResponse<>(average);
+    @RequestMapping(method = {RequestMethod.GET}, value = "leagues", produces = "application/json")
+    public List<League> getLeagues(HttpServletRequest request) {
+        log.info("GET request on '{}' from {}", request.getServletPath(), request.getRemoteAddr());
+        return apiService.leagueRepository.findAll();
     }
 
     @ExceptionHandler(Throwable.class)
