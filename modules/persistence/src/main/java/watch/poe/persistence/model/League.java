@@ -1,18 +1,21 @@
 package watch.poe.persistence.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
-@Data
 @Entity
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Table(name = "leagues")
 public class League {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @Column(name = "start")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date start;
 
     @Column(name = "name", length = 64, nullable = false, unique = true)
     private String name;
@@ -34,10 +37,12 @@ public class League {
 
     @Column(name = "challenge", nullable = false)
     private Boolean challenge;
-
-    @Column(name = "start")
-    private Timestamp start;
-
+    @Id
+    @Column(name = "id", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
     @Column(name = "end")
-    private Timestamp end;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date end;
+
 }
