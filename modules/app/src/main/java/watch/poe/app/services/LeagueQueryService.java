@@ -31,11 +31,11 @@ public class LeagueQueryService {
 
     @Scheduled(cron = "${league.fetch.cron}")
     public void cycle() {
-        log.debug("Begin query");
-
         if (!enabled) {
             return;
         }
+
+        log.debug("Begin query");
 
         List<LeagueDto> leagues = fetchLeagues();
         if (leagues == null) {

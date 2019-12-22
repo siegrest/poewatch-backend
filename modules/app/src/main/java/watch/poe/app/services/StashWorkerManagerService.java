@@ -26,7 +26,7 @@ public class StashWorkerManagerService {
 
     private LinkedList<Future<String>> workerResultQueue = new LinkedList<>();
 
-    @Scheduled(fixedRate = 100)
+    @Scheduled(fixedRateString = "${stash.worker.rate}")
     public void scheduleWorker() {
         if (!enabled) {
             return;

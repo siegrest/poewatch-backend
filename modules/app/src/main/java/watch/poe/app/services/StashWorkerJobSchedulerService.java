@@ -9,8 +9,8 @@ import watch.poe.app.utility.ChangeIdUtility;
 @Service
 public class StashWorkerJobSchedulerService {
 
-    @Value("${stash.fetch.rate}")
-    private int fetchRate;
+    @Value("${stash.fetch.cooldown}")
+    private int fetchCooldown;
 
     // todo: query job from repository
     private String job = "0-0-0-0-0";
@@ -48,7 +48,7 @@ public class StashWorkerJobSchedulerService {
     }
 
     public boolean isCooldown() {
-        return System.currentTimeMillis() - lastPollTime < fetchRate;
+        return System.currentTimeMillis() - lastPollTime < fetchCooldown;
     }
 
 }
