@@ -41,6 +41,7 @@ public class League {
     @Column(name = "id", updatable = false, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
     @Column(name = "end")
     @Temporal(TemporalType.TIMESTAMP)
     private Date end;

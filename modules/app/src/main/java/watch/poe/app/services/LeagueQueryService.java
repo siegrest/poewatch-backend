@@ -2,6 +2,7 @@ package watch.poe.app.services;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import watch.poe.app.config.ApiModuleConfig;
@@ -27,9 +28,16 @@ public class LeagueQueryService {
     @Autowired
     private GsonService gsonService;
 
+    @Value("${league.fetch.enabled}")
+    private boolean enabled;
+
     @Scheduled(cron = "${league.fetch.cron}")
     public void cycle() {
         log.info("Begin query");
+
+        if (!enabled) {
+            return;
+        }
 
         List<LeagueDto> leagues = fetchLeagues();
         if (leagues == null) {

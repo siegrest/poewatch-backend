@@ -1,13 +1,16 @@
 package watch.poe.persistence.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
-@Getter
-@Setter
 @Entity
+@Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Table(name = "change_id")
 public class ChangeId {
     @Id
@@ -20,5 +23,9 @@ public class ChangeId {
 
     @Column(name = "change_id", length = 64)
     private String changeId;
+
+    @Column(name = "time")
+    @Temporal(TemporalType.TIMESTAMP)
+    public Date time;
 
 }

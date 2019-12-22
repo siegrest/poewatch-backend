@@ -9,7 +9,7 @@ import watch.poe.persistence.config.PersistenceModuleConfig;
 
 @Configuration
 @Import(PersistenceModuleConfig.class)
-@PropertySource({"classpath:${envTarget:development}.properties"})
+@PropertySource({"classpath:poe-watch.properties"})
 public class ApiModuleConfig {
 
     @Autowired
@@ -18,4 +18,9 @@ public class ApiModuleConfig {
     public String getProperty(String pPropertyKey) {
         return env.getProperty(pPropertyKey);
     }
+
+    public Integer getPropertyAsInt(String pPropertyKey) {
+        return Integer.parseInt(getProperty(pPropertyKey));
+    }
+
 }
