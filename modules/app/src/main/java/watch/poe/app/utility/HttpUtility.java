@@ -1,13 +1,10 @@
 package watch.poe.app.utility;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-@Slf4j
 public final class HttpUtility {
 
     public static String fetch(String url) throws IOException {
@@ -37,12 +34,8 @@ public final class HttpUtility {
 
             return stringBuilder.toString();
         } finally {
-            try {
-                if (stream != null) {
-                    stream.close();
-                }
-            } catch (IOException ex) {
-                log.error(ex.getMessage(), ex);
+            if (stream != null) {
+                stream.close();
             }
         }
     }

@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import watch.poe.app.config.AppModuleConfig;
 import watch.poe.app.domain.LeagueDto;
 import watch.poe.app.mapper.LeagueMapper;
 import watch.poe.app.utility.HttpUtility;
@@ -20,9 +19,6 @@ import java.util.stream.Collectors;
 public class LeagueQueryService {
 
     @Autowired
-    private AppModuleConfig config;
-
-    @Autowired
     private LeagueService leagueService;
 
     @Autowired
@@ -30,10 +26,12 @@ public class LeagueQueryService {
 
     @Value("${league.fetch.enabled}")
     private boolean enabled;
+    @Value("${league.fetch.url}")
+    private String endpointUrl;
 
     @Scheduled(cron = "${league.fetch.cron}")
     public void cycle() {
-        log.info("Begin query");
+        log.debug("Begin query");
 
         if (!enabled) {
             return;
@@ -45,19 +43,17 @@ public class LeagueQueryService {
         }
 
         leagues.removeIf(LeagueDto::isSolo);
-        log.info("Fetched {} valid leagues", leagues.size());
 
         var mappedLeagues = leagues.stream().map(LeagueMapper::map).collect(Collectors.toList());
         leagueService.updateLeagueData(mappedLeagues);
-
-        log.info("Finish league updates: {}", leagueService.getAll());
+        log.debug("End query");
     }
 
     private List<LeagueDto> fetchLeagues() {
         try {
-            var leagueJson = HttpUtility.fetch(config.getProperty("league.fetch.api"));
+            var leagueJson = HttpUtility.fetch(endpointUrl);
             return gsonService.toList(leagueJson, LeagueDto.class);
-        } catch (IOException | NullPointerException ex) {
+        } catch (IOException ex) {
             log.error("An exception occurred while fetching leagues", ex);
             return null;
         }
