@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import watch.poe.app.config.ApiModuleConfig;
+import watch.poe.app.config.AppModuleConfig;
 
 import java.util.LinkedList;
 import java.util.concurrent.Future;
@@ -19,8 +19,8 @@ public class StashWorkerManagerService {
     @Autowired
     private StashWorkerJobSchedulerService jobSchedulerService;
 
-    @Autowired // todo: rename me to appmoduleconfig
-    private ApiModuleConfig apiModuleConfig;
+    @Autowired
+    private AppModuleConfig config;
 
     private LinkedList<Future<String>> workerResultQueue = new LinkedList<>();
 
@@ -41,7 +41,7 @@ public class StashWorkerManagerService {
         }
 
         // worker limit reached
-        if (workerResultQueue.size() >= apiModuleConfig.getPropertyAsInt("stash.worker.count")) {
+        if (workerResultQueue.size() >= config.getPropertyAsInt("stash.worker.count")) {
             log.info("worker limit reached");
             return;
         }

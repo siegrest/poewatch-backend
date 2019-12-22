@@ -3,15 +3,15 @@ package watch.poe.app.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import watch.poe.app.config.ApiModuleConfig;
+import watch.poe.app.config.AppModuleConfig;
 import watch.poe.app.utility.ChangeIdUtility;
 
 @Slf4j
 @Service
 public class StashWorkerJobSchedulerService {
 
-    @Autowired // todo: rename me to appmoduleconfig
-    private ApiModuleConfig apiModuleConfig;
+    @Autowired
+    private AppModuleConfig config;
 
     private String job = "0-0-0-0-0";
     private long lastPollTime = 0;
@@ -49,7 +49,7 @@ public class StashWorkerJobSchedulerService {
     }
 
     public boolean isCooldown() {
-        return System.currentTimeMillis() - lastPollTime < apiModuleConfig.getPropertyAsInt("stash.fetch.rate");
+        return System.currentTimeMillis() - lastPollTime < config.getPropertyAsInt("stash.fetch.rate");
     }
 
 }

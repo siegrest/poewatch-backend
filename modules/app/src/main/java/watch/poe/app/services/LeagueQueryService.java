@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import watch.poe.app.config.ApiModuleConfig;
+import watch.poe.app.config.AppModuleConfig;
 import watch.poe.app.domain.LeagueDto;
 import watch.poe.app.mapper.LeagueMapper;
 import watch.poe.app.utility.HttpUtility;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class LeagueQueryService {
 
     @Autowired
-    private ApiModuleConfig config;
+    private AppModuleConfig config;
 
     @Autowired
     private LeagueService leagueService;

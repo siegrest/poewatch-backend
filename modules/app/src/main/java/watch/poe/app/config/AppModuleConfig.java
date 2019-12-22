@@ -10,7 +10,7 @@ import watch.poe.persistence.config.PersistenceModuleConfig;
 @Configuration
 @Import(PersistenceModuleConfig.class)
 @PropertySource({"classpath:poe-watch.properties"})
-public class ApiModuleConfig {
+public class AppModuleConfig {
 
     @Autowired
     private Environment env;
