@@ -21,11 +21,17 @@ public class StashWorkerManagerService {
 
     @Value("${stash.worker.count}")
     private int maxWorkerCount;
+    @Value("${stash.fetch.enabled}")
+    private boolean enabled;
 
     private LinkedList<Future<String>> workerResultQueue = new LinkedList<>();
 
     @Scheduled(fixedRate = 100)
     public void scheduleWorker() {
+        if (!enabled) {
+            return;
+        }
+
         workerResultQueue.removeIf(Future::isDone);
 
         if (workerResultQueue.isEmpty() && jobSchedulerService.isJobEmpty()) {
