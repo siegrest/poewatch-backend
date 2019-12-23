@@ -1,4 +1,4 @@
-package watch.poe.app.services;
+package watch.poe.app.service.stash;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

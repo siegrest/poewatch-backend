@@ -1,4 +1,4 @@
-package watch.poe.app.services;
+package watch.poe.app.service;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;

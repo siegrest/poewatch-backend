@@ -1,4 +1,4 @@
-package watch.poe.app.domain;
+package watch.poe.app.dto;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;

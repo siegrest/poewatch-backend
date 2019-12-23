@@ -1,11 +1,11 @@
-package watch.poe.app.services;
+package watch.poe.app.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.LeagueDto;
+import watch.poe.app.dto.LeagueDto;
 import watch.poe.app.mapper.LeagueMapper;
 import watch.poe.app.utility.HttpUtility;
 import watch.poe.persistence.service.LeagueService;
