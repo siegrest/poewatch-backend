@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import watch.poe.app.utility.ChangeIdUtility;
+import watch.poe.persistence.service.ChangeIdService;
 
 import java.util.LinkedList;
 import java.util.concurrent.Future;
@@ -18,6 +20,9 @@ public class StashWorkerManagerService {
 
     @Autowired
     private StashWorkerJobSchedulerService jobSchedulerService;
+
+    @Autowired
+    private ChangeIdService changeIdService;
 
     @Value("${stash.worker.count}")
     private int maxWorkerCount;
@@ -53,9 +58,25 @@ public class StashWorkerManagerService {
             return;
         }
 
+        updateChangeId();
         jobSchedulerService.bumpPollTime();
         var result = stashWorkerService.queryNext();
         workerResultQueue.push(result);
+    }
+
+    public void updateChangeId() {
+        if (jobSchedulerService.isJobEmpty()) {
+            return;
+        }
+
+        var jobChangeId = jobSchedulerService.peekJob();
+        var repoChangeId = changeIdService.get(ChangeIdService.RIVER);
+
+        if (repoChangeId.isEmpty()) {
+            changeIdService.save(ChangeIdService.RIVER, jobChangeId);
+        } else if (ChangeIdUtility.isNewerThan(jobChangeId, repoChangeId.get().getChangeId())) {
+            changeIdService.update(ChangeIdService.RIVER, jobChangeId);
+        }
     }
 
 }

@@ -16,6 +16,14 @@ public class StashWorkerJobSchedulerService {
     private String job = "0-0-0-0-0";
     private long lastPollTime = 0;
 
+    public String peekJob() {
+        if (job == null) {
+            log.error("Empty change id returned");
+        }
+
+        return job;
+    }
+
     public String getJob() {
         if (job == null) {
             log.error("Empty change id returned");
