@@ -35,7 +35,7 @@ public class LeagueQueryService {
             return;
         }
 
-        log.debug("Begin query");
+        log.info("Begin query");
 
         List<LeagueDto> leagues = fetchLeagues();
         if (leagues == null) {
@@ -45,8 +45,9 @@ public class LeagueQueryService {
         leagues.removeIf(LeagueDto::isSolo);
 
         var mappedLeagues = leagues.stream().map(LeagueMapper::map).collect(Collectors.toList());
-        leagueService.updateLeagueData(mappedLeagues);
-        log.debug("End query");
+        leagueService.updateLeagues(mappedLeagues);
+
+        log.info("End query");
     }
 
     private List<LeagueDto> fetchLeagues() {
