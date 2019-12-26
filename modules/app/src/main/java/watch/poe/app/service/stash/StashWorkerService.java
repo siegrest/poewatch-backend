@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
+import watch.poe.app.domain.StatType;
+import watch.poe.app.service.StatisticsService;
 import watch.poe.app.utility.ChangeIdUtility;
+import watch.poe.app.utility.HttpUtility;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +26,8 @@ public class StashWorkerService {
     private StashWorkerJobSchedulerService jobSchedulerService;
     @Autowired
     private StashParserService stashParserService;
+    @Autowired
+    private StatisticsService ss;
 
     @Value("${stash.fetch.url}")
     private String endpointUrl;
@@ -34,10 +39,15 @@ public class StashWorkerService {
     @Async
     public Future<String> queryNext() {
         var nextChangeId = jobSchedulerService.getJob();
+
+        ss.addValue(StatType.COUNT_API_CALLS);
         log.debug("Started worker with job {}", nextChangeId);
 
         var stashJsonString = downloadStashJson(nextChangeId);
+
+        ss.startTimer(StatType.TIME_PARSE_REPLY);
         stashParserService.parse(stashJsonString);
+        ss.clkTimer(StatType.TIME_PARSE_REPLY);
 
         return new AsyncResult<>("worker finished");
     }
@@ -47,6 +57,8 @@ public class StashWorkerService {
         InputStream stream = null;
 
         try {
+            ss.startTimer(StatType.TIME_API_REPLY_DOWNLOAD);
+
             URL request = new URL(endpointUrl + "?id=" + changeId);
             HttpURLConnection connection = (HttpURLConnection) request.openConnection();
             connection.setReadTimeout(readTimeOut);
@@ -62,8 +74,14 @@ public class StashWorkerService {
         } catch (IOException ex) {
 
             log.error("Caught stash api worker exception", ex);
+            var statType = HttpUtility.getErrorType(ex);
+            if (statType != null) {
+                ss.addValue(statType);
+            }
 
         } finally {
+            ss.clkTimer(StatType.TIME_API_REPLY_DOWNLOAD);
+
             try {
                 if (stream != null) {
                     stream.close();
@@ -79,11 +97,19 @@ public class StashWorkerService {
     private StringBuilder streamStashes(InputStream stream) throws IOException {
         StringBuilder jsonBuffer = new StringBuilder();
         boolean isCheckNextChangeId = true;
+        boolean gotFirstByte = false;
 
         int byteCount, totalByteCount = 0;
         byte[] byteBuffer = new byte[128];
 
+        ss.startTimer(StatType.TIME_API_TTFB);
+
         while ((byteCount = stream.read(byteBuffer, 0, 128)) != -1) {
+            if (!gotFirstByte) {
+                ss.clkTimer(StatType.TIME_API_TTFB);
+                gotFirstByte = true;
+            }
+
             totalByteCount += byteCount;
 
             // Check if byte has <CHUNK_SIZE> amount of elements (the first request does not)
@@ -107,6 +133,7 @@ public class StashWorkerService {
             }
         }
 
+        ss.addValue(StatType.COUNT_REPLY_SIZE, totalByteCount);
         return jsonBuffer;
     }
 
