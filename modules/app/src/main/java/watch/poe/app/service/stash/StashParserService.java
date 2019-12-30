@@ -20,21 +20,17 @@ public class StashParserService {
     private StatisticsService statisticsService;
 
     @Async
-    public void parse(StringBuilder stashStringBuilder) {
-        statisticsService.startTimer(StatType.TIME_PARSE_REPLY);
-
-        var riverDto = deserialize(stashStringBuilder);
-        log.info("got {} stashes", riverDto.getStashes().size());
-
-        statisticsService.clkTimer(StatType.TIME_PARSE_REPLY);
-    }
-
-    private RiverDto deserialize(StringBuilder stashStringBuilder) {
+    public void process(StringBuilder stashStringBuilder) {
         statisticsService.startTimer(StatType.TIME_REPLY_DESERIALIZE);
         var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
         statisticsService.clkTimer(StatType.TIME_REPLY_DESERIALIZE);
 
-        return riverDto;
+        statisticsService.startTimer(StatType.TIME_REPLY_PARSE);
+        parse(riverDto);
+        statisticsService.clkTimer(StatType.TIME_REPLY_PARSE);
     }
 
+    private void parse(RiverDto riverDto) {
+        log.info("got {} stashes", riverDto.getStashes().size());
+    }
 }

@@ -1,9 +1,9 @@
 package watch.poe.app.domain;
 
 public enum StatType {
-    TIME_PARSE_REPLY,
     TIME_API_REPLY_DOWNLOAD,
     TIME_API_TTFB,
+    TIME_REPLY_PARSE,
     TIME_REPLY_DESERIALIZE,
 
     COUNT_API_ERRORS_READ_TIMEOUT,
