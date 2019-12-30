@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.dto.LeagueDto;
 import watch.poe.app.mapper.LeagueMapper;
 import watch.poe.app.utility.HttpUtility;
-import watch.poe.persistence.service.LeagueService;
+import watch.poe.persistence.service.LeagueRepositoryService;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class LeagueQueryService {
 
     @Autowired
-    private LeagueService leagueService;
+    private LeagueRepositoryService leagueRepositoryService;
 
     @Autowired
     private GsonService gsonService;
@@ -45,7 +45,7 @@ public class LeagueQueryService {
         leagues.removeIf(LeagueDto::isSolo);
 
         var mappedLeagues = leagues.stream().map(LeagueMapper::map).collect(Collectors.toList());
-        leagueService.updateLeagues(mappedLeagues);
+        leagueRepositoryService.updateLeagues(mappedLeagues);
 
         log.info("End query");
     }

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
-public class LeagueService {
+public class LeagueRepositoryService {
 
     @Autowired
     private LeagueRepository leagueRepository;

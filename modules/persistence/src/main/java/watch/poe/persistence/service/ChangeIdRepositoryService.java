@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.Optional;
 
 @Service
-public class ChangeIdService {
+public class ChangeIdRepositoryService {
 
     public static final String RIVER = "river";
 

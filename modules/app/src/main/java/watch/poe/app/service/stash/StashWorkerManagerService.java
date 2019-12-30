@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.domain.StatType;
 import watch.poe.app.service.StatisticsService;
 import watch.poe.app.utility.ChangeIdUtility;
-import watch.poe.persistence.service.ChangeIdService;
+import watch.poe.persistence.service.ChangeIdRepositoryService;
 
 import java.util.LinkedList;
 import java.util.concurrent.Future;
@@ -24,7 +24,7 @@ public class StashWorkerManagerService {
     private StashWorkerJobSchedulerService jobSchedulerService;
 
     @Autowired
-    private ChangeIdService changeIdService;
+    private ChangeIdRepositoryService changeIdRepositoryService;
 
     @Autowired
     private StatisticsService statisticsService;
@@ -76,12 +76,12 @@ public class StashWorkerManagerService {
         }
 
         var jobChangeId = jobSchedulerService.peekJob();
-        var repoChangeId = changeIdService.get(ChangeIdService.RIVER);
+        var repoChangeId = changeIdRepositoryService.get(ChangeIdRepositoryService.RIVER);
 
         if (repoChangeId.isEmpty()) {
-            changeIdService.save(ChangeIdService.RIVER, jobChangeId);
+            changeIdRepositoryService.save(ChangeIdRepositoryService.RIVER, jobChangeId);
         } else if (ChangeIdUtility.isNewerThan(jobChangeId, repoChangeId.get().getChangeId())) {
-            changeIdService.update(ChangeIdService.RIVER, jobChangeId);
+            changeIdRepositoryService.update(ChangeIdRepositoryService.RIVER, jobChangeId);
         }
     }
 
