@@ -27,7 +27,7 @@ public class StashWorkerService {
     @Autowired
     private StashParserService stashParserService;
     @Autowired
-    private StatisticsService ss;
+    private StatisticsService statisticsService;
 
     @Value("${stash.fetch.url}")
     private String endpointUrl;
@@ -39,30 +39,27 @@ public class StashWorkerService {
     @Async
     public Future<String> queryNext() {
         var nextChangeId = jobSchedulerService.getJob();
-
-        ss.addValue(StatType.COUNT_API_CALLS);
         log.debug("Started worker with job {}", nextChangeId);
 
         var stashJsonString = downloadStashJson(nextChangeId);
-
-        ss.startTimer(StatType.TIME_PARSE_REPLY);
         stashParserService.parse(stashJsonString);
-        ss.clkTimer(StatType.TIME_PARSE_REPLY);
 
         return new AsyncResult<>("worker finished");
     }
 
     private StringBuilder downloadStashJson(String changeId) {
+        statisticsService.startTimer(StatType.TIME_API_REPLY_DOWNLOAD);
+
         StringBuilder streamResult = null;
         InputStream stream = null;
 
         try {
-            ss.startTimer(StatType.TIME_API_REPLY_DOWNLOAD);
-
             URL request = new URL(endpointUrl + "?id=" + changeId);
             HttpURLConnection connection = (HttpURLConnection) request.openConnection();
             connection.setReadTimeout(readTimeOut);
             connection.setConnectTimeout(connectTimeOut);
+
+            statisticsService.startTimer(StatType.TIME_API_TTFB);
 
             stream = connection.getInputStream();
             streamResult = streamStashes(stream);
@@ -76,11 +73,13 @@ public class StashWorkerService {
             log.error("Caught stash api worker exception", ex);
             var statType = HttpUtility.getErrorType(ex);
             if (statType != null) {
-                ss.addValue(statType);
+                statisticsService.addValue(statType);
             }
 
         } finally {
-            ss.clkTimer(StatType.TIME_API_REPLY_DOWNLOAD);
+            statisticsService.clkTimer(StatType.TIME_API_REPLY_DOWNLOAD);
+            // precaution if the stream method finished abruptly
+            statisticsService.clkTimer(StatType.TIME_API_TTFB);
 
             try {
                 if (stream != null) {
@@ -102,11 +101,11 @@ public class StashWorkerService {
         int byteCount, totalByteCount = 0;
         byte[] byteBuffer = new byte[128];
 
-        ss.startTimer(StatType.TIME_API_TTFB);
+        statisticsService.startTimer(StatType.TIME_API_TTFB);
 
         while ((byteCount = stream.read(byteBuffer, 0, 128)) != -1) {
             if (!gotFirstByte) {
-                ss.clkTimer(StatType.TIME_API_TTFB);
+                statisticsService.clkTimer(StatType.TIME_API_TTFB);
                 gotFirstByte = true;
             }
 
@@ -133,7 +132,7 @@ public class StashWorkerService {
             }
         }
 
-        ss.addValue(StatType.COUNT_REPLY_SIZE, totalByteCount);
+        statisticsService.addValue(StatType.COUNT_REPLY_SIZE, totalByteCount);
         return jsonBuffer;
     }
 

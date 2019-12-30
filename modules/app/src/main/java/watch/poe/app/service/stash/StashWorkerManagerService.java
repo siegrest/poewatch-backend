@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import watch.poe.app.domain.StatType;
+import watch.poe.app.service.StatisticsService;
 import watch.poe.app.utility.ChangeIdUtility;
 import watch.poe.persistence.service.ChangeIdService;
 
@@ -23,6 +25,9 @@ public class StashWorkerManagerService {
 
     @Autowired
     private ChangeIdService changeIdService;
+
+    @Autowired
+    private StatisticsService statisticsService;
 
     @Value("${stash.worker.count}")
     private int maxWorkerCount;
@@ -60,6 +65,7 @@ public class StashWorkerManagerService {
 
         updateChangeId();
         jobSchedulerService.bumpPollTime();
+        statisticsService.addValue(StatType.COUNT_API_CALLS);
         var result = stashWorkerService.queryNext();
         workerResultQueue.push(result);
     }

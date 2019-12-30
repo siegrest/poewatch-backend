@@ -151,9 +151,8 @@ public class StatisticsService {
         // Remove the timer
         statEntryList.remove(statTimer);
 
-        // Get delay as int MS
+        // Get delay as MS
         var delay = System.currentTimeMillis() - statTimer.getStartTime();
-        // Add value to the collector
         addValue(type, delay);
     }
 
