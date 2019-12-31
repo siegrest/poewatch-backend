@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.*;
+import watch.poe.app.service.repository.StatisticsRepositoryService;
 import watch.poe.persistence.model.StatisticPartial;
-import watch.poe.persistence.service.StatisticsRepositoryService;
 
 import java.util.Collections;
 import java.util.HashSet;

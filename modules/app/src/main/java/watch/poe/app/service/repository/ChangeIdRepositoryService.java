@@ -1,4 +1,4 @@
-package watch.poe.persistence.service;
+package watch.poe.app.service.repository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

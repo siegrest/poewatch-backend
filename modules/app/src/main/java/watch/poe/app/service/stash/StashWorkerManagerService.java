@@ -7,8 +7,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.StatType;
 import watch.poe.app.service.StatisticsService;
+import watch.poe.app.service.repository.ChangeIdRepositoryService;
 import watch.poe.app.utility.ChangeIdUtility;
-import watch.poe.persistence.service.ChangeIdRepositoryService;
 
 import java.util.LinkedList;
 import java.util.concurrent.Future;

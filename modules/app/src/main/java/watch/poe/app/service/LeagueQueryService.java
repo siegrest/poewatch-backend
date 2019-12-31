@@ -7,8 +7,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.LeagueDto;
 import watch.poe.app.mapper.LeagueMapper;
+import watch.poe.app.service.repository.LeagueRepositoryService;
 import watch.poe.app.utility.HttpUtility;
-import watch.poe.persistence.service.LeagueRepositoryService;
 
 import java.io.IOException;
 import java.util.List;
