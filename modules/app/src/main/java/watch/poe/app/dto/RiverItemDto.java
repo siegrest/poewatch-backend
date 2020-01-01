@@ -2,10 +2,12 @@ package watch.poe.app.dto;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.List;
 
 @Getter
+@ToString
 public class RiverItemDto {
     @SerializedName("identified")
     private boolean isIdentified;

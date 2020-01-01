@@ -1,13 +1,15 @@
 package watch.poe.persistence.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.util.Date;
 
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "characters")
 public class Character {
@@ -24,8 +26,10 @@ public class Character {
     private String name;
 
     @Column(name = "found", nullable = false)
-    private Timestamp found;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date found;
 
     @Column(name = "seen", nullable = false)
-    private Timestamp seen;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date seen;
 }

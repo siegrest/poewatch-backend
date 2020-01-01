@@ -26,8 +26,10 @@ public class StatisticsService {
 
     private final List<StatCollector> collectors = Collections.synchronizedList(List.of(
             new StatCollector(StatType.TIME_API_REPLY_DOWNLOAD, StatGroupType.AVG, TimeFrame.M_60),
-            new StatCollector(StatType.TIME_REPLY_PARSE, StatGroupType.AVG, TimeFrame.M_60),
             new StatCollector(StatType.TIME_API_TTFB, StatGroupType.AVG, TimeFrame.M_60),
+
+            new StatCollector(StatType.TIME_REPLY_PARSE, StatGroupType.AVG, TimeFrame.M_60),
+            new StatCollector(StatType.TIME_REPLY_DESERIALIZE, StatGroupType.AVG, TimeFrame.M_60),
 
             new StatCollector(StatType.COUNT_API_ERRORS_DUPLICATE, StatGroupType.SUM, TimeFrame.M_60),
             new StatCollector(StatType.COUNT_API_ERRORS_CONNECT_TIMEOUT, StatGroupType.COUNT, TimeFrame.M_60),

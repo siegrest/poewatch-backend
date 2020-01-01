@@ -44,7 +44,6 @@ public class LeagueRepositoryService {
         return leagueRepository.saveAll(newLeagues);
     }
 
-
     public void setFlags(List<League> repoLeagues, List<League> queryLeagues) {
         Predicate<String> filterPredicate = league -> repoLeagues.stream().noneMatch(rl -> rl.getName().equals(league));
 
@@ -59,6 +58,10 @@ public class LeagueRepositoryService {
         });
 
         leagueRepository.saveAll(repoLeagues);
+    }
+
+    public boolean isValidLeague(String league) {
+        return leagueRepository.getByName(league).isPresent();
     }
 
 }

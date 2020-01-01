@@ -39,7 +39,7 @@ public class StashWorkerService {
     @Async
     public Future<String> queryNext() {
         var nextChangeId = jobSchedulerService.getJob();
-        log.debug("Started worker with job {}", nextChangeId);
+        log.info("Started worker with job {}", nextChangeId);
 
         var stashJsonString = downloadStashJson(nextChangeId);
         stashParserService.process(stashJsonString);
@@ -100,8 +100,6 @@ public class StashWorkerService {
 
         int byteCount, totalByteCount = 0;
         byte[] byteBuffer = new byte[128];
-
-        statisticsService.startTimer(StatType.TIME_API_TTFB);
 
         while ((byteCount = stream.read(byteBuffer, 0, 128)) != -1) {
             if (!gotFirstByte) {

@@ -1,14 +1,16 @@
 package watch.poe.persistence.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
 
+@Entity
+@Builder
 @Getter
 @Setter
-@Entity
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "stashes")
 public class Stash {
     @Id
@@ -27,6 +29,6 @@ public class Stash {
     @JoinColumn(name = "fk_account", nullable = false)
     private Account account;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id", fetch = FetchType.LAZY)
     private Set<LeagueItemEntry> items;
 }

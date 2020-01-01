@@ -1,0 +1,143 @@
+[
+  {
+    "category": "accessory",
+    "groups": [
+      "amulet",
+      "ring",
+      "belt"
+    ]
+  },
+  {
+    "category": "armour",
+    "groups": [
+      "boots",
+      "chest",
+      "gloves",
+      "helmet",
+      "quiver",
+      "shield"
+    ]
+  },
+  {
+    "category": "card",
+    "groups": [
+      "card"
+    ]
+  },
+  {
+    "category": "currency",
+    "groups": [
+      "currency",
+      "essence",
+      "piece",
+      "fossil",
+      "resonator",
+      "vial",
+      "oil",
+      "splinter",
+      "catalyst",
+      "influence"
+    ]
+  },
+  {
+    "category": "enchantment",
+    "groups": [
+      "helmet",
+      "boots",
+      "gloves"
+    ]
+  },
+  {
+    "category": "flask",
+    "groups": [
+      "flask"
+    ]
+  },
+  {
+    "category": "gem",
+    "groups": [
+      "skill",
+      "support",
+      "vaal"
+    ]
+  },
+  {
+    "category": "jewel",
+    "groups": [
+      "jewel"
+    ]
+  },
+  {
+    "category": "map",
+    "groups": [
+      "map",
+      "fragment",
+      "unique",
+      "scarab",
+      "watchstone"
+    ]
+  },
+  {
+    "category": "prophecy",
+    "groups": [
+      "prophecy"
+    ]
+  },
+  {
+    "category": "weapon",
+    "groups": [
+      "bow",
+      "claw",
+      "dagger",
+      "oneaxe",
+      "onemace",
+      "onesword",
+      "rod",
+      "sceptre",
+      "staff",
+      "twoaxe",
+      "twomace",
+      "twosword",
+      "wand",
+      "runedagger",
+      "warstaff"
+    ]
+  },
+  {
+    "category": "base",
+    "groups": [
+      "amulet",
+      "ring",
+      "belt",
+      "boots",
+      "chest",
+      "gloves",
+      "helmet",
+      "quiver",
+      "shield",
+      "bow",
+      "claw",
+      "dagger",
+      "oneaxe",
+      "onemace",
+      "onesword",
+      "rod",
+      "sceptre",
+      "staff",
+      "twoaxe",
+      "twomace",
+      "twosword",
+      "wand",
+      "jewel",
+      "warstaff",
+      "runedagger"
+    ]
+  },
+  {
+    "category": "beast",
+    "groups": [
+      "beast",
+      "sample"
+    ]
+  }
+]
