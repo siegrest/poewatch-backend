@@ -14,4 +14,6 @@ public enum CategoryEnum {
     weapon,
     base,
     beast
+    // todo: add fragment category
+    // todo: add altart category
 }
