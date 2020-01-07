@@ -1,4 +1,4 @@
-package watch.poe.app.service;
+package watch.poe.app.service.resource;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,6 +6,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.resource.CurrencyAliasDto;
+import watch.poe.app.service.GsonService;
 import watch.poe.app.utility.FileUtility;
 
 import java.util.ArrayList;

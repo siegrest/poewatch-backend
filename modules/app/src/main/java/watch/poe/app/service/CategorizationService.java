@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryEnum;
 import watch.poe.app.domain.GroupEnum;
 import watch.poe.app.dto.RiverItemDto;
+import watch.poe.app.service.resource.GroupMappingService;
 import watch.poe.app.utility.ItemUtility;
 
 @Slf4j
