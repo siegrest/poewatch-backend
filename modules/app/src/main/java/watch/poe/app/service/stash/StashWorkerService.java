@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.service.statistics.StatType;
 import watch.poe.app.service.statistics.StatisticsService;
 import watch.poe.app.utility.ChangeIdUtility;
-import watch.poe.app.utility.HttpUtility;
+import watch.poe.app.utility.StatsUtility;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -71,7 +71,7 @@ public class StashWorkerService {
         } catch (IOException ex) {
 
             log.error("Caught stash api worker exception", ex);
-            var statType = HttpUtility.getErrorType(ex);
+            var statType = StatsUtility.getErrorType(ex);
             if (statType != null) {
                 statisticsService.addValue(statType);
             }
