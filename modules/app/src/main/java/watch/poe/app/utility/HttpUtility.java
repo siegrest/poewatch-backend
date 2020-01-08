@@ -1,6 +1,6 @@
 package watch.poe.app.utility;
 
-import watch.poe.app.domain.StatType;
+import watch.poe.app.service.statistics.StatType;
 
 import java.io.IOException;
 import java.io.InputStream;

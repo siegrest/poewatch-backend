@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import watch.poe.app.domain.StatType;
+import watch.poe.app.service.statistics.StatType;
 import watch.poe.app.service.statistics.StatisticsService;
 
 import javax.annotation.PreDestroy;

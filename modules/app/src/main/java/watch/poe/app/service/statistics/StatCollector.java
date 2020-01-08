@@ -1,32 +1,25 @@
-package watch.poe.app.domain;
+package watch.poe.app.service.statistics;
 
 import lombok.Getter;
-import org.springframework.lang.NonNull;
 
 import java.util.Date;
 
 @Getter
 public class StatCollector {
-    private final StatGroupType groupType;
-    private final TimeFrame collectionPeriod;
     private final StatType type;
-
     private Date creationTime;
     private Date insertTime;
-
     private boolean isValueNull;
     private long count;
     private long sum;
 
-    public StatCollector(@NonNull StatType type, @NonNull StatGroupType groupType, TimeFrame collectionPeriod) {
-        this.type = type;
-        this.groupType = groupType;
-        this.collectionPeriod = collectionPeriod;
+    public StatCollector(StatType statType) {
+        this.type = statType;
         reset();
     }
 
     public boolean isRecorded() {
-        return collectionPeriod != null;
+        return type.getTimeFrame() != null;
     }
 
     public boolean hasValues() {
@@ -34,7 +27,7 @@ public class StatCollector {
     }
 
     public boolean isExpired() {
-        return System.currentTimeMillis() - creationTime.getTime() >= collectionPeriod.asMilli();
+        return System.currentTimeMillis() - creationTime.getTime() >= type.getTimeFrame().asMilli();
     }
 
     public void addValue(Long val) {
@@ -48,7 +41,7 @@ public class StatCollector {
     }
 
     public Long getValue() {
-        if (groupType.equals(StatGroupType.COUNT)) {
+        if (type.getStatGroupType().equals(StatGroupType.COUNT)) {
             return count;
         }
 
@@ -56,11 +49,11 @@ public class StatCollector {
             return null;
         }
 
-        if (groupType.equals(StatGroupType.SUM)) {
+        if (type.getStatGroupType().equals(StatGroupType.SUM)) {
             return sum;
         }
 
-        if (groupType.equals(StatGroupType.AVG)) {
+        if (type.getStatGroupType().equals(StatGroupType.AVG)) {
             return sum / count;
         }
 
@@ -68,12 +61,12 @@ public class StatCollector {
     }
 
     public void reset() {
-        if (collectionPeriod == null) {
+        if (type.getTimeFrame() == null) {
             creationTime = new Date(TimeFrame.M_1.getCurrent());
             insertTime = new Date(TimeFrame.M_1.getNext());
         } else {
-            creationTime = new Date(collectionPeriod.getCurrent());
-            insertTime = new Date(collectionPeriod.getNext());
+            creationTime = new Date(type.getTimeFrame().getCurrent());
+            insertTime = new Date(type.getTimeFrame().getNext());
         }
 
         isValueNull = false;
@@ -91,7 +84,7 @@ public class StatCollector {
 
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
-        insertTime = new Date(creationTime.getTime() + collectionPeriod.asMilli());
+        insertTime = new Date(creationTime.getTime() + type.getTimeFrame().asMilli());
     }
 
     public void setCount(long count) {

@@ -1,4 +1,4 @@
-package watch.poe.app.domain;
+package watch.poe.app.service.statistics;
 
 public enum StatGroupType {
     AVG,

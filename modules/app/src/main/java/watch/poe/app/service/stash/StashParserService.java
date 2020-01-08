@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.StatType;
 import watch.poe.app.dto.RiverDto;
 import watch.poe.app.dto.RiverItemDto;
 import watch.poe.app.dto.RiverStashDto;
@@ -15,6 +14,7 @@ import watch.poe.app.service.NoteParseService;
 import watch.poe.app.service.repository.AccountService;
 import watch.poe.app.service.repository.LeagueRepositoryService;
 import watch.poe.app.service.repository.StashRepositoryService;
+import watch.poe.app.service.statistics.StatType;
 import watch.poe.app.service.statistics.StatisticsService;
 
 @Slf4j

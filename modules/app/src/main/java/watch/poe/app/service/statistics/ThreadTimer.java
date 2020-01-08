@@ -2,7 +2,6 @@ package watch.poe.app.service.statistics;
 
 import lombok.Builder;
 import lombok.Getter;
-import watch.poe.app.domain.StatTimer;
 
 import java.util.Objects;
 import java.util.Set;

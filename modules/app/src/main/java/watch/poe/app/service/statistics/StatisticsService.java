@@ -2,19 +2,14 @@ package watch.poe.app.service.statistics;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.StatCollector;
-import watch.poe.app.domain.StatTimer;
-import watch.poe.app.domain.StatType;
 import watch.poe.app.service.repository.StatisticsRepositoryService;
 import watch.poe.persistence.model.StatisticPartial;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,11 +18,12 @@ public class StatisticsService {
 
     @Autowired
     private StatisticsRepositoryService statisticsRepositoryService;
-    private final Set<ThreadTimer> threadTimers = Collections.synchronizedSet(new HashSet<>());
     @Autowired
-    private List<StatCollector> collectors;
+    private Set<StatCollector> collectors;
 
-    @Scheduled(initialDelayString = "${stats.sync.delay.initial}", fixedDelay = Long.MAX_VALUE)
+    private Set<ThreadTimer> threadTimers = Collections.synchronizedSet(new HashSet<>());
+
+    @EventListener(ApplicationReadyEvent.class)
     public void onReady() {
         // Get ongoing statistics collectors from database
         var pStats = statisticsRepositoryService.getPartialStatistics();
@@ -35,9 +31,9 @@ public class StatisticsService {
 
         // Find if any of the collectors have expired during the time the app was offline
         Set<StatCollector> expired = collectors.stream()
-            .filter(StatCollector::isRecorded)
-            .filter(StatCollector::hasValues)
-            .filter(StatCollector::isExpired)
+          .filter(StatCollector::isRecorded)
+          .filter(StatCollector::hasValues)
+          .filter(StatCollector::isExpired)
             .collect(Collectors.toSet());
 
         // Delete and create database entries
@@ -68,7 +64,7 @@ public class StatisticsService {
 
     @Scheduled(cron = "${stats.sync.cron}")
     public void sync() {
-        log.info("Stating stats sync");
+        log.info("Starting stats sync");
 
         // Find collectors that are expired
         Set<StatCollector> expired = collectors.stream()
