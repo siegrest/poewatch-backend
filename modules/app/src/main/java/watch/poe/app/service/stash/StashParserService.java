@@ -12,10 +12,10 @@ import watch.poe.app.dto.RiverStashDto;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.service.ItemParseService;
 import watch.poe.app.service.NoteParseService;
-import watch.poe.app.service.StatisticsService;
 import watch.poe.app.service.repository.AccountService;
 import watch.poe.app.service.repository.LeagueRepositoryService;
 import watch.poe.app.service.repository.StashRepositoryService;
+import watch.poe.app.service.statistics.StatisticsService;
 
 @Slf4j
 @Service

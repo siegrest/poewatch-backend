@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.StatType;
-import watch.poe.app.service.StatisticsService;
 import watch.poe.app.service.repository.ChangeIdRepositoryService;
+import watch.poe.app.service.statistics.StatisticsService;
 import watch.poe.app.utility.ChangeIdUtility;
 
 import java.util.LinkedList;
