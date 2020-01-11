@@ -6,10 +6,14 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import watch.poe.app.domain.statistics.StatTimer;
+import watch.poe.app.domain.statistics.ThreadTimer;
 import watch.poe.app.service.repository.StatisticsRepositoryService;
-import watch.poe.persistence.model.StatisticPartial;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,30 +30,10 @@ public class StatisticsService {
     @EventListener(ApplicationReadyEvent.class)
     public void onReady() {
         // Get ongoing statistics collectors from database
-        var pStats = statisticsRepositoryService.getPartialStatistics();
-        fillCollectors(pStats);
-
-        // Find if any of the collectors have expired during the time the app was offline
-        Set<StatCollector> expired = collectors.stream()
-          .filter(StatCollector::isRecorded)
-          .filter(StatCollector::hasValues)
-          .filter(StatCollector::isExpired)
-            .collect(Collectors.toSet());
-
-        // Delete and create database entries
-        expired.forEach(c -> {
-            log.info("Found expired collector during initialization: {}", c.getType());
-            statisticsRepositoryService.deletePartialByType(c.getType().name());
-            statisticsRepositoryService.saveToHistory(c.getType().name(), c.getInsertTime(), c.getValue());
-            c.reset();
-        });
-    }
-
-    private void fillCollectors(List<StatisticPartial> partialStatistics) {
-        partialStatistics.forEach(ps -> {
+        statisticsRepositoryService.getPartialStatistics().forEach(ps -> {
             var collector = collectors.stream()
-                .filter(c -> c.getType().equals(StatType.valueOf(ps.getType())))
-                .findFirst();
+              .filter(c -> c.getType().equals(StatType.valueOf(ps.getType())))
+              .findFirst();
             if (collector.isPresent()) {
                 collector.get().setCount(ps.getCount());
                 collector.get().setSum(ps.getSum());
@@ -60,6 +44,21 @@ public class StatisticsService {
         });
 
         log.info("Loaded partial statistics into collectors");
+
+        // Find if any of the collectors have expired during the time the app was offline
+        Set<StatCollector> expired = collectors.stream()
+          .filter(StatCollector::isRecorded)
+          .filter(StatCollector::hasValues)
+          .filter(StatCollector::isExpired)
+          .collect(Collectors.toSet());
+
+        // Delete and create database entries
+        expired.forEach(c -> {
+            log.info("Found expired collector during initialization: {}", c.getType());
+            statisticsRepositoryService.deletePartialByType(c.getType().name());
+            statisticsRepositoryService.saveToHistory(c.getType().name(), c.getInsertTime(), c.getValue());
+            c.reset();
+        });
     }
 
     @Scheduled(cron = "${stats.sync.cron}")
@@ -102,7 +101,12 @@ public class StatisticsService {
             throw new RuntimeException();
         }
 
-        statTimers.add(new StatTimer(type));
+        var timer = StatTimer.builder()
+          .startTime(System.currentTimeMillis())
+          .type(type)
+          .build();
+
+        statTimers.add(timer);
     }
 
     private ThreadTimer getOrCreateThreadTimer() {

@@ -1,4 +1,4 @@
-package watch.poe.app.service.statistics;
+package watch.poe.app.domain.statistics;
 
 import lombok.Builder;
 import lombok.Getter;
