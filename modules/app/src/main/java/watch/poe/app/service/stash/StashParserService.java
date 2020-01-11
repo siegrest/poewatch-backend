@@ -80,7 +80,7 @@ public class StashParserService {
           continue;
         }
 
-        itemParseService.parse(itemDto);
+        var item = itemParseService.parse(itemDto);
 
 //            if (item.isDiscard()) {
 //                continue;

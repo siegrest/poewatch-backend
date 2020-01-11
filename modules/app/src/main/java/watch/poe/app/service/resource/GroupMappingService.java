@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.CategoryEnum;
+import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.dto.resource.GroupMappingDto;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.utility.FileUtility;
@@ -42,11 +42,11 @@ public class GroupMappingService {
                 .orElse(null);
     }
 
-    public List<String> getGroups(CategoryEnum categoryEnum) {
+    public List<String> getGroups(CategoryDto categoryEnum) {
         return categories.stream()
-                .filter(c -> c.getCategory().equals(categoryEnum.name()))
-                .findFirst()
-                .map(GroupMappingDto::getGroups)
-                .orElse(null);
+          .filter(c -> c.getCategory().equals(categoryEnum.name()))
+          .findFirst()
+          .map(GroupMappingDto::getGroups)
+          .orElse(null);
     }
 }

@@ -1,6 +1,6 @@
 package watch.poe.app.domain;
 
-public enum CategoryEnum {
+public enum CategoryDto {
     accessory,
     armour,
     card,

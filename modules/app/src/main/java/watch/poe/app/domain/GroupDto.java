@@ -1,16 +1,16 @@
 package watch.poe.app.domain;
 
-public enum GroupEnum {
-    amulet,
-    belt,
-    ring,
+public enum GroupDto {
+  amulet,
+  belt,
+  ring,
 
-    boots,
-    chest,
-    gloves,
-    helmet,
-    quiver,
-    shield,
+  boots,
+  chest,
+  gloves,
+  helmet,
+  quiver,
+  shield,
 
     card,
 
