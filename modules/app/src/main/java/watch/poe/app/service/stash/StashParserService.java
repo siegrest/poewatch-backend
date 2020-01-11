@@ -13,6 +13,7 @@ import watch.poe.app.service.ItemParseService;
 import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
 import watch.poe.app.service.repository.AccountService;
+import watch.poe.app.service.repository.CharacterService;
 import watch.poe.app.service.repository.StashRepositoryService;
 import watch.poe.app.service.statistics.StatType;
 import watch.poe.app.service.statistics.StatisticsService;
@@ -21,78 +22,65 @@ import watch.poe.app.service.statistics.StatisticsService;
 @Service
 public class StashParserService {
 
-    @Autowired
-    private GsonService gsonService;
-    @Autowired
-    private StatisticsService statisticsService;
-    @Autowired
-    private LeagueService leagueService;
-    @Autowired
-    private StashRepositoryService stashRepositoryService;
-    @Autowired
-    private AccountService accountService;
-    @Autowired
-    private NoteParseService noteParseService;
-    @Autowired
-    private ItemParseService itemParseService;
+  @Autowired
+  private GsonService gsonService;
+  @Autowired
+  private StatisticsService statisticsService;
+  @Autowired
+  private LeagueService leagueService;
+  @Autowired
+  private StashRepositoryService stashRepositoryService;
+  @Autowired
+  private AccountService accountService;
+  @Autowired
+  private CharacterService characterService;
+  @Autowired
+  private NoteParseService noteParseService;
+  @Autowired
+  private ItemParseService itemParseService;
 
-    @Value("${item.accept.missing.price}")
-    private boolean acceptMissingPrice;
+  @Value("${item.accept.missing.price}")
+  private boolean acceptMissingPrice;
 
-    @Async
-    public void process(StringBuilder stashStringBuilder) {
-        statisticsService.startTimer(StatType.TIME_REPLY_DESERIALIZE);
-        var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
-        statisticsService.clkTimer(StatType.TIME_REPLY_DESERIALIZE);
+  @Async
+  public void process(StringBuilder stashStringBuilder) {
+    statisticsService.startTimer(StatType.TIME_REPLY_DESERIALIZE);
+    var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
+    statisticsService.clkTimer(StatType.TIME_REPLY_DESERIALIZE);
 
-        log.info("got {} stashes", riverDto.getStashes().size());
+    log.info("got {} stashes", riverDto.getStashes().size());
 
-        statisticsService.startTimer(StatType.TIME_REPLY_PARSE);
-        processRiver(riverDto);
-        statisticsService.clkTimer(StatType.TIME_REPLY_PARSE);
-    }
+    statisticsService.startTimer(StatType.TIME_REPLY_PARSE);
+    processRiver(riverDto);
+    statisticsService.clkTimer(StatType.TIME_REPLY_PARSE);
+  }
 
-    private void processRiver(RiverDto riverDto) {
+  private void processRiver(RiverDto riverDto) {
 
-        for (StashDto riverStashDto : riverDto.getStashes()) {
-            statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, riverStashDto.getItems().size());
+    for (StashDto stashDto : riverDto.getStashes()) {
+      statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
 
-            var league = leagueService.getByName(riverStashDto.getLeague());
-            if (league.isEmpty()) {
-                continue;
-            }
+      var league = leagueService.getByName(stashDto.getLeague());
+      if (league.isEmpty()) {
+        statisticsService.addValue(StatType.COUNT_ITEMS_DISCARDED_INVALID_LEAGUE, stashDto.getItems().size());
+        continue;
+      }
 
-            // todo: this comes later
-//            var stash = stashRepositoryService.findByStashId(riverStashDto.getId());
-//            if (stash.isEmpty()) {
-//                stashRepositoryService.create(riverStashDto);
-//            }
+      var account = accountService.save(stashDto.getAccountName());
+      var character = characterService.save(account, stashDto.getLastCharacterName());
+      var stash = stashRepositoryService.save(league.get(), account, stashDto);
 
-//            // Skip if missing data
-//            if (stash.accountName == null || !stash.isPublic) {
-//                continue;
-//            }
+      if (character == null || account == null || stash == null) {
+        continue;
+      }
 
-            accountService.save(riverStashDto);
-            var hasValidItems = processStashes(riverStashDto);
-
-            // If stash contained at least 1 valid item, save the stash id
-//            if (hasValidItems) {
-//                activeStashIds.add(stash_crc);
-//            }
+      for (ItemDto itemDto : stashDto.getItems()) {
+        var price = noteParseService.parsePrice(stashDto.getStashName(), itemDto.getNote());
+        if (price == null && !acceptMissingPrice) {
+          continue;
         }
-    }
 
-    private boolean processStashes(StashDto riverStashDto) {
-        var hasValidItems = false;
-
-        for (ItemDto itemDto : riverStashDto.getItems()) {
-            var price = noteParseService.parsePrice(riverStashDto.getStashName(), itemDto.getNote());
-            if (!acceptMissingPrice && price == null) {
-                continue;
-            }
-
-            hasValidItems = itemParseService.parse(itemDto);
+        itemParseService.parse(itemDto);
 
 //            if (item.isDiscard()) {
 //                continue;
@@ -116,9 +104,8 @@ public class StashParserService {
 //            // Set flag to indicate the stash contained at least 1 valid item
 //            hasValidItems = true;
 //            dbItems.add(entry);
-        }
-
-        return hasValidItems;
+      }
     }
+  }
 
 }

@@ -5,8 +5,8 @@ import watch.poe.persistence.model.Stash;
 
 import java.util.Optional;
 
-public interface StashRepository extends JpaRepository<Stash, Long> {
+public interface StashRepository extends JpaRepository<Stash, String> {
 
-    Optional<Stash> findByStashId(String stashId);
+    Optional<Stash> findById(String id);
 
 }

@@ -25,8 +25,11 @@ public enum StatType {
   COUNT_API_CALLS(StatGroupType.COUNT, TimeFrame.M_60),
   COUNT_TOTAL_STASHES(StatGroupType.SUM, TimeFrame.M_60),
   COUNT_TOTAL_ITEMS(StatGroupType.SUM, TimeFrame.M_60),
+  COUNT_ITEMS_DISCARDED_INVALID_LEAGUE(StatGroupType.SUM, TimeFrame.M_60),
   COUNT_ACCEPTED_ITEMS(StatGroupType.SUM, TimeFrame.M_60),
   COUNT_ACTIVE_ACCOUNTS(StatGroupType.SUM, TimeFrame.M_60),
+
+  // todo: discarded total, accepted total
 
   MISC_APP_STARTUP(StatGroupType.COUNT, TimeFrame.M_60),
   MISC_APP_SHUTDOWN(StatGroupType.COUNT, TimeFrame.M_60);

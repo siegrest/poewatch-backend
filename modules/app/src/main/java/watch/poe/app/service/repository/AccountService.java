@@ -1,13 +1,12 @@
 package watch.poe.app.service.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import watch.poe.app.dto.river.StashDto;
+import org.springframework.transaction.annotation.Transactional;
 import watch.poe.persistence.model.Account;
-import watch.poe.persistence.model.Character;
 import watch.poe.persistence.repository.AccountRepository;
-import watch.poe.persistence.repository.CharacterRepository;
 
 import java.util.Date;
 
@@ -15,65 +14,38 @@ import java.util.Date;
 @Service
 public class AccountService {
 
-    @Autowired
-    private AccountRepository accountRepository;
-    @Autowired
-    private CharacterRepository characterRepository;
+  @Autowired
+  private AccountRepository accountRepository;
 
-    public Account save(StashDto riverStashDto) {
-        var characterName = riverStashDto.getLastCharacterName();
-        var accountName = riverStashDto.getAccountName();
-
-        var account = accountRepository.findByName(accountName);
-        if (account == null) {
-            account = saveNewAccount(accountName, characterName);
-            return account;
-        }
-
-        account = updateAccountSeen(account);
-
-        var character = characterRepository.findByName(characterName);
-        if (character == null) {
-            saveNewCharacter(account, characterName);
-            return account;
-        }
-
-        updateCharacterSeen(character);
-        return account;
+  @Transactional
+  public Account save(String accountName) {
+    if (accountName == null || StringUtils.isBlank(accountName)) {
+      return null;
     }
 
-    private Account saveNewAccount(String accountName, String characterName) {
-        var account = Account.builder()
-                .found(new Date())
-                .seen(new Date())
-                .name(accountName)
-                .build();
-
-        account = accountRepository.save(account);
-        saveNewCharacter(account, characterName);
-        return accountRepository.getOne(account.getId());
+    var account = accountRepository.findByName(accountName);
+    if (account == null) {
+      account = saveNewAccount(accountName);
+    } else {
+      account = updateAccountSeen(account);
     }
 
-    private Character saveNewCharacter(Account account, String characterName) {
-        var character = Character.builder()
-                .account(account)
-                .found(new Date())
-                .seen(new Date())
-                .name(characterName)
-                .build();
+    return account;
+  }
 
-        characterRepository.save(character);
-        return characterRepository.getOne(character.getId());
-    }
+  private Account saveNewAccount(String accountName) {
+    var account = Account.builder()
+      .found(new Date())
+      .seen(new Date())
+      .name(accountName)
+      .build();
 
-    private Account updateAccountSeen(Account account) {
-        account.setSeen(new Date());
-        return accountRepository.save(account);
-    }
+    return accountRepository.save(account);
+  }
 
-    private Character updateCharacterSeen(Character character) {
-        character.setSeen(new Date());
-        return characterRepository.save(character);
-    }
+  private Account updateAccountSeen(Account account) {
+    account.setSeen(new Date());
+    return accountRepository.save(account);
+  }
 
 }
