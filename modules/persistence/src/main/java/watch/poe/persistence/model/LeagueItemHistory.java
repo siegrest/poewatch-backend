@@ -10,11 +10,24 @@ import java.sql.Timestamp;
 @Setter
 @Entity
 @Table(
-        name = "league_items",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"fk_league", "fk_item_type"})},
-        indexes = {@Index(name = "idx_time", columnList = "time")}
+  name = "league_items",
+  uniqueConstraints = {
+    @UniqueConstraint(
+      columnNames = {
+        "fk_league",
+        "fk_item_type"
+      }
+    )
+  },
+  indexes = {
+    @Index(
+      name = "idx_time",
+      columnList = "time"
+    )
+  }
 )
 public class LeagueItemHistory {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,8 +37,8 @@ public class LeagueItemHistory {
     @JoinColumn(name = "fk_league", nullable = false)
     private League league;
     @ManyToOne(optional = false)
-    @JoinColumn(name = "fk_item_type", nullable = false)
-    private ItemType itemType;
+    @JoinColumn(name = "fk_item", nullable = false)
+    private Item item;
 
     @Column(name = "time", nullable = false)
     private Timestamp time;
@@ -49,4 +62,5 @@ public class LeagueItemHistory {
     private Integer current;
     @Column(name = "accepted", nullable = false)
     private Integer accepted;
+
 }
