@@ -11,17 +11,14 @@ import java.sql.Date;
 @Entity
 @Table(name = "league_item_entries")
 public class LeagueItemEntry {
+
   @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+  @Column(name = "id", length = 64)
+  private String id;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "fk_stash", nullable = false)
   private Stash stash;
-
-  @Column(name = "item_id", nullable = false, unique = true, length = 64)
-  private String itemId;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "fk_item", nullable = false)
@@ -37,13 +34,14 @@ public class LeagueItemEntry {
   @Column(name = "updates", nullable = false)
   private Integer updates;
 
-  @Column(name = "stack_size", nullable = false)
+  @Column(name = "stack_size", nullable = true)
   private Integer stackSize;
 
-  @Column(name = "price", nullable = false)
+  @Column(name = "price", nullable = true)
   private Double price;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "fk_price_item", nullable = false)
+  @JoinColumn(name = "fk_price_item", nullable = true)
   private Item priceItem;
+
 }

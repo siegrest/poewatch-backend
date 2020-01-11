@@ -13,13 +13,10 @@ import java.util.Set;
 @NoArgsConstructor
 @Table(name = "stashes")
 public class Stash {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
 
-    @Column(name = "stash_id", nullable = false, unique = true, length = 64)
-    private String stashId;
+    @Id
+    @Column(name = "id", length = 64)
+    private String id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_league", nullable = false)
@@ -29,6 +26,10 @@ public class Stash {
     @JoinColumn(name = "fk_account", nullable = false)
     private Account account;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "stash", fetch = FetchType.LAZY)
     private Set<LeagueItemEntry> items;
+
+    @Column(name = "updates", nullable = false)
+    private Integer updates;
+
 }
