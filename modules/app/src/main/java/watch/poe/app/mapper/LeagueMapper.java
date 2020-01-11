@@ -1,6 +1,6 @@
 package watch.poe.app.mapper;
 
-import watch.poe.app.dto.LeagueDto;
+import watch.poe.app.dto.league.LeagueDto;
 import watch.poe.app.utility.DateUtility;
 import watch.poe.persistence.model.League;
 

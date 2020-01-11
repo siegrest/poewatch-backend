@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import watch.poe.app.dto.RiverDto;
-import watch.poe.app.dto.RiverItemDto;
-import watch.poe.app.dto.RiverStashDto;
+import watch.poe.app.dto.river.ItemDto;
+import watch.poe.app.dto.river.RiverDto;
+import watch.poe.app.dto.river.StashDto;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.service.ItemParseService;
 import watch.poe.app.service.NoteParseService;
@@ -53,7 +53,7 @@ public class StashParserService {
 
     private void processRiver(RiverDto riverDto) {
 
-        for (RiverStashDto riverStashDto : riverDto.getStashes()) {
+        for (StashDto riverStashDto : riverDto.getStashes()) {
             statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, riverStashDto.getItems().size());
 
             if (!leagueRepositoryService.isValidLeague(riverStashDto.getLeague())) {
@@ -81,10 +81,10 @@ public class StashParserService {
         }
     }
 
-    private boolean processStashes(RiverStashDto riverStashDto) {
+    private boolean processStashes(StashDto riverStashDto) {
         var hasValidItems = false;
 
-        for (RiverItemDto itemDto : riverStashDto.getItems()) {
+        for (ItemDto itemDto : riverStashDto.getItems()) {
             var price = noteParseService.parsePrice(riverStashDto.getStashName(), itemDto.getNote());
             if (!acceptMissingPrice && price == null) {
                 continue;

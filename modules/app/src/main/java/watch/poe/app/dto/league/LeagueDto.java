@@ -1,4 +1,4 @@
-package watch.poe.app.dto;
+package watch.poe.app.dto.league;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -15,16 +15,16 @@ public class LeagueDto {
     private String url;
     private boolean event, delveEvent, timedEvent, scoreEvent;
     private String startAt, endAt;
-    private List<LeagueRuleDto> rules;
+    private List<RuleDto> rules;
 
     // todo: move to utility package
     public boolean isHardcore() {
-        return rules != null && rules.stream().anyMatch(LeagueRuleDto::isHardcore);
+        return rules != null && rules.stream().anyMatch(RuleDto::isHardcore);
     }
 
     // todo: move to utility package
     public boolean isSolo() {
-        return rules != null && rules.stream().anyMatch(LeagueRuleDto::isSolo);
+        return rules != null && rules.stream().anyMatch(RuleDto::isSolo);
     }
 
     // todo: move to utility package

@@ -3,9 +3,9 @@ package watch.poe.app.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import watch.poe.app.dto.RiverItemDto;
-import watch.poe.app.dto.RiverItemPropertyDto;
-import watch.poe.app.dto.RiverItemSocketDto;
+import watch.poe.app.dto.river.ItemDto;
+import watch.poe.app.dto.river.PropertyDto;
+import watch.poe.app.dto.river.SocketDto;
 import watch.poe.app.exception.ItemDiscardException;
 import watch.poe.app.utility.ItemUtility;
 
@@ -16,16 +16,9 @@ public class ItemParseService {
     @Autowired
     private CategorizationService categorizationService;
 
-    public boolean parse(RiverItemDto itemDto) {
-        var category = categorizationService.determineCategory(itemDto);
-        var group = categorizationService.determineGroup(itemDto, category);
-
-        return category != null && group != null;
-    }
-
-    public static Integer extractMapTier(RiverItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractMapTier(ItemDto itemDto) throws ItemDiscardException {
         if (itemDto.getProperties() != null) {
-            for (RiverItemPropertyDto prop : itemDto.getProperties()) {
+            for (PropertyDto prop : itemDto.getProperties()) {
                 if (!"Map Tier".equals(prop.getName()) || prop.getValues().isEmpty()) {
                     continue;
                 } else if (prop.getValues().get(0).isEmpty()) {
@@ -39,7 +32,7 @@ public class ItemParseService {
         throw new ItemDiscardException("No map tier found");
     }
 
-    public static String replaceMapSuperiorPrefix(RiverItemDto itemDto) {
+    public static String replaceMapSuperiorPrefix(ItemDto itemDto) {
         // todo: is it name or typeline
         var name = itemDto.getName();
         if (itemDto.getName().startsWith("Superior ") || itemDto.getTypeLine().startsWith("Superior ")) {
@@ -48,7 +41,7 @@ public class ItemParseService {
         return name != null && name.startsWith("Superior ") ? name.replace("Superior ", "") : name;
     }
 
-    public static Integer extractMapSeries(RiverItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractMapSeries(ItemDto itemDto) throws ItemDiscardException {
         /* Currently the series are as such:
          http://web.poecdn.com/image/Art/2DItems/Maps/Map45.png?scale=1&w=1&h=1
          http://web.poecdn.com/image/Art/2DItems/Maps/act4maps/Map76.png?scale=1&w=1&h=1
@@ -90,7 +83,7 @@ public class ItemParseService {
         }
     }
 
-    public static Integer extractLinks(RiverItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractLinks(ItemDto itemDto) throws ItemDiscardException {
         if (itemDto.getSockets() == null) {
             log.error("Couldn't find item sockets for: {}", itemDto);
             throw new ItemDiscardException("No sockets found");
@@ -98,7 +91,7 @@ public class ItemParseService {
 
         // Group links together
         Integer[] linkArray = new Integer[]{0, 0, 0, 0, 0, 0};
-        for (RiverItemSocketDto socket : itemDto.getSockets()) {
+        for (SocketDto socket : itemDto.getSockets()) {
             linkArray[socket.getGroup()]++;
         }
 
@@ -113,7 +106,7 @@ public class ItemParseService {
         return largestLink > 4 ? largestLink : null;
     }
 
-    public static Integer extractStackSize(RiverItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractStackSize(ItemDto itemDto) throws ItemDiscardException {
         if (itemDto.getStackSize() == null || itemDto.getProperties() == null) {
             return null;
         }
@@ -154,6 +147,13 @@ public class ItemParseService {
         } catch (NumberFormatException ex) {
             throw new ItemDiscardException("Couldn't parse stack size");
         }
+    }
+
+    public boolean parse(ItemDto itemDto) {
+        var category = categorizationService.determineCategory(itemDto);
+        var group = categorizationService.determineGroup(itemDto, category);
+
+        return category != null && group != null;
     }
 
 }

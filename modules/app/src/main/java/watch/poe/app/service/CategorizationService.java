@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryEnum;
 import watch.poe.app.domain.GroupEnum;
-import watch.poe.app.dto.RiverItemDto;
+import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.service.resource.GroupMappingService;
 import watch.poe.app.utility.ItemUtility;
 
@@ -16,7 +16,7 @@ public class CategorizationService {
     @Autowired
     private GroupMappingService groupMappingService;
 
-    public CategoryEnum determineCategory(RiverItemDto itemDto) {
+    public CategoryEnum determineCategory(ItemDto itemDto) {
         if (itemDto == null) {
             return null;
         }
@@ -70,7 +70,7 @@ public class CategorizationService {
         return null;
     }
 
-    public GroupEnum determineGroup(RiverItemDto itemDto, CategoryEnum category) {
+    public GroupEnum determineGroup(ItemDto itemDto, CategoryEnum category) {
         if (itemDto == null || category == null) {
             return null;
         }

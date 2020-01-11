@@ -1,11 +1,11 @@
-package watch.poe.app.dto;
+package watch.poe.app.dto.league;
 
 import lombok.Getter;
 import lombok.ToString;
 
 @Getter
 @ToString
-public class LeagueRuleDto {
+public class RuleDto {
     private String id;
     private String name;
     private String description;

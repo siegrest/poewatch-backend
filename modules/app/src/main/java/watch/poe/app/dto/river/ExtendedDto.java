@@ -1,4 +1,4 @@
-package watch.poe.app.dto;
+package watch.poe.app.dto.river;
 
 import lombok.Getter;
 import lombok.ToString;
@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @ToString
-public class RiverItemExtendedDto {
+public class ExtendedDto {
     private String category;
     private List<String> subcategories;
 }

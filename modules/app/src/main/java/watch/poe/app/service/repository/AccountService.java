@@ -3,7 +3,7 @@ package watch.poe.app.service.repository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import watch.poe.app.dto.RiverStashDto;
+import watch.poe.app.dto.river.StashDto;
 import watch.poe.persistence.model.Account;
 import watch.poe.persistence.model.Character;
 import watch.poe.persistence.repository.AccountRepository;
@@ -20,7 +20,7 @@ public class AccountService {
     @Autowired
     private CharacterRepository characterRepository;
 
-    public Account save(RiverStashDto riverStashDto) {
+    public Account save(StashDto riverStashDto) {
         var characterName = riverStashDto.getLastCharacterName();
         var accountName = riverStashDto.getAccountName();
 

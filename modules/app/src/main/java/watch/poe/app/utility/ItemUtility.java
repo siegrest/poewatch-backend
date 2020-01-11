@@ -1,22 +1,22 @@
 package watch.poe.app.utility;
 
-import watch.poe.app.dto.RiverItemDto;
+import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.InvalidIconException;
 
 public final class ItemUtility {
 
-    public static boolean hasInfluence(RiverItemDto itemDto) {
+    public static boolean hasInfluence(ItemDto itemDto) {
         var influences = itemDto.getInfluences();
         return influences != null
-                && (influences.getShaper() != null && influences.getShaper()
-                || influences.getElder() != null && influences.getElder()
-                || influences.getCrusader() != null && influences.getCrusader()
-                || influences.getRedeemer() != null && influences.getRedeemer()
-                || influences.getHunter() != null && influences.getHunter()
-                || influences.getWarlord() != null && influences.getWarlord());
+          && (influences.getShaper() != null && influences.getShaper()
+          || influences.getElder() != null && influences.getElder()
+          || influences.getCrusader() != null && influences.getCrusader()
+          || influences.getRedeemer() != null && influences.getRedeemer()
+          || influences.getHunter() != null && influences.getHunter()
+          || influences.getWarlord() != null && influences.getWarlord());
     }
 
-    public static boolean isCraftable(RiverItemDto itemDto) {
+    public static boolean isCraftable(ItemDto itemDto) {
         var frameType = itemDto.getFrameType();
         var corrupted = itemDto.getIsCorrupted() != null && itemDto.getIsCorrupted();
 
@@ -81,12 +81,12 @@ public final class ItemUtility {
      *
      * @return Extracted category
      */
-    public static String findIconCategory(RiverItemDto itemDto) {
+    public static String findIconCategory(ItemDto itemDto) {
         var splitItemType = itemDto.getIcon().split("/");
         return splitItemType[splitItemType.length - 2].toLowerCase();
     }
 
-    public static String getFirstApiGroup(RiverItemDto itemDto) {
+    public static String getFirstApiGroup(ItemDto itemDto) {
         var subCategories = itemDto.getExtended().getSubcategories();
 
         if (subCategories != null && !subCategories.isEmpty()) {

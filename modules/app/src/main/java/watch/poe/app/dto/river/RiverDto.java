@@ -1,4 +1,4 @@
-package watch.poe.app.dto;
+package watch.poe.app.dto.river;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
@@ -9,5 +9,5 @@ import java.util.List;
 public class RiverDto {
     @SerializedName("next_change_id")
     private String nextChangeId;
-    private List<RiverStashDto> stashes;
+    private List<StashDto> stashes;
 }

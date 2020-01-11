@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import watch.poe.app.dto.LeagueDto;
+import watch.poe.app.dto.league.LeagueDto;
 import watch.poe.app.mapper.LeagueMapper;
 import watch.poe.app.service.repository.LeagueRepositoryService;
 import watch.poe.app.utility.HttpUtility;

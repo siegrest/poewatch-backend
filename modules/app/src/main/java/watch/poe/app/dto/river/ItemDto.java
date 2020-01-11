@@ -1,4 +1,4 @@
-package watch.poe.app.dto;
+package watch.poe.app.dto.river;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @ToString
-public class RiverItemDto {
+public class ItemDto {
     @SerializedName("identified")
     private boolean isIdentified;
     private int itemLevel, frameType;
@@ -23,10 +23,10 @@ public class RiverItemDto {
     @SerializedName(value = "raceReward", alternate = {"seaRaceReward", "cisRaceReward", "thRaceReward", "RaceReward"})
     private Object raceReward;
 
-    private RiverItemInfluencesDto influences;
-    private RiverItemExtendedDto extended;
-    private List<RiverItemPropertyDto> properties;
-    private List<RiverItemSocketDto> sockets;
+    private InfluencesDto influences;
+    private ExtendedDto extended;
+    private List<PropertyDto> properties;
+    private List<SocketDto> sockets;
     private List<String> explicitMods;
     private List<String> enchantMods;
 }
