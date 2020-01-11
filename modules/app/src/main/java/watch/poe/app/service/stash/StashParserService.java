@@ -10,9 +10,9 @@ import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.service.ItemParseService;
+import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
 import watch.poe.app.service.repository.AccountService;
-import watch.poe.app.service.repository.LeagueRepositoryService;
 import watch.poe.app.service.repository.StashRepositoryService;
 import watch.poe.app.service.statistics.StatType;
 import watch.poe.app.service.statistics.StatisticsService;
@@ -26,7 +26,7 @@ public class StashParserService {
     @Autowired
     private StatisticsService statisticsService;
     @Autowired
-    private LeagueRepositoryService leagueRepositoryService;
+    private LeagueService leagueService;
     @Autowired
     private StashRepositoryService stashRepositoryService;
     @Autowired
@@ -45,8 +45,9 @@ public class StashParserService {
         var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
         statisticsService.clkTimer(StatType.TIME_REPLY_DESERIALIZE);
 
-        statisticsService.startTimer(StatType.TIME_REPLY_PARSE);
         log.info("got {} stashes", riverDto.getStashes().size());
+
+        statisticsService.startTimer(StatType.TIME_REPLY_PARSE);
         processRiver(riverDto);
         statisticsService.clkTimer(StatType.TIME_REPLY_PARSE);
     }
@@ -56,7 +57,8 @@ public class StashParserService {
         for (StashDto riverStashDto : riverDto.getStashes()) {
             statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, riverStashDto.getItems().size());
 
-            if (!leagueRepositoryService.isValidLeague(riverStashDto.getLeague())) {
+            var league = leagueService.getByName(riverStashDto.getLeague());
+            if (league.isEmpty()) {
                 continue;
             }
 
