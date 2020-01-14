@@ -199,8 +199,16 @@ public final class ItemMapper {
     item.setStackSize(stackSize);
   }
 
-  public void parseVariant(Wrapper wrapper) throws ItemDiscardException {
+  public void parseVariant(Wrapper wrapper) {
+    var item = wrapper.getItem();
+    var itemDto = wrapper.getItemDto();
 
+    var variant = itemVariantService.getVariation(itemDto);
+    if (variant.isEmpty()) {
+      return;
+    }
+
+    item.setVariation(variant.get().getVariation());
   }
 
 }

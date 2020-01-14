@@ -22,7 +22,7 @@ import java.util.Date;
         "stack_size",
         "item_level",
         "links",
-        "fk_variation",
+        "variation",
         "map_tier",
         "map_series",
         "influence_shaper",
@@ -55,9 +55,8 @@ public class Item {
   @Temporal(TemporalType.TIMESTAMP)
   private Date found;
 
-  @ManyToOne
-  @JoinColumn(name = "fk_variation")
-  private ItemVariation variation;
+  @Column(name = "variation", length = 32)
+  private String variation;
 
   @Column(name = "icon", nullable = false)
   private String icon;
