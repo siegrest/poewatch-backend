@@ -1,7 +1,5 @@
-package watch.poe.app.mapper;
+package watch.poe.app.service.item;
 
-import lombok.Builder;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,7 @@ import java.util.Set;
 
 @Component
 @Slf4j
-public final class ItemMapper {
+public final class ItemParser {
 
   @Autowired
   private CategorizationService categorizationService;
@@ -35,9 +33,7 @@ public final class ItemMapper {
   public Item itemDtoToItem(ItemDto itemDto) throws ItemDiscardException {
     var categoryDto = categorizationService.determineCategoryDto(itemDto);
     var groupDto = categorizationService.determineGroupDto(itemDto, categoryDto);
-
     var base = parseBase(itemDto, categoryDto, groupDto);
-
     var wrapper = Wrapper.builder()
       .categoryDto(categoryDto)
       .groupDto(groupDto)
@@ -65,7 +61,11 @@ public final class ItemMapper {
       wrapper.getItem().setLinks(links);
     }
 
-    parseVariant(wrapper);
+    if (itemVariantService.hasVariation(wrapper.getItemDto())) {
+      parseVariant(wrapper);
+    }
+
+    return wrapper.getItem();
   }
 
   public ItemBase parseBase(ItemDto itemDto, CategoryDto categoryDto, GroupDto groupDto) {
@@ -211,14 +211,4 @@ public final class ItemMapper {
     item.setVariation(variant.get().getVariation());
   }
 
-}
-
-@Getter
-@Builder
-class Wrapper {
-  private ItemBase base;
-  private Item item;
-  private ItemDto itemDto;
-  private CategoryDto categoryDto;
-  private GroupDto groupDto;
 }

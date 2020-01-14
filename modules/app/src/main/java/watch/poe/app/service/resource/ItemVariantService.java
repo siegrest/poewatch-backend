@@ -72,4 +72,11 @@ public class ItemVariantService {
     return Optional.empty();
   }
 
+  public boolean hasVariation(ItemDto itemDto) {
+    return variations.stream()
+      .filter(v -> v.getName().equals(itemDto.getName()))
+      .findFirst()
+      .isEmpty();
+  }
+
 }
