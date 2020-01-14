@@ -1,10 +1,14 @@
 package watch.poe.app.exception;
 
 public class ItemDiscardException extends Exception {
-    public ItemDiscardException(String message) {
-        super(message);
-    }
+  public ItemDiscardException(Exception ex) {
+    super(ex);
+  }
 
-    public ItemDiscardException() {
-    }
+  public ItemDiscardException(String message) {
+    super(message);
+  }
+
+  public ItemDiscardException() {
+  }
 }

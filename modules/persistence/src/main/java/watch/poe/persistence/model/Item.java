@@ -3,11 +3,13 @@ package watch.poe.persistence.model;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Getter
+@Setter
 @Entity
 @Builder
 @NoArgsConstructor
@@ -17,7 +19,6 @@ import java.util.Date;
     @UniqueConstraint(
       columnNames = {
         "item_base",
-        "item_extended",
         "stack_size",
         "item_level",
         "links",
@@ -54,16 +55,9 @@ public class Item {
   @Temporal(TemporalType.TIMESTAMP)
   private Date found;
 
-  @ManyToOne(optional = false, fetch = FetchType.EAGER)
-  @JoinColumn(name = "fk_item_base", nullable = false)
-  private ItemBase itemBase;
-
   @ManyToOne
   @JoinColumn(name = "fk_variation")
   private ItemVariation variation;
-
-  @Column(name = "frame_type", nullable = false)
-  private Integer frameType;
 
   @Column(name = "icon", nullable = false)
   private String icon;

@@ -1,10 +1,12 @@
 package watch.poe.app.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.GroupDto;
+import watch.poe.app.domain.Rarity;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.service.resource.GroupMappingService;
 import watch.poe.app.utility.ItemUtility;
@@ -24,12 +26,12 @@ public class CategorizationService {
   @Autowired
   private CategoryRepository categoryRepository;
 
-  public Category determineCategory(ItemDto itemDto) {
+  public Category parseCategory(ItemDto itemDto) {
     var categoryEnum = determineCategoryDto(itemDto);
     return categoryDtoToCategory(categoryEnum);
   }
 
-  public Group determineGroup(ItemDto itemDto) {
+  public Group parseGroup(ItemDto itemDto) {
     var categoryEnum = determineCategoryDto(itemDto);
     var groupEnum = determineGroupDto(itemDto, categoryEnum);
     return groupDtoToGroup(groupEnum);
@@ -56,7 +58,7 @@ public class CategorizationService {
       return CategoryDto.base;
     }
 
-    if (itemDto.getFrameType() == 8) {
+    if (itemDto.getFrameType() == Rarity.Prophecy) {
       return CategoryDto.prophecy;
     }
 
@@ -174,7 +176,7 @@ public class CategorizationService {
         break;
       case map:
 
-        if (itemDto.getFrameType() == 3 || itemDto.getFrameType() == 9) {
+        if (itemDto.getFrameType() == Rarity.Unique || itemDto.getFrameType() == Rarity.Relic) {
           return GroupDto.unique;
         } else if ("breach".equals(iconCategory)) {
           return GroupDto.fragment;
@@ -208,8 +210,13 @@ public class CategorizationService {
   public Group groupDtoToGroup(GroupDto groupDto) {
     var group = groupRepository.getByName(groupDto.name());
     if (group.isEmpty()) {
-      // todo: add to db if missing
-      throw new RuntimeException("Missing group in database for: " + groupDto.name());
+      var newGroup = Group.builder()
+        .name(groupDto.name())
+        .display(StringUtils.capitalize(groupDto.name()))
+        .build();
+      log.info("Adding group to database: {}", newGroup);
+      return groupRepository.save(newGroup);
+//      throw new RuntimeException("Missing group in database for: " + groupDto.name());
     }
 
     return group.get();
@@ -218,11 +225,24 @@ public class CategorizationService {
   public Category categoryDtoToCategory(CategoryDto categoryDto) {
     var category = categoryRepository.getByName(categoryDto.name());
     if (category.isEmpty()) {
-      // todo: add to db if missing
-      throw new RuntimeException("Missing category in database for: " + categoryDto.name());
+      var newCategory = Category.builder()
+        .name(categoryDto.name())
+        .display(StringUtils.capitalize(categoryDto.name()))
+        .build();
+      log.info("Adding category to database: {}", newCategory);
+      return categoryRepository.save(newCategory);
+//      throw new RuntimeException("Missing category in database for: " + categoryDto.name());
     }
 
     return category.get();
+  }
+
+  public CategoryDto categoryToCategoryDto(Category category) {
+    return CategoryDto.valueOf(category.getName());
+  }
+
+  public GroupDto groupToGroupDto(Group group) {
+    return GroupDto.valueOf(group.getName());
   }
 
 }

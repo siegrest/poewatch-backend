@@ -1,5 +1,8 @@
 package watch.poe.app.utility;
 
+import watch.poe.app.domain.CategoryDto;
+import watch.poe.app.domain.GroupDto;
+import watch.poe.app.domain.Rarity;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.PropertyDto;
 import watch.poe.app.dto.river.SocketDto;
@@ -22,8 +25,30 @@ public final class ItemUtility {
     public static boolean isCraftable(ItemDto itemDto) {
         var frameType = itemDto.getFrameType();
         var corrupted = itemDto.getIsCorrupted() != null && itemDto.getIsCorrupted();
+        return !corrupted && (frameType == Rarity.Normal || frameType == Rarity.Magic || frameType == Rarity.Rare);
+    }
 
-        return !corrupted && (frameType == 0 || frameType == 1 || frameType == 2);
+    public static boolean isSpecialSupportGem(ItemDto itemDto) {
+        return itemDto.getTypeLine().equals("Empower Support")
+          || itemDto.getTypeLine().equals("Enlighten Support")
+          || itemDto.getTypeLine().equals("Enhance Support");
+    }
+
+    public static boolean isStackable(ItemDto itemDto) {
+        return itemDto.getStackSize() != null && itemDto.getProperties() != null;
+    }
+
+    public static boolean isLinkable(ItemDto itemDto, CategoryDto categoryDto, GroupDto groupDto) {
+        return (CategoryDto.weapon == categoryDto
+          || CategoryDto.armour == categoryDto)
+          && (GroupDto.chest == groupDto
+          || GroupDto.staff == groupDto
+          || GroupDto.twosword == groupDto
+          || GroupDto.twomace == groupDto
+          || GroupDto.twoaxe == groupDto
+          || GroupDto.bow == groupDto
+          || GroupDto.warstaff == groupDto)
+          && itemDto.getSockets() != null;
     }
 
     /**
@@ -34,7 +59,7 @@ public final class ItemUtility {
      */
     public static String formatIcon(String icon) throws InvalidIconException {
         if (icon == null) {
-            return null;
+            throw new InvalidIconException("Icon was null");
         }
 
         var splitURL = icon.split("\\?", 2);
@@ -61,7 +86,7 @@ public final class ItemUtility {
                         paramBuilder.append(splitParam[1]);
                         break;
                     default:
-                        var msg = String.format("Unknown item icon query parameter %s in %s", splitParam[0], icon);
+                        var msg = String.format("Unknown item icon parameter %s in %s", splitParam[0], icon);
                         throw new InvalidIconException(msg);
                 }
             }
@@ -183,7 +208,7 @@ public final class ItemUtility {
         return largestLink > 4 ? largestLink : null;
     }
 
-    public static Integer extractStackSize(ItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractMaxStackSize(ItemDto itemDto) throws ItemDiscardException {
         if (itemDto.getStackSize() == null || itemDto.getProperties() == null) {
             return null;
         }
@@ -224,6 +249,28 @@ public final class ItemUtility {
         } catch (NumberFormatException ex) {
             throw new ItemDiscardException("Couldn't parse stack size");
         }
+    }
+
+    public static int extractGemLevel(ItemDto itemDto) throws ItemDiscardException {
+        for (var prop : itemDto.getProperties()) {
+            if ("Level".equals(prop.getName())) {
+                return Integer.parseInt(prop.getValues().get(0).get(0).split(" ")[0]);
+            }
+        }
+
+        throw new ItemDiscardException("Could not find gem level");
+    }
+
+    public static int extractGemQuality(ItemDto itemDto) throws ItemDiscardException {
+        for (var prop : itemDto.getProperties()) {
+            if ("Quality".equals(prop.getName())) {
+                return Integer.parseInt(prop.getValues().get(0).get(0)
+                  .replace("+", "")
+                  .replace("%", ""));
+            }
+        }
+
+        throw new ItemDiscardException("Could not find gem quality");
     }
 
 }

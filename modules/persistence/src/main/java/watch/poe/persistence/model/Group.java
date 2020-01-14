@@ -1,13 +1,15 @@
 package watch.poe.persistence.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
 @Entity
+@Builder
+@ToString
+@NoArgsConstructor
 @Table(name = "groups")
 public class Group {
     @Id
