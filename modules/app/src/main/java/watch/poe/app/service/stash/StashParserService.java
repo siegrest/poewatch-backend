@@ -8,15 +8,17 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
+import watch.poe.app.exception.ItemDiscardException;
 import watch.poe.app.service.GsonService;
-import watch.poe.app.service.ItemParseService;
 import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
+import watch.poe.app.service.item.ItemParserService;
 import watch.poe.app.service.repository.AccountService;
 import watch.poe.app.service.repository.CharacterService;
 import watch.poe.app.service.repository.StashRepositoryService;
 import watch.poe.app.service.statistics.StatType;
 import watch.poe.app.service.statistics.StatisticsService;
+import watch.poe.persistence.model.Item;
 
 @Slf4j
 @Service
@@ -37,7 +39,7 @@ public class StashParserService {
   @Autowired
   private NoteParseService noteParseService;
   @Autowired
-  private ItemParseService itemParseService;
+  private ItemParserService itemParserService;
 
   @Value("${item.accept.missing.price}")
   private boolean acceptMissingPrice;
@@ -80,7 +82,16 @@ public class StashParserService {
           continue;
         }
 
-        var item = itemParseService.parse(itemDto);
+        Item item;
+        try {
+          // todo: don't use exceptions to control the flow of the application
+          item = itemParserService.parse(itemDto);
+        } catch (ItemDiscardException ex) {
+          log.info("Discarding item {}", itemDto);
+          continue;
+        }
+
+        log.info("Accepted item {}", item);
 
 //            if (item.isDiscard()) {
 //                continue;

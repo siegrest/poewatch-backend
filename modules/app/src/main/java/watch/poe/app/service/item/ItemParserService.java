@@ -21,7 +21,7 @@ import java.util.Set;
 
 @Component
 @Slf4j
-public final class ItemParser {
+public final class ItemParserService {
 
   @Autowired
   private CategorizationService categorizationService;
@@ -30,7 +30,7 @@ public final class ItemParser {
   @Autowired
   private ItemVariantService itemVariantService;
 
-  public Item itemDtoToItem(ItemDto itemDto) throws ItemDiscardException {
+  public Item parse(ItemDto itemDto) throws ItemDiscardException {
     var categoryDto = categorizationService.determineCategoryDto(itemDto);
     var groupDto = categorizationService.determineGroupDto(itemDto, categoryDto);
     var base = parseBase(itemDto, categoryDto, groupDto);
