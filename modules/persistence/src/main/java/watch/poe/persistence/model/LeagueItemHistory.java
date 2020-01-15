@@ -10,12 +10,12 @@ import java.sql.Timestamp;
 @Setter
 @Entity
 @Table(
-  name = "league_items",
+  name = "league_item_history",
   uniqueConstraints = {
     @UniqueConstraint(
       columnNames = {
         "fk_league",
-        "fk_item_type"
+        "fk_item"
       }
     )
   },

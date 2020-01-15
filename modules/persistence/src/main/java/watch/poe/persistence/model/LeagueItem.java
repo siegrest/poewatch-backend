@@ -15,7 +15,7 @@ import java.util.Date;
     @UniqueConstraint(
       columnNames = {
         "fk_league",
-        "fk_item_type"
+        "fk_item"
       }
     )
   }
