@@ -1,6 +1,7 @@
 package watch.poe.app.service.repository;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,10 @@ public class CharacterService {
 
   @Transactional
   public Character save(Account account, String characterName) {
+    if (characterName == null || StringUtils.isBlank(characterName)) {
+      return null;
+    }
+
     var character = characterRepository.findByName(characterName);
     if (character == null) {
       character = saveNewCharacter(account, characterName);

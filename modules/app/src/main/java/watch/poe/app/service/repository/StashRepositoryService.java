@@ -39,6 +39,7 @@ public class StashRepositoryService {
       .league(league)
       .updates(0)
       .found(new Date())
+      .seen(new Date())
       .id(id)
       .build();
 

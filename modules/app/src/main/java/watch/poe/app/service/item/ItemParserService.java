@@ -10,6 +10,7 @@ import watch.poe.app.domain.Rarity;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.InvalidIconException;
 import watch.poe.app.exception.ItemDiscardException;
+import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.CategorizationService;
 import watch.poe.app.service.repository.ItemBaseRepoService;
 import watch.poe.app.service.resource.ItemVariantService;
@@ -30,7 +31,7 @@ public final class ItemParserService {
   @Autowired
   private ItemVariantService itemVariantService;
 
-  public Item parse(ItemDto itemDto) throws ItemDiscardException {
+  public Item parse(ItemDto itemDto) throws ItemDiscardException, ItemParseException {
     var categoryDto = categorizationService.determineCategoryDto(itemDto);
     var groupDto = categorizationService.determineGroupDto(itemDto, categoryDto);
     var base = parseBase(itemDto, categoryDto, groupDto);
@@ -68,9 +69,13 @@ public final class ItemParserService {
     return wrapper.getItem();
   }
 
-  public ItemBase parseBase(ItemDto itemDto, CategoryDto categoryDto, GroupDto groupDto) {
+  public ItemBase parseBase(ItemDto itemDto, CategoryDto categoryDto, GroupDto groupDto) throws ItemParseException {
     var category = categorizationService.categoryDtoToCategory(categoryDto);
     var group = categorizationService.groupDtoToGroup(groupDto);
+
+    if (itemDto.getFrameType() == null) {
+      throw new ItemParseException("Null frame type");
+    }
 
     var builder = ItemBase.builder()
       .category(category)

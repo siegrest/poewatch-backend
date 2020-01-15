@@ -19,12 +19,12 @@ public class Stash {
     @Column(name = "id", length = 64)
     private String id;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_league", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_league")
     private League league;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_account", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_account")
     private Account account;
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "stash", fetch = FetchType.LAZY)

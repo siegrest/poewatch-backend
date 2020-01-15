@@ -9,6 +9,7 @@ import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
 import watch.poe.app.exception.ItemDiscardException;
+import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
@@ -64,6 +65,7 @@ public class StashParserService {
 
       var league = leagueService.getByName(stashDto.getLeague());
       if (league.isEmpty()) {
+        log.info("invalid league {}", stashDto.getLeague());
         statisticsService.addValue(StatType.COUNT_ITEMS_DISCARDED_INVALID_LEAGUE, stashDto.getItems().size());
         continue;
       }
@@ -73,10 +75,16 @@ public class StashParserService {
       var stash = stashRepositoryService.save(league.get(), account, stashDto);
 
       if (character == null || account == null || stash == null) {
+        log.info("skipping {} {} {}", character, account, stash);
         continue;
       }
 
       for (ItemDto itemDto : stashDto.getItems()) {
+        if (itemDto == null) {
+          log.info("Null item");
+          continue;
+        }
+
         var price = noteParseService.parsePrice(stashDto.getStashName(), itemDto.getNote());
         if (price == null && !acceptMissingPrice) {
           continue;
@@ -87,7 +95,10 @@ public class StashParserService {
           // todo: don't use exceptions to control the flow of the application
           item = itemParserService.parse(itemDto);
         } catch (ItemDiscardException ex) {
-          log.info("Discarding item {}", itemDto);
+          log.info("Discard error {} for {}", ex.getMessage(), itemDto);
+          continue;
+        } catch (ItemParseException ex) {
+          log.info("Parse error {} for {}", ex.getMessage(), itemDto);
           continue;
         }
 
