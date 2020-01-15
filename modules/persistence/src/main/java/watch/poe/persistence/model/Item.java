@@ -1,9 +1,6 @@
 package watch.poe.persistence.model;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,6 +10,7 @@ import java.util.Date;
 @Entity
 @Builder
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(
   name = "items",
   uniqueConstraints = {

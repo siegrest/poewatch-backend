@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Builder
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "groups")
 public class Group {
     @Id
