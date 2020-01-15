@@ -85,6 +85,8 @@ public final class ItemUtility {
                         paramBuilder.append("=");
                         paramBuilder.append(splitParam[1]);
                         break;
+                    case "v":
+                        break;
                     default:
                         var msg = String.format("Unknown item icon parameter %s in %s", splitParam[0], icon);
                         throw new InvalidIconException(msg);

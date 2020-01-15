@@ -183,8 +183,7 @@ public class CategorizationService {
         } else if ("scarabs".equals(iconCategory)) {
           return GroupDto.scarab;
         } else if (itemDto.getProperties() == null) {
-          // todo: remove log and add comment which edge case this handles
-          log.info("[A0] Found item: {}", itemDto);
+          // mortal fragments
           return GroupDto.fragment;
         } else if ("watchstones".equals(itemDto.getExtended().getCategory())) {
           return GroupDto.watchstone;

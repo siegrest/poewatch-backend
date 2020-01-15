@@ -65,7 +65,6 @@ public class StashParserService {
 
       var league = leagueService.getByName(stashDto.getLeague());
       if (league.isEmpty()) {
-        log.info("invalid league {}", stashDto.getLeague());
         statisticsService.addValue(StatType.COUNT_ITEMS_DISCARDED_INVALID_LEAGUE, stashDto.getItems().size());
         continue;
       }
@@ -75,7 +74,6 @@ public class StashParserService {
       var stash = stashRepositoryService.save(league.get(), account, stashDto);
 
       if (character == null || account == null || stash == null) {
-        log.info("skipping {} {} {}", character, account, stash);
         continue;
       }
 
@@ -95,14 +93,14 @@ public class StashParserService {
           // todo: don't use exceptions to control the flow of the application
           item = itemParserService.parse(itemDto);
         } catch (ItemDiscardException ex) {
-          log.info("Discard error {} for {}", ex.getMessage(), itemDto);
+//          log.info("Discard error {} for {}", ex.getMessage(), itemDto);
           continue;
         } catch (ItemParseException ex) {
           log.info("Parse error {} for {}", ex.getMessage(), itemDto);
           continue;
         }
 
-        log.info("Accepted item {}", item);
+//        log.info("Accepted item {}", item);
 
 //            if (item.isDiscard()) {
 //                continue;
