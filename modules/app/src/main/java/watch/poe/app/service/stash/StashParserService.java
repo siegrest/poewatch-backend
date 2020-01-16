@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
-import watch.poe.app.exception.ItemDiscardException;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.service.LeagueService;
@@ -92,9 +91,6 @@ public class StashParserService {
         try {
           // todo: don't use exceptions to control the flow of the application
           item = itemParserService.parse(itemDto);
-        } catch (ItemDiscardException ex) {
-//          log.info("Discard error {} for {}", ex.getMessage(), itemDto);
-          continue;
         } catch (ItemParseException ex) {
           log.info("Parse error {} for {}", ex.getMessage(), itemDto);
           continue;

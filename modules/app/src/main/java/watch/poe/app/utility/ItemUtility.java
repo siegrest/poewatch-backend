@@ -7,7 +7,7 @@ import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.PropertyDto;
 import watch.poe.app.dto.river.SocketDto;
 import watch.poe.app.exception.InvalidIconException;
-import watch.poe.app.exception.ItemDiscardException;
+import watch.poe.app.service.item.Wrapper;
 
 public final class ItemUtility {
 
@@ -126,7 +126,8 @@ public final class ItemUtility {
         return null;
     }
 
-    public static Integer extractMapTier(ItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractMapTier(Wrapper wrapper) {
+        var itemDto = wrapper.getItemDto();
         if (itemDto.getProperties() != null) {
             for (PropertyDto prop : itemDto.getProperties()) {
                 if (!"Map Tier".equals(prop.getName()) || prop.getValues().isEmpty()) {
@@ -139,7 +140,8 @@ public final class ItemUtility {
             }
         }
 
-        throw new ItemDiscardException("No map tier found");
+        wrapper.discard("No map tier found");
+        return null;
     }
 
     public static String replaceMapSuperiorPrefix(ItemDto itemDto) {
@@ -148,7 +150,9 @@ public final class ItemUtility {
           : itemDto.getName();
     }
 
-    public static Integer extractMapSeries(ItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractMapSeries(Wrapper wrapper) {
+        var itemDto = wrapper.getItemDto();
+
         /* Currently the series are as such:
          http://web.poecdn.com/image/Art/2DItems/Maps/Map45.png?scale=1&w=1&h=1
          http://web.poecdn.com/image/Art/2DItems/Maps/act4maps/Map76.png?scale=1&w=1&h=1
@@ -172,7 +176,8 @@ public final class ItemUtility {
                 }
             }
         } catch (Exception ex) {
-            throw new ItemDiscardException("Failed to extract map series");
+            wrapper.discard("Failed to extract map series");
+            return null;
         }
 
         if (iconCategory.equalsIgnoreCase("Maps")) {
@@ -184,13 +189,17 @@ public final class ItemUtility {
         } else if (iconCategory.equalsIgnoreCase("New") && seriesNumber > 0) {
             return seriesNumber + 2;
         } else {
-            throw new ItemDiscardException("No map series found");
+            wrapper.discard("No map series found");
+            return null;
         }
     }
 
-    public static Integer extractLinks(ItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractLinks(Wrapper wrapper) {
+        var itemDto = wrapper.getItemDto();
+
         if (itemDto.getSockets() == null) {
-            throw new ItemDiscardException("No sockets found");
+            wrapper.discard("No sockets found");
+            return null;
         }
 
         // Group links together
@@ -210,7 +219,9 @@ public final class ItemUtility {
         return largestLink > 4 ? largestLink : null;
     }
 
-    public static Integer extractMaxStackSize(ItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractMaxStackSize(Wrapper wrapper) {
+        var itemDto = wrapper.getItemDto();
+
         if (itemDto.getStackSize() == null || itemDto.getProperties() == null) {
             return null;
         }
@@ -235,7 +246,8 @@ public final class ItemUtility {
 
         var property = oProperty.get();
         if (property.getValues().isEmpty() || property.getValues().get(0).isEmpty()) {
-            throw new ItemDiscardException("Couldn't locate stack size");
+            wrapper.discard("Couldn't locate stack size");
+            return null;
         }
 
         var stackSizeString = property.getValues().get(0).get(0);
@@ -243,27 +255,34 @@ public final class ItemUtility {
 
         // Must contain the slash eg "42/1000"
         if (index < 0) {
-            throw new ItemDiscardException("Couldn't locate stack size slash");
+            wrapper.discard("Couldn't locate stack size slash");
+            return null;
         }
 
         try {
             return Integer.parseInt(stackSizeString.substring(index + 1));
         } catch (NumberFormatException ex) {
-            throw new ItemDiscardException("Couldn't parse stack size");
+            wrapper.discard("Couldn't parse stack size");
+            return null;
         }
     }
 
-    public static int extractGemLevel(ItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractGemLevel(Wrapper wrapper) {
+        var itemDto = wrapper.getItemDto();
+
         for (var prop : itemDto.getProperties()) {
             if ("Level".equals(prop.getName())) {
                 return Integer.parseInt(prop.getValues().get(0).get(0).split(" ")[0]);
             }
         }
 
-        throw new ItemDiscardException("Could not find gem level");
+        wrapper.discard("Could not find gem level");
+        return null;
     }
 
-    public static int extractGemQuality(ItemDto itemDto) throws ItemDiscardException {
+    public static Integer extractGemQuality(Wrapper wrapper) {
+        var itemDto = wrapper.getItemDto();
+
         for (var prop : itemDto.getProperties()) {
             if ("Quality".equals(prop.getName())) {
                 return Integer.parseInt(prop.getValues().get(0).get(0)
@@ -272,7 +291,8 @@ public final class ItemUtility {
             }
         }
 
-        throw new ItemDiscardException("Could not find gem quality");
+        wrapper.discard("Could not find gem quality");
+        return null;
     }
 
 }
