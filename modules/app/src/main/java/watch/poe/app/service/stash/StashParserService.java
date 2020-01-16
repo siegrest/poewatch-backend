@@ -92,7 +92,7 @@ public class StashParserService {
           // todo: don't use exceptions to control the flow of the application
           item = itemParserService.parse(itemDto);
         } catch (ItemParseException ex) {
-          log.info("Parse error {} for {}", ex.getMessage(), itemDto);
+          log.info("Parse error \"{}\" for {}", ex.getMessage(), itemDto);
           continue;
         }
 
