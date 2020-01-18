@@ -1,6 +1,7 @@
 package watch.poe.app.utility;
 
 import watch.poe.app.domain.CategoryDto;
+import watch.poe.app.domain.DiscardBasis;
 import watch.poe.app.domain.GroupDto;
 import watch.poe.app.domain.Rarity;
 import watch.poe.app.dto.river.ItemDto;
@@ -159,7 +160,7 @@ public final class ItemUtility {
       }
     }
 
-    wrapper.discard("No map tier found");
+    wrapper.discard(DiscardBasis.MAP_TIER_MISSING);
     return null;
   }
 
@@ -195,7 +196,7 @@ public final class ItemUtility {
         }
       }
     } catch (Exception ex) {
-      wrapper.discard("Failed to extract map series");
+      wrapper.discard(DiscardBasis.PARSE_MAP_SERIES_FAILED);
       return null;
     }
 
@@ -208,7 +209,7 @@ public final class ItemUtility {
     } else if (iconCategory.equalsIgnoreCase("New") && seriesNumber > 0) {
       return seriesNumber + 2;
     } else {
-      wrapper.discard("No map series found");
+      wrapper.discard(DiscardBasis.INVALID_MAP_SERIES);
       return null;
     }
   }
@@ -217,7 +218,7 @@ public final class ItemUtility {
     var itemDto = wrapper.getItemDto();
 
     if (itemDto.getSockets() == null) {
-      wrapper.discard("No sockets found");
+      wrapper.discard(DiscardBasis.NO_SOCKETS);
       return null;
     }
 
@@ -265,7 +266,7 @@ public final class ItemUtility {
 
     var property = oProperty.get();
     if (property.getValues().isEmpty() || property.getValues().get(0).isEmpty()) {
-      wrapper.discard("Couldn't locate stack size");
+      wrapper.discard(DiscardBasis.STACK_SIZE_MISSING);
       return null;
     }
 
@@ -274,14 +275,14 @@ public final class ItemUtility {
 
     // Must contain the slash eg "42/1000"
     if (index < 0) {
-      wrapper.discard("Couldn't locate stack size slash");
+      wrapper.discard(DiscardBasis.STACK_SIZE_SLASH_MISSING);
       return null;
     }
 
     try {
       return Integer.parseInt(stackSizeString.substring(index + 1));
     } catch (NumberFormatException ex) {
-      wrapper.discard("Couldn't parse stack size");
+      wrapper.discard(DiscardBasis.PARSE_STACK_SIZE);
       return null;
     }
   }
@@ -295,7 +296,7 @@ public final class ItemUtility {
       }
     }
 
-    wrapper.discard("Could not find gem level");
+    wrapper.discard(DiscardBasis.GEM_LEVEL_MISSING);
     return null;
   }
 
@@ -310,7 +311,7 @@ public final class ItemUtility {
       }
     }
 
-    wrapper.discard("Could not find gem quality");
+    wrapper.discard(DiscardBasis.GEM_QUALITY_MISSING);
     return null;
   }
 

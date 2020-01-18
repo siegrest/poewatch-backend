@@ -94,6 +94,7 @@ public class LeagueQueryService {
     private void setFlags(List<League> repoLeagues, List<League> queryLeagues) {
         Predicate<String> filterPredicate = league -> repoLeagues.stream().noneMatch(rl -> rl.getName().equals(league));
 
+        // todo: fix first leagues set active=false
         repoLeagues.forEach(rLeague -> {
             var matchingLeague = queryLeagues.stream().filter(qLeague -> filterPredicate.test(qLeague.getName())).findFirst();
             if (matchingLeague.isPresent()) {
