@@ -13,12 +13,15 @@ import watch.poe.app.service.GsonService;
 import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
 import watch.poe.app.service.item.ItemParserService;
+import watch.poe.app.service.item.Wrapper;
 import watch.poe.app.service.repository.AccountService;
 import watch.poe.app.service.repository.CharacterService;
 import watch.poe.app.service.repository.StashRepositoryService;
 import watch.poe.app.service.statistics.StatType;
 import watch.poe.app.service.statistics.StatisticsService;
 import watch.poe.persistence.model.Item;
+
+import java.util.ArrayList;
 
 @Slf4j
 @Service
@@ -87,12 +90,21 @@ public class StashParserService {
           continue;
         }
 
-        Item item;
+        var wrapper = Wrapper.builder()
+          .itemDto(itemDto)
+          .discardReasons(new ArrayList<>())
+          .item(Item.builder().build())
+          .build();
+
         try {
-          // todo: don't use exceptions to control the flow of the application
-          item = itemParserService.parse(itemDto);
+          itemParserService.parse(wrapper);
         } catch (ItemParseException ex) {
-          log.info("Parse error \"{}\" for {}", ex.getMessage(), itemDto);
+          log.info("Parse error \"{}\" for {}", ex.getMessage(), wrapper);
+          continue;
+        }
+
+        if (wrapper.isDiscard()) {
+          log.info("Discarding due to {}", wrapper.getDiscardReasons());
           continue;
         }
 

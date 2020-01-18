@@ -7,15 +7,12 @@ import org.springframework.stereotype.Component;
 import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.GroupDto;
 import watch.poe.app.domain.Rarity;
-import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.CategorizationService;
 import watch.poe.app.service.resource.ItemVariantService;
 import watch.poe.app.utility.ItemUtility;
-import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.ItemBase;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 @Component
@@ -27,18 +24,17 @@ public final class ItemParserService {
   @Autowired
   private ItemVariantService itemVariantService;
 
-  public Item parse(ItemDto itemDto) throws ItemParseException {
+  public void parse(Wrapper wrapper) throws ItemParseException {
+    var itemDto = wrapper.getItemDto();
+
     var categoryDto = categorizationService.determineCategoryDto(itemDto);
+    wrapper.setCategoryDto(categoryDto);
+
     var groupDto = categorizationService.determineGroupDto(itemDto, categoryDto);
-    var base = parseBase(itemDto, categoryDto, groupDto);
-    var wrapper = Wrapper.builder()
-      .categoryDto(categoryDto)
-      .groupDto(groupDto)
-      .itemDto(itemDto)
-      .item(Item.builder().build())
-      .discardReasons(new ArrayList<>())
-      .base(base)
-      .build();
+    wrapper.setGroupDto(groupDto);
+
+    var base = parseBase(wrapper);
+    wrapper.setBase(base);
 
     parseIcon(wrapper);
 
@@ -54,7 +50,7 @@ public final class ItemParserService {
       parseStackSize(wrapper);
     }
 
-    if (ItemUtility.isLinkable(itemDto, categoryDto, groupDto)) {
+    if (ItemUtility.isLinkable(wrapper)) {
       var links = ItemUtility.extractLinks(wrapper);
       wrapper.getItem().setLinks(links);
     }
@@ -62,16 +58,18 @@ public final class ItemParserService {
     if (itemVariantService.hasVariation(wrapper.getItemDto())) {
       parseVariant(wrapper);
     }
-
-    return wrapper.isDiscard() ? null : wrapper.getItem();
   }
 
-  public ItemBase parseBase(ItemDto itemDto, CategoryDto categoryDto, GroupDto groupDto) throws ItemParseException {
+  public ItemBase parseBase(Wrapper wrapper) throws ItemParseException {
+    var categoryDto = wrapper.getCategoryDto();
+    var groupDto = wrapper.getGroupDto();
+    var itemDto = wrapper.getItemDto();
+
     var category = categorizationService.categoryDtoToCategory(categoryDto);
     var group = categorizationService.groupDtoToGroup(groupDto);
 
     if (itemDto.getFrameType() == null) {
-      throw new ItemParseException("Null frame type");
+      throw new ItemParseException("Invalid frame type");
     }
 
     var builder = ItemBase.builder()

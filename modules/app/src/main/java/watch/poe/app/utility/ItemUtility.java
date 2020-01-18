@@ -38,7 +38,10 @@ public final class ItemUtility {
         return itemDto.getStackSize() != null && itemDto.getProperties() != null;
     }
 
-    public static boolean isLinkable(ItemDto itemDto, CategoryDto categoryDto, GroupDto groupDto) {
+    public static boolean isLinkable(Wrapper wrapper) {
+        var categoryDto = wrapper.getCategoryDto();
+        var groupDto = wrapper.getGroupDto();
+        var itemDto = wrapper.getItemDto();
         return (CategoryDto.weapon == categoryDto
           || CategoryDto.armour == categoryDto)
           && (GroupDto.chest == groupDto
