@@ -18,6 +18,8 @@ import java.util.Set;
     @UniqueConstraint(
       columnNames = {
         "name",
+        "fk_category",
+        "fk_group",
         "base_type",
         "frame_type"
       }
