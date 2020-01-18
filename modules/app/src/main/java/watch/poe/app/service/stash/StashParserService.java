@@ -111,7 +111,7 @@ public class StashParserService {
           continue;
         }
 
-        itemIndexerService.save(wrapper);
+        var item = itemIndexerService.index(wrapper);
 
 //        log.info("Accepted item {}", item);
 

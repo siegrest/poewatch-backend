@@ -1,46 +1,44 @@
 package watch.poe.app.service.item;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.GroupDto;
 import watch.poe.app.domain.Rarity;
 import watch.poe.app.exception.ItemParseException;
-import watch.poe.app.service.CategorizationService;
+import watch.poe.app.service.resource.GroupMappingService;
 import watch.poe.app.service.resource.ItemVariantService;
 import watch.poe.app.utility.ItemUtility;
+import watch.poe.persistence.model.Category;
+import watch.poe.persistence.model.Group;
+import watch.poe.persistence.model.ItemBase;
+
+import java.util.Set;
 
 @Service
 @Slf4j
 public final class ItemParserService {
 
   @Autowired
-  private CategorizationService categorizationService;
-  @Autowired
   private ItemVariantService itemVariantService;
   @Autowired
-  private ItemBaseService itemBaseService;
+  private GroupMappingService groupMappingService;
 
   public void parse(Wrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
 
-    var categoryDto = categorizationService.determineCategoryDto(itemDto);
-    wrapper.setCategoryDto(categoryDto);
-
-    var groupDto = categorizationService.determineGroupDto(itemDto, categoryDto);
-    wrapper.setGroupDto(groupDto);
-
-    var base = itemBaseService.getOrSave(wrapper);
-    wrapper.setBase(base);
-
+    parseCategoryDto(wrapper);
+    parseGroup(wrapper);
+    parseItemBase(wrapper);
     parseIcon(wrapper);
 
-    if (categoryDto == CategoryDto.map && (groupDto == GroupDto.map || groupDto == GroupDto.unique)) {
+    if (wrapper.getCategoryDto() == CategoryDto.map && (wrapper.getGroupDto() == GroupDto.map || wrapper.getGroupDto() == GroupDto.unique)) {
       parseMap(wrapper);
     }
 
-    if (categoryDto == CategoryDto.gem) {
+    if (wrapper.getCategoryDto() == CategoryDto.gem) {
       parseGem(wrapper);
     }
 
@@ -57,7 +55,7 @@ public final class ItemParserService {
       parseVariant(wrapper);
     }
 
-    if (ItemUtility.isComplex(itemDto, categoryDto)) {
+    if (ItemUtility.isComplex(itemDto, wrapper.getCategoryDto())) {
       parseComplex(wrapper);
     }
   }
@@ -188,6 +186,271 @@ public final class ItemParserService {
       wrapper.discard("Cannot parse magic items");
       return;
     }
+  }
+
+  public void parseCategoryDto(Wrapper wrapper) throws ItemParseException {
+    var itemDto = wrapper.getItemDto();
+    if (itemDto == null) {
+      throw new ItemParseException("Missing item");
+    }
+
+    var apiCategory = itemDto.getExtended().getCategory();
+    if (apiCategory == null) {
+      throw new ItemParseException("Missing category");
+    }
+
+    if (itemDto.getEnchantMods() != null) {
+      wrapper.setCategoryDto(CategoryDto.enchantment);
+      return;
+    }
+
+    // todo: abyssal jewels and belts and flasks are not included
+    // todo: maps are included?
+    if (ItemUtility.isCraftable(itemDto) && ItemUtility.hasInfluence(itemDto)) {
+      wrapper.setCategoryDto(CategoryDto.base);
+      return;
+    }
+
+    if (itemDto.getFrameType() == Rarity.Prophecy) {
+      wrapper.setCategoryDto(CategoryDto.prophecy);
+      return;
+    }
+
+    switch (apiCategory) {
+      case "currency":
+        wrapper.setCategoryDto(CategoryDto.currency);
+        return;
+      case "gems":
+        wrapper.setCategoryDto(CategoryDto.gem);
+        return;
+      case "maps":
+      case "watchstones":
+        wrapper.setCategoryDto(CategoryDto.map);
+        return;
+      case "cards":
+        wrapper.setCategoryDto(CategoryDto.card);
+        return;
+      case "flasks":
+        wrapper.setCategoryDto(CategoryDto.flask);
+        return;
+      case "jewels":
+        wrapper.setCategoryDto(CategoryDto.jewel);
+        return;
+      case "monsters":
+        wrapper.setCategoryDto(CategoryDto.beast);
+        return;
+      case "armour":
+        wrapper.setCategoryDto(CategoryDto.armour);
+        return;
+      case "accessories":
+        wrapper.setCategoryDto(CategoryDto.accessory);
+        return;
+      case "weapons":
+        wrapper.setCategoryDto(CategoryDto.weapon);
+        return;
+    }
+
+    // todo: leaguestones have [apiCategory="leaguestones"]
+    throw new ItemParseException("Could not determine category");
+  }
+
+  public void parseGroup(Wrapper wrapper) throws ItemParseException {
+    var itemDto = wrapper.getItemDto();
+    var categoryDto = wrapper.getCategoryDto();
+
+    if (itemDto == null) {
+      throw new ItemParseException("Missing item");
+    } else if (categoryDto == null) {
+      throw new ItemParseException("Missing category");
+    }
+
+    var apiGroup = ItemUtility.getFirstApiGroup(itemDto);
+    var iconCategory = ItemUtility.findIconCategory(itemDto);
+    var acceptedGroups = groupMappingService.getGroups(categoryDto);
+
+    switch (categoryDto) {
+      case card:
+        wrapper.setGroupDto(GroupDto.card);
+        return;
+      case flask:
+        wrapper.setGroupDto(GroupDto.flask);
+        return;
+      case jewel:
+        wrapper.setGroupDto(GroupDto.jewel);
+        return;
+      case prophecy:
+        wrapper.setGroupDto(GroupDto.prophecy);
+        return;
+      case accessory:
+      case weapon:
+      case armour:
+      case enchantment:
+      case base:
+
+        for (var group : acceptedGroups) {
+          if (group.equals(apiGroup)) {
+            wrapper.setGroupDto(GroupDto.valueOf(apiGroup));
+            return;
+          }
+        }
+
+        break;
+      case currency:
+
+        switch (iconCategory) {
+          case "currency":
+          case "divination": // stacked deck
+            wrapper.setGroupDto(GroupDto.currency);
+            return;
+          case "essence":
+            wrapper.setGroupDto(GroupDto.essence);
+            return;
+          case "breach":
+            wrapper.setGroupDto(GroupDto.splinter);
+            return;
+          case "oils":
+            wrapper.setGroupDto(GroupDto.oil);
+            return;
+          case "catalysts":
+            wrapper.setGroupDto(GroupDto.catalyst);
+            return;
+          case "influence exalts":
+            wrapper.setGroupDto(GroupDto.influence);
+            return;
+        }
+
+        if (apiGroup != null) {
+          switch (apiGroup) {
+            case "piece":
+              wrapper.setGroupDto(GroupDto.piece);
+              return;
+            case "resonator":
+              wrapper.setGroupDto(GroupDto.resonator);
+              return;
+            case "fossil":
+              wrapper.setGroupDto(GroupDto.fossil);
+              return;
+            case "incubator":
+              wrapper.setGroupDto(GroupDto.incubator);
+              return;
+          }
+        }
+
+        if (itemDto.getTypeLine() != null && itemDto.getTypeLine().startsWith("Vial of ")) {
+          wrapper.setGroupDto(GroupDto.vial);
+          return;
+        }
+
+        if (itemDto.getTypeLine() != null && itemDto.getTypeLine().startsWith("Timeless")
+          && itemDto.getTypeLine().endsWith("Splinter")) {
+          wrapper.setGroupDto(GroupDto.splinter);
+          return;
+        }
+
+        break;
+      case gem:
+
+        if ("vaalgems".equals(iconCategory)) {
+          wrapper.setGroupDto(GroupDto.vaal);
+          return;
+        } else if ("activegem".equals(apiGroup)) {
+          wrapper.setGroupDto(GroupDto.skill);
+          return;
+        } else if ("supportgem".equals(apiGroup)) {
+          wrapper.setGroupDto(GroupDto.support);
+          return;
+        }
+
+        break;
+      case map:
+
+        if (itemDto.getFrameType() == Rarity.Unique || itemDto.getFrameType() == Rarity.Relic) {
+          wrapper.setGroupDto(GroupDto.unique);
+          return;
+        } else if ("breach".equals(iconCategory)) {
+          wrapper.setGroupDto(GroupDto.fragment);
+          return;
+        } else if ("scarabs".equals(iconCategory)) {
+          wrapper.setGroupDto(GroupDto.scarab);
+          return;
+        } else if (itemDto.getProperties() == null) {
+          // mortal fragments
+          wrapper.setGroupDto(GroupDto.fragment);
+          return;
+        } else if ("watchstones".equals(itemDto.getExtended().getCategory())) {
+          wrapper.setGroupDto(GroupDto.watchstone);
+          return;
+        } else if (apiGroup == null) {
+          wrapper.setGroupDto(GroupDto.map);
+          return;
+        }
+
+        break;
+      case beast:
+
+        if ("sample".equals(apiGroup)) {
+          wrapper.setGroupDto(GroupDto.sample);
+          return;
+        } else { // todo: find bestiary beast api group
+          wrapper.setGroupDto(GroupDto.beast);
+          return;
+        }
+
+    }
+
+    throw new ItemParseException("Could not determine group");
+  }
+
+  public void parseItemBase(Wrapper wrapper) throws ItemParseException {
+    var categoryDto = wrapper.getCategoryDto();
+    var groupDto = wrapper.getGroupDto();
+    var itemDto = wrapper.getItemDto();
+
+    var category = Category.builder()
+      .name(categoryDto.name())
+      .display(StringUtils.capitalize(categoryDto.name()))
+      .build();
+    var group = Group.builder()
+      .name(groupDto.name())
+      .display(StringUtils.capitalize(groupDto.name()))
+      .build();
+
+    if (itemDto.getFrameType() == null) {
+      throw new ItemParseException("Invalid frame type");
+    }
+
+    var builder = ItemBase.builder()
+      .category(category)
+      .group(group)
+      .frameType(itemDto.getFrameType().ordinal())
+      .items(Set.of());
+
+    var name = itemDto.getName();
+    if (name != null) {
+      if (name.contains(">")) {
+        name = name.substring(name.lastIndexOf(">") + 1);
+      }
+
+      // "Superior Ashen Wood Map" -> "Ashen Wood Map"
+      if (name.startsWith("Superior ")) {
+        name = name.replace("Superior ", "");
+      }
+
+      if (itemDto.getFrameType() == Rarity.Rare || StringUtils.isBlank(itemDto.getName())) {
+        name = null;
+      }
+    }
+
+    var baseType = itemDto.getTypeLine();
+    if (baseType != null) {
+
+      if (baseType.startsWith("Synthesised ")) {
+        baseType = baseType.replace("Synthesised ", "");
+      }
+
+    }
+
+    wrapper.setBase(builder.name(name).baseType(baseType).build());
   }
 
 }
