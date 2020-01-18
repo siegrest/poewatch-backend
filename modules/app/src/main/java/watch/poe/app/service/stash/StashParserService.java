@@ -12,6 +12,7 @@ import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
+import watch.poe.app.service.item.ItemIndexerService;
 import watch.poe.app.service.item.ItemParserService;
 import watch.poe.app.service.item.Wrapper;
 import watch.poe.app.service.repository.AccountService;
@@ -43,6 +44,8 @@ public class StashParserService {
   private NoteParseService noteParseService;
   @Autowired
   private ItemParserService itemParserService;
+  @Autowired
+  private ItemIndexerService itemIndexerService;
 
   @Value("${item.accept.missing.price}")
   private boolean acceptMissingPrice;
@@ -99,14 +102,16 @@ public class StashParserService {
         try {
           itemParserService.parse(wrapper);
         } catch (ItemParseException ex) {
-          log.info("Parse error \"{}\" for {}", ex.getMessage(), wrapper);
+          log.info("Parse exception \"{}\" for {}", ex.getMessage(), wrapper);
           continue;
         }
 
         if (wrapper.isDiscard()) {
-          log.info("Discarding due to {}", wrapper.getDiscardReasons());
+//          log.info("Discarding due to {}", wrapper.getDiscardReasons());
           continue;
         }
+
+        itemIndexerService.save(wrapper);
 
 //        log.info("Accepted item {}", item);
 

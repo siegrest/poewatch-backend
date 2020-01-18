@@ -3,25 +3,25 @@ package watch.poe.app.service.item;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import watch.poe.app.domain.Rarity;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.CategorizationService;
-import watch.poe.app.service.repository.ItemBaseRepoService;
 import watch.poe.persistence.model.ItemBase;
+import watch.poe.persistence.repository.ItemBaseRepository;
 
 import java.util.Set;
 
-@Component
+@Service
 @Slf4j
-public final class ItemBaseParserService {
+public final class ItemBaseService {
 
   @Autowired
   private CategorizationService categorizationService;
   @Autowired
-  private ItemBaseRepoService itemBaseRepoService;
+  private ItemBaseRepository itemBaseRepository;
 
-  public ItemBase parse(Wrapper wrapper) throws ItemParseException {
+  public ItemBase getOrSave(Wrapper wrapper) throws ItemParseException {
     var categoryDto = wrapper.getCategoryDto();
     var groupDto = wrapper.getGroupDto();
     var itemDto = wrapper.getItemDto();
@@ -65,9 +65,20 @@ public final class ItemBaseParserService {
     }
 
     var itemBase = builder.name(name).baseType(baseType).build();
-    return itemBaseRepoService.getOrSave(itemBase);
+    return getOrSave(itemBase);
   }
 
+  private ItemBase getOrSave(ItemBase newItemBase) {
+    var itemBase = itemBaseRepository.findByCategoryAndGroupAndFrameTypeAndNameAndBaseType(newItemBase.getCategory(),
+      newItemBase.getGroup(), newItemBase.getFrameType(), newItemBase.getName(), newItemBase.getBaseType());
 
+    if (itemBase.isEmpty()) {
+      var tmpItemBase = itemBaseRepository.save(newItemBase);
+      log.debug("Saved new item base {}", tmpItemBase);
+      return tmpItemBase;
+    }
+
+    return itemBase.get();
+  }
 
 }

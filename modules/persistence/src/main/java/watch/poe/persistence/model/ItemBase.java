@@ -11,6 +11,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Table(
   name = "items_base",
   uniqueConstraints = {
@@ -30,7 +31,8 @@ public class ItemBase {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
-  @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "base", fetch = FetchType.LAZY)
+  @ToString.Exclude
+  @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "base", fetch = FetchType.EAGER)
   private Set<Item> items;
 
   @ManyToOne(optional = false)
@@ -41,7 +43,7 @@ public class ItemBase {
   @JoinColumn(name = "fk_group", nullable = false)
   private Group group;
 
-  @Column(name = "name", nullable = false, length = 128)
+  @Column(name = "name", length = 128)
   private String name;
 
   @Column(name = "base_type", length = 64)

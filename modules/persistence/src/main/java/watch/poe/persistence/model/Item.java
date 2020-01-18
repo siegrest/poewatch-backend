@@ -9,6 +9,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Builder
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(
@@ -45,6 +46,7 @@ public class Item {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
+  @ToString.Exclude
   @ManyToOne(optional = false)
   @JoinColumn(name = "item_base", nullable = false)
   private ItemBase base;

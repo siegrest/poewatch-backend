@@ -2,7 +2,7 @@ package watch.poe.app.service.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.GroupDto;
 import watch.poe.app.domain.Rarity;
@@ -11,7 +11,7 @@ import watch.poe.app.service.CategorizationService;
 import watch.poe.app.service.resource.ItemVariantService;
 import watch.poe.app.utility.ItemUtility;
 
-@Component
+@Service
 @Slf4j
 public final class ItemParserService {
 
@@ -20,7 +20,7 @@ public final class ItemParserService {
   @Autowired
   private ItemVariantService itemVariantService;
   @Autowired
-  private ItemBaseParserService itemBaseParserService;
+  private ItemBaseService itemBaseService;
 
   public void parse(Wrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
@@ -31,7 +31,7 @@ public final class ItemParserService {
     var groupDto = categorizationService.determineGroupDto(itemDto, categoryDto);
     wrapper.setGroupDto(groupDto);
 
-    var base = itemBaseParserService.parse(wrapper);
+    var base = itemBaseService.getOrSave(wrapper);
     wrapper.setBase(base);
 
     parseIcon(wrapper);
