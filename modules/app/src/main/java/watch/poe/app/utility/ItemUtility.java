@@ -8,6 +8,7 @@ import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.PropertyDto;
 import watch.poe.app.dto.river.SocketDto;
 import watch.poe.app.exception.InvalidIconException;
+import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.item.Wrapper;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.ItemBase;
@@ -146,7 +147,7 @@ public final class ItemUtility {
     return null;
   }
 
-  public static Integer extractMapTier(Wrapper wrapper) {
+  public static Integer extractMapTier(Wrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
     if (itemDto.getProperties() != null) {
       for (PropertyDto prop : itemDto.getProperties()) {
@@ -160,8 +161,7 @@ public final class ItemUtility {
       }
     }
 
-    wrapper.discard(DiscardBasis.MAP_TIER_MISSING);
-    return null;
+    throw new ItemParseException(DiscardBasis.MAP_TIER_MISSING);
   }
 
   public static String replaceMapSuperiorPrefix(ItemDto itemDto) {
@@ -170,7 +170,7 @@ public final class ItemUtility {
       : itemDto.getName();
   }
 
-  public static Integer extractMapSeries(Wrapper wrapper) {
+  public static Integer extractMapSeries(Wrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
 
         /* Currently the series are as such:
@@ -196,8 +196,7 @@ public final class ItemUtility {
         }
       }
     } catch (Exception ex) {
-      wrapper.discard(DiscardBasis.PARSE_MAP_SERIES_FAILED);
-      return null;
+      throw new ItemParseException(DiscardBasis.PARSE_MAP_SERIES_FAILED);
     }
 
     if (iconCategory.equalsIgnoreCase("Maps")) {
@@ -209,17 +208,15 @@ public final class ItemUtility {
     } else if (iconCategory.equalsIgnoreCase("New") && seriesNumber > 0) {
       return seriesNumber + 2;
     } else {
-      wrapper.discard(DiscardBasis.INVALID_MAP_SERIES);
-      return null;
+      throw new ItemParseException(DiscardBasis.INVALID_MAP_SERIES);
     }
   }
 
-  public static Integer extractLinks(Wrapper wrapper) {
+  public static Integer extractLinks(Wrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
 
     if (itemDto.getSockets() == null) {
-      wrapper.discard(DiscardBasis.NO_SOCKETS);
-      return null;
+      throw new ItemParseException(DiscardBasis.NO_SOCKETS);
     }
 
     // Group links together
@@ -239,9 +236,7 @@ public final class ItemUtility {
     return largestLink > 4 ? largestLink : null;
   }
 
-  public static Integer extractMaxStackSize(Wrapper wrapper) {
-    var itemDto = wrapper.getItemDto();
-
+  public static Integer extractMaxStackSize(ItemDto itemDto) throws ItemParseException {
     if (itemDto.getStackSize() == null || itemDto.getProperties() == null) {
       return null;
     }
@@ -261,13 +256,13 @@ public final class ItemUtility {
       .filter(i -> "Stack Size".equals(i.getName()))
       .findFirst();
     if (oProperty.isEmpty()) {
-      return null;
+      // todo: might be unintended
+      throw new ItemParseException(DiscardBasis.STACK_SIZE_MISSING);
     }
 
     var property = oProperty.get();
     if (property.getValues().isEmpty() || property.getValues().get(0).isEmpty()) {
-      wrapper.discard(DiscardBasis.STACK_SIZE_MISSING);
-      return null;
+      throw new ItemParseException(DiscardBasis.STACK_SIZE_MISSING);
     }
 
     var stackSizeString = property.getValues().get(0).get(0);
@@ -275,15 +270,13 @@ public final class ItemUtility {
 
     // Must contain the slash eg "42/1000"
     if (index < 0) {
-      wrapper.discard(DiscardBasis.STACK_SIZE_SLASH_MISSING);
-      return null;
+      throw new ItemParseException(DiscardBasis.STACK_SIZE_SLASH_MISSING);
     }
 
     try {
       return Integer.parseInt(stackSizeString.substring(index + 1));
     } catch (NumberFormatException ex) {
-      wrapper.discard(DiscardBasis.PARSE_STACK_SIZE);
-      return null;
+      throw new ItemParseException(DiscardBasis.PARSE_STACK_SIZE);
     }
   }
 

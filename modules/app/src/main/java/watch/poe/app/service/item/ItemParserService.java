@@ -67,7 +67,7 @@ public final class ItemParserService {
     wrapper.getItem().setIcon(newIcon);
   }
 
-  public void parseMap(Wrapper wrapper) {
+  public void parseMap(Wrapper wrapper) throws ItemParseException {
     var base = wrapper.getBase();
     var item = wrapper.getItem();
     var itemDto = wrapper.getItemDto();
@@ -163,9 +163,11 @@ public final class ItemParserService {
     item.setGemCorrupted(itemDto.getIsCorrupted());
   }
 
-  public void parseStackSize(Wrapper wrapper) {
+  public void parseStackSize(Wrapper wrapper) throws ItemParseException {
+    var itemDto = wrapper.getItemDto();
     var item = wrapper.getItem();
-    var stackSize = ItemUtility.extractMaxStackSize(wrapper);
+
+    var stackSize = ItemUtility.extractMaxStackSize(itemDto);
     item.setStackSize(stackSize);
   }
 
