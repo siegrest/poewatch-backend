@@ -26,6 +26,17 @@ public final class ItemUtility {
       || influences.getWarlord() != null && influences.getWarlord());
   }
 
+  public static boolean isComplex(ItemDto itemDto, CategoryDto categoryDto) {
+    var frameType = itemDto.getFrameType();
+    return (frameType == Rarity.Magic || frameType == Rarity.Rare)
+      && (categoryDto == CategoryDto.accessory
+      || categoryDto == CategoryDto.armour
+      || categoryDto == CategoryDto.jewel
+      || categoryDto == CategoryDto.map
+      || categoryDto == CategoryDto.flask
+      || categoryDto == CategoryDto.weapon);
+  }
+
   public static boolean isCraftable(ItemDto itemDto) {
     var frameType = itemDto.getFrameType();
     var corrupted = itemDto.getIsCorrupted() != null && itemDto.getIsCorrupted();

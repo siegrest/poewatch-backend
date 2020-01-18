@@ -42,7 +42,9 @@ public class StashWorkerService {
         log.info("Started worker with job {}", nextChangeId);
 
         var stashJsonString = downloadStashJson(nextChangeId);
-        stashParserService.process(stashJsonString);
+        if (stashJsonString != null) {
+            stashParserService.process(stashJsonString);
+        }
 
         return new AsyncResult<>("worker finished");
     }
