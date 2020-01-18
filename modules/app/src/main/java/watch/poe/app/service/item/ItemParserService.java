@@ -1,7 +1,6 @@
 package watch.poe.app.service.item;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import watch.poe.app.domain.CategoryDto;
@@ -11,9 +10,6 @@ import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.CategorizationService;
 import watch.poe.app.service.resource.ItemVariantService;
 import watch.poe.app.utility.ItemUtility;
-import watch.poe.persistence.model.ItemBase;
-
-import java.util.Set;
 
 @Component
 @Slf4j
@@ -23,6 +19,8 @@ public final class ItemParserService {
   private CategorizationService categorizationService;
   @Autowired
   private ItemVariantService itemVariantService;
+  @Autowired
+  private ItemBaseParserService itemBaseParserService;
 
   public void parse(Wrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
@@ -33,7 +31,7 @@ public final class ItemParserService {
     var groupDto = categorizationService.determineGroupDto(itemDto, categoryDto);
     wrapper.setGroupDto(groupDto);
 
-    var base = parseBase(wrapper);
+    var base = itemBaseParserService.parse(wrapper);
     wrapper.setBase(base);
 
     parseIcon(wrapper);
@@ -60,52 +58,6 @@ public final class ItemParserService {
     }
   }
 
-  public ItemBase parseBase(Wrapper wrapper) throws ItemParseException {
-    var categoryDto = wrapper.getCategoryDto();
-    var groupDto = wrapper.getGroupDto();
-    var itemDto = wrapper.getItemDto();
-
-    var category = categorizationService.categoryDtoToCategory(categoryDto);
-    var group = categorizationService.groupDtoToGroup(groupDto);
-
-    if (itemDto.getFrameType() == null) {
-      throw new ItemParseException("Invalid frame type");
-    }
-
-    var builder = ItemBase.builder()
-      .category(category)
-      .group(group)
-      .frameType(itemDto.getFrameType().ordinal())
-      .items(Set.of());
-
-    var name = itemDto.getName();
-    if (name != null) {
-      if (name.contains(">")) {
-        name = name.substring(name.lastIndexOf(">") + 1);
-      }
-
-      // "Superior Ashen Wood Map" -> "Ashen Wood Map"
-      if (name.startsWith("Superior ")) {
-        name = name.replace("Superior ", "");
-      }
-
-      if (itemDto.getFrameType() == Rarity.Rare || StringUtils.isBlank(itemDto.getName())) {
-        name = null;
-      }
-    }
-
-    var baseType = itemDto.getTypeLine();
-    if (baseType != null) {
-
-      if (baseType.startsWith("Synthesised ")) {
-        baseType = baseType.replace("Synthesised ", "");
-      }
-
-    }
-
-    return builder.name(name).baseType(baseType).build();
-  }
-
   public void parseIcon(Wrapper wrapper) throws ItemParseException {
     var icon = wrapper.getItemDto().getIcon();
     var newIcon = ItemUtility.formatIcon(icon);
@@ -118,18 +70,18 @@ public final class ItemParserService {
     var itemDto = wrapper.getItemDto();
 
     if (wrapper.getGroupDto() == GroupDto.unique && !itemDto.isIdentified()) {
-      log.debug("[A1] {}", itemDto);
+      log.info("[A1] {}", itemDto);
       wrapper.discard("Cannot parse unidentified unique map");
       return;
     }
     if (wrapper.getGroupDto() == GroupDto.map && itemDto.getFrameType() == Rarity.Magic) {
-      log.debug("[A2] {}", itemDto);
+      log.info("[A2] {}", itemDto);
       wrapper.discard("Cannot parse magic maps");
       return;
     }
     if (wrapper.getGroupDto() == GroupDto.map && itemDto.getFrameType() == Rarity.Rare) {
       // todo: actually we can
-      log.debug("[A3] {}", itemDto);
+      log.info("[A3] {}", itemDto);
       wrapper.discard("Cannot parse rare maps");
       return;
     }
