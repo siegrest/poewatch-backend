@@ -13,6 +13,6 @@ public interface ItemBaseRepository extends JpaRepository<ItemBase, Integer> {
 //  @Query("select ChangeId c set c.changeId = :changeId, c.time = current_timestamp where c.name = :name")
 //  Optional<ItemBase> find(@Param("name") String name, @Param("changeId") String changeId);
 
-  Optional<ItemBase> findByCategoryAndGroupAndNameAndBaseType(Category category, Group group, String name, String baseType);
+  Optional<ItemBase> findByCategoryAndGroupAndFrameTypeAndNameAndBaseType(Category category, Group group, Integer frameType, String name, String baseType);
 
 }

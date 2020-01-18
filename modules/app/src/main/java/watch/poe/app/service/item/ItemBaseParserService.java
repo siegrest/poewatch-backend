@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import watch.poe.app.domain.Rarity;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.CategorizationService;
+import watch.poe.app.service.repository.ItemBaseRepoService;
 import watch.poe.persistence.model.ItemBase;
 
 import java.util.Set;
@@ -17,6 +18,8 @@ public final class ItemBaseParserService {
 
   @Autowired
   private CategorizationService categorizationService;
+  @Autowired
+  private ItemBaseRepoService itemBaseRepoService;
 
   public ItemBase parse(Wrapper wrapper) throws ItemParseException {
     var categoryDto = wrapper.getCategoryDto();
@@ -61,7 +64,10 @@ public final class ItemBaseParserService {
 
     }
 
-    return builder.name(name).baseType(baseType).build();
+    var itemBase = builder.name(name).baseType(baseType).build();
+    return itemBaseRepoService.getOrSave(itemBase);
   }
+
+
 
 }
