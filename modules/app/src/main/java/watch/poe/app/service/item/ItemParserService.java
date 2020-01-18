@@ -107,10 +107,15 @@ public final class ItemParserService {
     var item = wrapper.getItem();
     var itemDto = wrapper.getItemDto();
 
-    var level = ItemUtility.extractGemLevel(wrapper);
-    var quality = ItemUtility.extractGemQuality(wrapper);
+    var level = ItemUtility.extractGemLevel(itemDto);
+    if (level == null) {
+      wrapper.discard(DiscardBasis.GEM_LEVEL_MISSING);
+      return;
+    }
 
-    if (wrapper.isDiscard()) {
+    var quality = ItemUtility.extractGemQuality(itemDto);
+    if (quality == null) {
+      wrapper.discard(DiscardBasis.GEM_QUALITY_MISSING);
       return;
     }
 
@@ -154,6 +159,7 @@ public final class ItemParserService {
 
     item.setGemLevel(level);
     item.setGemQuality(quality);
+    // todo: change to universal corrupted flag
     item.setGemCorrupted(itemDto.getIsCorrupted());
   }
 

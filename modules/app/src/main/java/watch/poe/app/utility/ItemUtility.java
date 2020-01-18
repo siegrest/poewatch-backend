@@ -287,22 +287,17 @@ public final class ItemUtility {
     }
   }
 
-  public static Integer extractGemLevel(Wrapper wrapper) {
-    var itemDto = wrapper.getItemDto();
-
+  public static Integer extractGemLevel(ItemDto itemDto) {
     for (var prop : itemDto.getProperties()) {
       if ("Level".equals(prop.getName())) {
         return Integer.parseInt(prop.getValues().get(0).get(0).split(" ")[0]);
       }
     }
 
-    wrapper.discard(DiscardBasis.GEM_LEVEL_MISSING);
     return null;
   }
 
-  public static Integer extractGemQuality(Wrapper wrapper) {
-    var itemDto = wrapper.getItemDto();
-
+  public static Integer extractGemQuality(ItemDto itemDto) {
     for (var prop : itemDto.getProperties()) {
       if ("Quality".equals(prop.getName())) {
         return Integer.parseInt(prop.getValues().get(0).get(0)
@@ -311,7 +306,6 @@ public final class ItemUtility {
       }
     }
 
-    wrapper.discard(DiscardBasis.GEM_QUALITY_MISSING);
     return null;
   }
 
