@@ -16,7 +16,7 @@ import java.util.Date;
 public class StatisticHistory {
 
     @Id
-    @Column(name = "type", length = 32, nullable = false)
+    @Column(name = "type", length = 64, nullable = false)
     private String type;
 
     @Id
