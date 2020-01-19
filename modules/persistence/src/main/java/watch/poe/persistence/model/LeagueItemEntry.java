@@ -1,7 +1,6 @@
 package watch.poe.persistence.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -9,6 +8,9 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "league_item_entries")
 public class LeagueItemEntry {
 
