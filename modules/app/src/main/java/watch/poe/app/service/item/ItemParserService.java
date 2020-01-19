@@ -26,7 +26,7 @@ public final class ItemParserService {
   @Autowired
   private CorruptedItemService corruptedItemService;
 
-  public Item parse(Wrapper wrapper) throws ItemParseException {
+  public Item parse(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
 
     parseCategoryDto(wrapper);
@@ -63,13 +63,13 @@ public final class ItemParserService {
     return wrapper.getItem();
   }
 
-  public void parseIcon(Wrapper wrapper) throws ItemParseException {
+  public void parseIcon(ItemWrapper wrapper) throws ItemParseException {
     var icon = wrapper.getItemDto().getIcon();
     var newIcon = ItemUtility.formatIcon(icon);
     wrapper.getItem().setIcon(newIcon);
   }
 
-  public void parseMap(Wrapper wrapper) throws ItemParseException {
+  public void parseMap(ItemWrapper wrapper) throws ItemParseException {
     var base = wrapper.getItem().getBase();
     var item = wrapper.getItem();
     var itemDto = wrapper.getItemDto();
@@ -105,7 +105,7 @@ public final class ItemParserService {
     }
   }
 
-  public void parseGem(Wrapper wrapper) {
+  public void parseGem(ItemWrapper wrapper) {
     var item = wrapper.getItem();
     var itemDto = wrapper.getItemDto();
 
@@ -163,7 +163,7 @@ public final class ItemParserService {
     item.setGemQuality(quality);
   }
 
-  public void parseStackSize(Wrapper wrapper) throws ItemParseException {
+  public void parseStackSize(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
     var item = wrapper.getItem();
 
@@ -171,7 +171,7 @@ public final class ItemParserService {
     item.setStackSize(stackSize);
   }
 
-  public void parseVariant(Wrapper wrapper) {
+  public void parseVariant(ItemWrapper wrapper) {
     var item = wrapper.getItem();
     var itemDto = wrapper.getItemDto();
 
@@ -183,7 +183,7 @@ public final class ItemParserService {
     item.setVariation(variant.get().getVariation());
   }
 
-  public void parseComplex(Wrapper wrapper) {
+  public void parseComplex(ItemWrapper wrapper) {
     var itemDto = wrapper.getItemDto();
 
     if (itemDto.getFrameType() == Rarity.Rare) {
@@ -197,7 +197,7 @@ public final class ItemParserService {
     }
   }
 
-  public void parseCorrupted(Wrapper wrapper) {
+  public void parseCorrupted(ItemWrapper wrapper) {
     var categoryDto = wrapper.getCategoryDto();
     var item = wrapper.getItem();
     var itemDto = wrapper.getItemDto();
@@ -216,7 +216,7 @@ public final class ItemParserService {
     }
   }
 
-  public void parseCategoryDto(Wrapper wrapper) throws ItemParseException {
+  public void parseCategoryDto(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
     if (itemDto == null) {
       throw new ItemParseException(ParseExceptionBasis.MISSING_ITEM);
@@ -282,7 +282,7 @@ public final class ItemParserService {
     throw new ItemParseException(ParseExceptionBasis.PARSE_CATEGORY);
   }
 
-  public void parseGroupDto(Wrapper wrapper) throws ItemParseException {
+  public void parseGroupDto(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
     var categoryDto = wrapper.getCategoryDto();
 
@@ -429,7 +429,7 @@ public final class ItemParserService {
     throw new ItemParseException(ParseExceptionBasis.PARSE_GROUP);
   }
 
-  public void parseItemBase(Wrapper wrapper) throws ItemParseException {
+  public void parseItemBase(ItemWrapper wrapper) throws ItemParseException {
     var categoryDto = wrapper.getCategoryDto();
     var groupDto = wrapper.getGroupDto();
     var itemDto = wrapper.getItemDto();

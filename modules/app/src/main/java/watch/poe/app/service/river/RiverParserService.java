@@ -14,7 +14,7 @@ import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
 import watch.poe.app.service.item.ItemIndexerService;
 import watch.poe.app.service.item.ItemParserService;
-import watch.poe.app.service.item.Wrapper;
+import watch.poe.app.service.item.ItemWrapper;
 import watch.poe.app.service.repository.AccountService;
 import watch.poe.app.service.repository.CharacterService;
 import watch.poe.app.service.repository.StashRepositoryService;
@@ -93,7 +93,7 @@ public class RiverParserService {
           continue;
         }
 
-        var wrapper = Wrapper.builder()
+        var wrapper = ItemWrapper.builder()
           .itemDto(itemDto)
           .discardReasons(new ArrayList<>())
           .item(Item.builder().build())

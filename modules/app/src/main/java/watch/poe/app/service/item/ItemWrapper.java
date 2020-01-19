@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @Builder
 @ToString
-public class Wrapper {
+public class ItemWrapper {
   private Item item;
   private ItemDto itemDto;
   private CategoryDto categoryDto;

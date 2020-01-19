@@ -9,7 +9,7 @@ import watch.poe.app.dto.river.PropertyDto;
 import watch.poe.app.dto.river.SocketDto;
 import watch.poe.app.exception.InvalidIconException;
 import watch.poe.app.exception.ItemParseException;
-import watch.poe.app.service.item.Wrapper;
+import watch.poe.app.service.item.ItemWrapper;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.ItemBase;
 
@@ -55,7 +55,7 @@ public final class ItemUtility {
     return itemDto.getStackSize() != null && itemDto.getProperties() != null;
   }
 
-  public static boolean isLinkable(Wrapper wrapper) {
+  public static boolean isLinkable(ItemWrapper wrapper) {
     var categoryDto = wrapper.getCategoryDto();
     var groupDto = wrapper.getGroupDto();
     var itemDto = wrapper.getItemDto();
@@ -71,7 +71,7 @@ public final class ItemUtility {
       && itemDto.getSockets() != null;
   }
 
-  public static boolean isUnique(Wrapper wrapper) {
+  public static boolean isUnique(ItemWrapper wrapper) {
     var frameType = wrapper.getItemDto().getFrameType();
     return frameType == Rarity.Unique || frameType == Rarity.Relic;
   }
@@ -152,7 +152,7 @@ public final class ItemUtility {
     return null;
   }
 
-  public static Integer extractMapTier(Wrapper wrapper) throws ItemParseException {
+  public static Integer extractMapTier(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
     if (itemDto.getProperties() != null) {
       for (PropertyDto prop : itemDto.getProperties()) {
@@ -175,7 +175,7 @@ public final class ItemUtility {
       : itemDto.getName();
   }
 
-  public static Integer extractMapSeries(Wrapper wrapper) throws ItemParseException {
+  public static Integer extractMapSeries(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
 
         /* Currently the series are as such:
@@ -217,7 +217,7 @@ public final class ItemUtility {
     }
   }
 
-  public static Integer extractLinks(Wrapper wrapper) throws ItemParseException {
+  public static Integer extractLinks(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
 
     if (itemDto.getSockets() == null) {
