@@ -12,9 +12,8 @@ import watch.poe.app.service.resource.ItemVariantService;
 import watch.poe.app.utility.ItemUtility;
 import watch.poe.persistence.model.Category;
 import watch.poe.persistence.model.Group;
+import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.ItemBase;
-
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -27,7 +26,7 @@ public final class ItemParserService {
   @Autowired
   private CorruptedItemService corruptedItemService;
 
-  public void parse(Wrapper wrapper) throws ItemParseException {
+  public Item parse(Wrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
 
     parseCategoryDto(wrapper);
@@ -60,6 +59,8 @@ public final class ItemParserService {
     if (ItemUtility.isComplex(itemDto, wrapper.getCategoryDto())) {
       parseComplex(wrapper);
     }
+
+    return wrapper.getItem();
   }
 
   public void parseIcon(Wrapper wrapper) throws ItemParseException {
@@ -69,7 +70,7 @@ public final class ItemParserService {
   }
 
   public void parseMap(Wrapper wrapper) throws ItemParseException {
-    var base = wrapper.getBase();
+    var base = wrapper.getItem().getBase();
     var item = wrapper.getItem();
     var itemDto = wrapper.getItemDto();
 
@@ -449,8 +450,7 @@ public final class ItemParserService {
     var builder = ItemBase.builder()
       .category(category)
       .group(group)
-      .frameType(itemDto.getFrameType().ordinal())
-      .items(Set.of());
+      .frameType(itemDto.getFrameType().ordinal());
 
     var name = itemDto.getName();
     if (name != null) {
@@ -477,7 +477,8 @@ public final class ItemParserService {
 
     }
 
-    wrapper.setBase(builder.name(name).baseType(baseType).build());
+    var itemBase = builder.name(name).baseType(baseType).build();
+    wrapper.getItem().setBase(itemBase);
   }
 
 }

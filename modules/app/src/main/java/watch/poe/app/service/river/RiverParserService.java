@@ -99,44 +99,19 @@ public class RiverParserService {
           .item(Item.builder().build())
           .build();
 
+        Item item;
         try {
-          itemParserService.parse(wrapper);
+          item = itemParserService.parse(wrapper);
         } catch (ItemParseException ex) {
           log.info("Parse exception \"{}\" for {}", ex.getMessage(), wrapper);
           continue;
         }
 
         if (wrapper.isDiscard()) {
-//          log.info("Discarding due to {}", wrapper.getDiscardReasons());
           continue;
         }
 
-        var item = itemIndexerService.index(wrapper);
-
-//        log.info("Accepted item {}", item);
-
-//            if (item.isDiscard()) {
-//                continue;
-//            }
-//
-//            // Get item's ID (if missing, index it)
-//            Integer id_d = ix.index(item, id_l);
-//            if (id_d == null) continue;
-//
-//            // Calculate crc of item's ID
-//            long itemCrc = Utility.calcCrc(apiItem.getId());
-//
-//            // Create DB entry object
-//            DbItemEntry entry = new DbItemEntry(id_l, id_d, stash_crc, itemCrc, item.getStackSize(), price, user);
-//
-//            // If item should be recorded but should not have a price
-//            if (item.isClearPrice() && cf.getBoolean("entry.removeEnchantedHelmetPrices")) {
-//                entry.price = null;
-//            }
-//
-//            // Set flag to indicate the stash contained at least 1 valid item
-//            hasValidItems = true;
-//            dbItems.add(entry);
+        item = itemIndexerService.index(item);
       }
     }
   }

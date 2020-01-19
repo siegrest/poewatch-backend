@@ -1,6 +1,7 @@
 package watch.poe.app.service.item;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.utility.ItemUtility;
@@ -30,55 +31,52 @@ public final class ItemIndexerService {
   @Autowired
   private CategoryRepository categoryRepository;
 
-  public Item index(Wrapper wrapper) {
-    var category = getOrSaveCategory(wrapper);
-    var group = getOrSaveGroup(wrapper);
+  public Item index(Item item) {
+    var base = item.getBase();
 
-    var base = wrapper.getBase();
+    var category = getOrSaveCategory(base.getCategory());
     base.setCategory(category);
+
+    var group = getOrSaveGroup(base.getGroup());
     base.setGroup(group);
 
-    var itemBase = getOrSaveBase(wrapper);
-    wrapper.setBase(itemBase);
+    var itemBase = getOrSaveBase(base);
+    item.setBase(itemBase);
+
     var items = itemBase.getItems();
 
     if (items.isEmpty()) {
-      var item = saveNewItem(wrapper);
+      item = saveNewItem(item);
       log.debug("Saved new item {}", item);
       return item;
     }
 
-    var oItem = findMatch(items, wrapper.getItem());
+    var oItem = findMatch(items, item);
     if (oItem.isPresent()) {
       return oItem.get();
     }
 
-    var item = saveNewItem(wrapper);
+    item = saveNewItem(item);
     log.debug("Saved new item {}", item);
     return item;
   }
 
-  public ItemBase getOrSaveBase(Wrapper wrapper) {
-    var newItemBase = wrapper.getBase();
+  public ItemBase getOrSaveBase(ItemBase base) {
+    var dbBase = itemBaseRepository.findByCategoryAndGroupAndFrameTypeAndNameAndBaseType(base.getCategory(),
+      base.getGroup(), base.getFrameType(), base.getName(), base.getBaseType());
 
-    var existingItemBase = itemBaseRepository.findByCategoryAndGroupAndFrameTypeAndNameAndBaseType(newItemBase.getCategory(),
-      newItemBase.getGroup(), newItemBase.getFrameType(), newItemBase.getName(), newItemBase.getBaseType());
-
-    if (existingItemBase.isEmpty()) {
-      newItemBase = itemBaseRepository.save(newItemBase);
-      log.debug("Saved new item base {}", newItemBase);
-      return newItemBase;
+    if (dbBase.isEmpty()) {
+      base.setItems(Set.of());
+      base = itemBaseRepository.save(base);
+      log.debug("Saved new item base {}", base);
+      return base;
     }
 
-    return existingItemBase.get();
+    return dbBase.get();
   }
 
-  public Item saveNewItem(Wrapper wrapper) {
-    var item = wrapper.getItem();
-
-    item.setBase(wrapper.getBase());
+  public Item saveNewItem(Item item) {
     item.setFound(new Date());
-
     return itemRepository.save(item);
   }
 
@@ -92,30 +90,30 @@ public final class ItemIndexerService {
       .findFirst();
   }
 
-  public Category getOrSaveCategory(Wrapper wrapper) {
-    var itemCategory = wrapper.getBase().getCategory();
-    var category = categoryRepository.getByName(itemCategory.getName());
+  public Category getOrSaveCategory(Category category) {
+    var dbCategory = categoryRepository.getByName(category.getName());
 
-    if (category.isEmpty()) {
-      itemCategory = categoryRepository.save(itemCategory);
-      log.info("Added category to database: {}", itemCategory);
-      return itemCategory;
+    if (dbCategory.isEmpty()) {
+      category.setDisplay(StringUtils.capitalize(category.getName()));
+      category = categoryRepository.save(category);
+      log.info("Added category to database: {}", category);
+      return category;
     }
 
-    return category.get();
+    return dbCategory.get();
   }
 
-  public Group getOrSaveGroup(Wrapper wrapper) {
-    var itemGroup = wrapper.getBase().getGroup();
-    var group = groupRepository.getByName(itemGroup.getName());
+  public Group getOrSaveGroup(Group group) {
+    var dbGroup = groupRepository.getByName(group.getName());
 
-    if (group.isEmpty()) {
-      itemGroup = groupRepository.save(itemGroup);
-      log.info("Added group to database: {}", itemGroup);
-      return itemGroup;
+    if (dbGroup.isEmpty()) {
+      group.setDisplay(StringUtils.capitalize(group.getName()));
+      group = groupRepository.save(group);
+      log.info("Added group to database: {}", group);
+      return group;
     }
 
-    return group.get();
+    return dbGroup.get();
   }
 
 }

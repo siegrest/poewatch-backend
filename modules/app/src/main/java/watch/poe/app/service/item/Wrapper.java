@@ -9,7 +9,6 @@ import watch.poe.app.domain.DiscardBasis;
 import watch.poe.app.domain.GroupDto;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.persistence.model.Item;
-import watch.poe.persistence.model.ItemBase;
 
 import java.util.List;
 
@@ -18,7 +17,6 @@ import java.util.List;
 @Builder
 @ToString
 public class Wrapper {
-  private ItemBase base;
   private Item item;
   private ItemDto itemDto;
   private CategoryDto categoryDto;
