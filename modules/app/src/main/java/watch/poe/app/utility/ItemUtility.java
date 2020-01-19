@@ -1,5 +1,6 @@
 package watch.poe.app.utility;
 
+import lombok.extern.slf4j.Slf4j;
 import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.DiscardBasis;
 import watch.poe.app.domain.GroupDto;
@@ -15,6 +16,7 @@ import watch.poe.persistence.model.ItemBase;
 
 import java.util.Objects;
 
+@Slf4j
 public final class ItemUtility {
 
   public static boolean hasInfluence(ItemDto itemDto) {
@@ -111,14 +113,14 @@ public final class ItemUtility {
             paramBuilder.append(splitParam[1]);
             break;
           case "v":
+          case "mg": // http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/SulphurVents.png?scale=1&w=1&h=1&mn=6&mt=15&mg=4&v=a3a02754d0bd1489b7f19658c1746e3d
           case "duplicated":
           case "synthesised":
           case "fractured":
             break;
           default:
-            // todo: don't throw exception, only log
-            var msg = String.format("Unknown item icon parameter '%s' in '%s'", splitParam[0], icon);
-            throw new InvalidIconException(msg);
+            log.warn("Unhandled icon parameter '{}' in '{}'", splitParam[0], icon);
+            break;
         }
       }
 
