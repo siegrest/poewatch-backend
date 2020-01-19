@@ -30,7 +30,7 @@ public final class ItemParserService {
     var itemDto = wrapper.getItemDto();
 
     parseCategoryDto(wrapper);
-    parseGroup(wrapper);
+    parseGroupDto(wrapper);
     parseItemBase(wrapper);
     parseIcon(wrapper);
     parseCorrupted(wrapper);
@@ -282,7 +282,7 @@ public final class ItemParserService {
     throw new ItemParseException(ParseExceptionBasis.PARSE_CATEGORY);
   }
 
-  public void parseGroup(Wrapper wrapper) throws ItemParseException {
+  public void parseGroupDto(Wrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
     var categoryDto = wrapper.getCategoryDto();
 
