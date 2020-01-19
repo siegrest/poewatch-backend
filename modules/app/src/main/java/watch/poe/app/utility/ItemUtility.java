@@ -71,6 +71,11 @@ public final class ItemUtility {
       && itemDto.getSockets() != null;
   }
 
+  public static boolean isUnique(Wrapper wrapper) {
+    var frameType = wrapper.getItemDto().getFrameType();
+    return frameType == Rarity.Unique || frameType == Rarity.Relic;
+  }
+
   /**
    * Removes any unnecessary fields from the item's icon
    *
@@ -316,7 +321,7 @@ public final class ItemUtility {
       Objects.equals(item1.getMapSeries(), item2.getMapSeries()) &&
       Objects.equals(item1.getGemLevel(), item2.getGemLevel()) &&
       Objects.equals(item1.getGemQuality(), item2.getGemQuality()) &&
-      Objects.equals(item1.getGemCorrupted(), item2.getGemCorrupted()) &&
+      Objects.equals(item1.getCorrupted(), item2.getCorrupted()) &&
       Objects.equals(item1.getInfluenceShaper(), item2.getInfluenceShaper()) &&
       Objects.equals(item1.getInfluenceElder(), item2.getInfluenceElder()) &&
       Objects.equals(item1.getInfluenceCrusader(), item2.getInfluenceCrusader()) &&

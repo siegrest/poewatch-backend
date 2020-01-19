@@ -21,6 +21,7 @@ import java.util.Date;
         "stack_size",
         "item_level",
         "links",
+        "corrupted",
         "variation",
         "map_tier",
         "map_series",
@@ -33,8 +34,7 @@ import java.util.Date;
         "enchantment_min",
         "enchantment_max",
         "gem_level",
-        "gem_quality",
-        "gem_corrupted"
+        "gem_quality"
       }
     )
   }
@@ -67,6 +67,8 @@ public class Item {
   private Integer itemLevel;
   @Column(name = "links")
   private Integer links;
+  @Column(name = "corrupted")
+  private Boolean corrupted;
 
   @Column(name = "map_tier")
   private Integer mapTier;
@@ -77,8 +79,6 @@ public class Item {
   private Integer gemLevel;
   @Column(name = "gem_quality")
   private Integer gemQuality;
-  @Column(name = "gem_corrupted")
-  private Boolean gemCorrupted;
 
   @Column(name = "influence_shaper")
   private Boolean influenceShaper;

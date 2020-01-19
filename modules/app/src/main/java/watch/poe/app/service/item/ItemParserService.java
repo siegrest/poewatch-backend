@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.*;
 import watch.poe.app.exception.ItemParseException;
+import watch.poe.app.service.resource.CorruptedItemService;
 import watch.poe.app.service.resource.GroupMappingService;
 import watch.poe.app.service.resource.ItemVariantService;
 import watch.poe.app.utility.ItemUtility;
@@ -23,6 +24,8 @@ public final class ItemParserService {
   private ItemVariantService itemVariantService;
   @Autowired
   private GroupMappingService groupMappingService;
+  @Autowired
+  private CorruptedItemService corruptedItemService;
 
   public void parse(Wrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
@@ -31,6 +34,7 @@ public final class ItemParserService {
     parseGroup(wrapper);
     parseItemBase(wrapper);
     parseIcon(wrapper);
+    parseCorrupted(wrapper);
 
     if (wrapper.getCategoryDto() == CategoryDto.map && (wrapper.getGroupDto() == GroupDto.map || wrapper.getGroupDto() == GroupDto.unique)) {
       parseMap(wrapper);
@@ -156,8 +160,6 @@ public final class ItemParserService {
 
     item.setGemLevel(level);
     item.setGemQuality(quality);
-    // todo: change to universal corrupted flag
-    item.setGemCorrupted(itemDto.getIsCorrupted());
   }
 
   public void parseStackSize(Wrapper wrapper) throws ItemParseException {
@@ -191,6 +193,25 @@ public final class ItemParserService {
     if (itemDto.getFrameType() == Rarity.Magic) {
       wrapper.discard(DiscardBasis.PARSE_COMPLEX_MAGIC);
       return;
+    }
+  }
+
+  public void parseCorrupted(Wrapper wrapper) {
+    var categoryDto = wrapper.getCategoryDto();
+    var item = wrapper.getItem();
+    var itemDto = wrapper.getItemDto();
+
+    if (categoryDto == CategoryDto.gem) {
+      item.setCorrupted(itemDto.getIsCorrupted());
+      return;
+    }
+
+    // todo: leaguestones, talismans, breach rings
+
+    if (ItemUtility.isUnique(wrapper)) {
+      if (corruptedItemService.isCorrupted(itemDto.getName())) {
+        item.setCorrupted(itemDto.getIsCorrupted());
+      }
     }
   }
 
