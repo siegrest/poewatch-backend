@@ -1,4 +1,4 @@
-package watch.poe.app.service.stash;
+package watch.poe.app.service.river;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 @Slf4j
 @Service
-public class StashParserService {
+public class RiverParserService {
 
   @Autowired
   private GsonService gsonService;

@@ -1,4 +1,4 @@
-package watch.poe.app.service.stash;
+package watch.poe.app.service.river;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,7 +7,7 @@ import watch.poe.app.utility.ChangeIdUtility;
 
 @Slf4j
 @Service
-public class StashWorkerJobSchedulerService {
+public class RiverWorkerJobSchedulerService {
 
     @Value("${stash.fetch.cooldown}")
     private int fetchCooldown;

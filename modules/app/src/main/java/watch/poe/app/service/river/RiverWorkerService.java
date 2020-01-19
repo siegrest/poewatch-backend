@@ -1,4 +1,4 @@
-package watch.poe.app.service.stash;
+package watch.poe.app.service.river;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,12 @@ import java.util.concurrent.Future;
 
 @Slf4j
 @Service
-public class StashWorkerService {
+public class RiverWorkerService {
 
     @Autowired
-    private StashWorkerJobSchedulerService jobSchedulerService;
+    private RiverWorkerJobSchedulerService jobSchedulerService;
     @Autowired
-    private StashParserService stashParserService;
+    private RiverParserService riverParserService;
     @Autowired
     private StatisticsService statisticsService;
 
@@ -43,7 +43,7 @@ public class StashWorkerService {
 
         var stashJsonString = downloadStashJson(nextChangeId);
         if (stashJsonString != null) {
-            stashParserService.process(stashJsonString);
+            riverParserService.process(stashJsonString);
         }
 
         return new AsyncResult<>("worker finished");
