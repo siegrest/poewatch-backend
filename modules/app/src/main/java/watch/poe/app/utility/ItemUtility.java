@@ -112,8 +112,11 @@ public final class ItemUtility {
             break;
           case "v":
           case "duplicated":
+          case "synthesised":
+          case "fractured":
             break;
           default:
+            // todo: don't throw exception, only log
             var msg = String.format("Unknown item icon parameter '%s' in '%s'", splitParam[0], icon);
             throw new InvalidIconException(msg);
         }
