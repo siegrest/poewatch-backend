@@ -13,7 +13,8 @@ public enum CategoryDto {
     prophecy,
     weapon,
     base,
-    beast
+    beast,
+    leaguestone
     // todo: add fragment category
     // todo: add altart category
 }

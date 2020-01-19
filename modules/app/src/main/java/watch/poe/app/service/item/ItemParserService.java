@@ -276,6 +276,9 @@ public final class ItemParserService {
       case "weapons":
         wrapper.setCategoryDto(CategoryDto.weapon);
         return;
+      case "leaguestones":
+        wrapper.setCategoryDto(CategoryDto.leaguestone);
+        return;
     }
 
     // todo: leaguestones have [apiCategory="leaguestones"]
@@ -308,6 +311,9 @@ public final class ItemParserService {
         return;
       case prophecy:
         wrapper.setGroupDto(GroupDto.prophecy);
+        return;
+      case leaguestone:
+        wrapper.setGroupDto(GroupDto.leaguestone);
         return;
       case accessory:
       case weapon:
