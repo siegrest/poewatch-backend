@@ -436,11 +436,9 @@ public final class ItemParserService {
 
     var category = Category.builder()
       .name(categoryDto.name())
-      .display(StringUtils.capitalize(categoryDto.name()))
       .build();
     var group = Group.builder()
       .name(groupDto.name())
-      .display(StringUtils.capitalize(groupDto.name()))
       .build();
 
     if (itemDto.getFrameType() == null) {
@@ -470,11 +468,9 @@ public final class ItemParserService {
 
     var baseType = itemDto.getTypeLine();
     if (baseType != null) {
-
       if (baseType.startsWith("Synthesised ")) {
         baseType = baseType.replace("Synthesised ", "");
       }
-
     }
 
     var itemBase = builder.name(name).baseType(baseType).build();
