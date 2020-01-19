@@ -3,10 +3,13 @@ package watch.poe.app.service.item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import watch.poe.app.service.CategorizationService;
 import watch.poe.app.utility.ItemUtility;
+import watch.poe.persistence.model.Category;
+import watch.poe.persistence.model.Group;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.ItemBase;
+import watch.poe.persistence.repository.CategoryRepository;
+import watch.poe.persistence.repository.GroupRepository;
 import watch.poe.persistence.repository.ItemBaseRepository;
 import watch.poe.persistence.repository.ItemRepository;
 
@@ -23,11 +26,13 @@ public final class ItemIndexerService {
   @Autowired
   private ItemBaseRepository itemBaseRepository;
   @Autowired
-  private CategorizationService categorizationService;
+  private GroupRepository groupRepository;
+  @Autowired
+  private CategoryRepository categoryRepository;
 
   public Item index(Wrapper wrapper) {
-    var category = categorizationService.getOrSaveCategory(wrapper);
-    var group = categorizationService.getOrSaveGroup(wrapper);
+    var category = getOrSaveCategory(wrapper);
+    var group = getOrSaveGroup(wrapper);
 
     var base = wrapper.getBase();
     base.setCategory(category);
@@ -85,6 +90,32 @@ public final class ItemIndexerService {
     return haystack.stream()
       .filter(i -> ItemUtility.itemEquals(needle, i))
       .findFirst();
+  }
+
+  public Category getOrSaveCategory(Wrapper wrapper) {
+    var itemCategory = wrapper.getBase().getCategory();
+    var category = categoryRepository.getByName(itemCategory.getName());
+
+    if (category.isEmpty()) {
+      itemCategory = categoryRepository.save(itemCategory);
+      log.info("Added category to database: {}", itemCategory);
+      return itemCategory;
+    }
+
+    return category.get();
+  }
+
+  public Group getOrSaveGroup(Wrapper wrapper) {
+    var itemGroup = wrapper.getBase().getGroup();
+    var group = groupRepository.getByName(itemGroup.getName());
+
+    if (group.isEmpty()) {
+      itemGroup = groupRepository.save(itemGroup);
+      log.info("Added group to database: {}", itemGroup);
+      return itemGroup;
+    }
+
+    return group.get();
   }
 
 }
