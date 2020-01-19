@@ -94,8 +94,8 @@ public class Item {
   private Boolean influenceWarlord;
 
   @Column(name = "enchantment_min")
-  private Integer enchantMin;
+  private Double enchantMin;
   @Column(name = "enchantment_max")
-  private Integer enchantMax;
+  private Double enchantMax;
 
 }

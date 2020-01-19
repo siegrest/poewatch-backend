@@ -44,7 +44,10 @@
     "groups": [
       "helmet",
       "boots",
-      "gloves"
+      "gloves",
+      "amulet",
+      "ring",
+      "belt"
     ]
   },
   {
@@ -105,6 +108,36 @@
   },
   {
     "category": "base",
+    "groups": [
+      "amulet",
+      "ring",
+      "belt",
+      "boots",
+      "chest",
+      "gloves",
+      "helmet",
+      "quiver",
+      "shield",
+      "bow",
+      "claw",
+      "dagger",
+      "oneaxe",
+      "onemace",
+      "onesword",
+      "rod",
+      "sceptre",
+      "staff",
+      "twoaxe",
+      "twomace",
+      "twosword",
+      "wand",
+      "jewel",
+      "warstaff",
+      "runedagger"
+    ]
+  },
+  {
+    "category": "altart",
     "groups": [
       "amulet",
       "ring",

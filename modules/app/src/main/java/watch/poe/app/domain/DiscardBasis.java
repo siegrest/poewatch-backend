@@ -26,7 +26,9 @@ public enum DiscardBasis {
 
   PARSE_STACK_SIZE("Couldn't parse stack size"),
   STACK_SIZE_MISSING("Couldn't locate stack size"),
-  STACK_SIZE_SLASH_MISSING("Couldn't locate stack size slash");
+  STACK_SIZE_SLASH_MISSING("Couldn't locate stack size slash"),
+
+  DEVELOP("Item discarded for development");
 
   private String description;
 

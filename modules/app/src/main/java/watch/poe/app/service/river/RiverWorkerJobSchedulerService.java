@@ -13,7 +13,8 @@ public class RiverWorkerJobSchedulerService {
     private int fetchCooldown;
 
     // todo: query job from repository
-    private String job = "0-0-0-0-0";
+//    private String job = "541640378-559363977-529069322-602859172-572858041";
+    private String job = "542419420-560211954-529765688-603620935-57359360";
     private long lastPollTime = 0;
 
     public String peekJob() {

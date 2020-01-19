@@ -1,10 +1,8 @@
 package watch.poe.app.utility;
 
 import lombok.extern.slf4j.Slf4j;
-import watch.poe.app.domain.CategoryDto;
-import watch.poe.app.domain.DiscardBasis;
-import watch.poe.app.domain.GroupDto;
-import watch.poe.app.domain.Rarity;
+import org.apache.commons.lang3.StringUtils;
+import watch.poe.app.domain.*;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.PropertyDto;
 import watch.poe.app.dto.river.SocketDto;
@@ -38,6 +36,7 @@ public final class ItemUtility {
       || categoryDto == CategoryDto.jewel
       || categoryDto == CategoryDto.map
       || categoryDto == CategoryDto.flask
+      || categoryDto == CategoryDto.altart
       || categoryDto == CategoryDto.weapon);
   }
 
@@ -76,6 +75,20 @@ public final class ItemUtility {
   public static boolean isUnique(ItemWrapper wrapper) {
     var frameType = wrapper.getItemDto().getFrameType();
     return frameType == Rarity.Unique || frameType == Rarity.Relic;
+  }
+
+  public static boolean isLabEnchantment(ItemWrapper wrapper) {
+    // todo: double check the logic here
+    var extended = wrapper.getItemDto().getExtended();
+    var firstGroup = getFirstApiGroup(wrapper.getItemDto());
+    return wrapper.getItemDto().getEnchantMods() != null
+      && extended != null
+      && "armour".equals(extended.getCategory())
+      && ("helmets".equals(firstGroup) || "gloves".equals(firstGroup) || "boots".equals(firstGroup));
+  }
+
+  public static boolean isAltArt(ItemWrapper wrapper) {
+    return wrapper.getItemDto().getRaceReward() != null;
   }
 
   /**
@@ -351,6 +364,49 @@ public final class ItemUtility {
       Objects.equals(base1.getName(), base2.getName()) &&
       Objects.equals(base1.getBaseType(), base2.getBaseType()) &&
       base1.getFrameType().equals(base2.getFrameType());
+  }
+
+  public static String extractEnchantmentName(ItemDto itemDto) {
+    var enchantLine = itemDto.getEnchantMods().get(0);
+
+    // Match any negative or positive integer or double
+    var enchantName = enchantLine.replaceAll("[-]?\\d*\\.?\\d+", "#");
+
+    // "#% chance to Dodge Spell Damage if you've taken Spell Damage Recently" contains a newline in the middle
+    if (enchantName.contains("\n")) {
+      return enchantName.replace("\n", " ");
+    } else {
+      return enchantName;
+    }
+  }
+
+  public static Double[] extractEnchantmentRolls(ItemDto itemDto) throws ItemParseException {
+    String numString = itemDto.getEnchantMods().get(0).replaceAll("[^-.0-9]+", " ").trim();
+    if (StringUtils.isBlank(numString)) {
+      return null;
+    }
+
+    String[] numArray = numString.split(" ");
+
+    if (numArray.length == 1) {
+      return new Double[]{
+        Double.parseDouble(numArray[0]),
+        Double.parseDouble(numArray[0])
+      };
+    } else if (numArray.length == 2) {
+      return new Double[]{
+        Double.parseDouble(numArray[0]),
+        Double.parseDouble(numArray[1])
+      };
+    }
+
+    throw new ItemParseException(ParseExceptionBasis.INVALID_ENCHANTMENT_ROLLS);
+  }
+
+  public static String extractIconName(String icon) {
+    var pos1 = icon.lastIndexOf('/');
+    var pos2 = icon.lastIndexOf(".png");
+    return icon.substring(pos1 + 1, pos2);
   }
 
 }

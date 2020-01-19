@@ -19,6 +19,8 @@ import watch.poe.persistence.model.ItemBase;
 @Slf4j
 public final class ItemParserService {
 
+  private static final String ENCHANTMENT_ICON = "http://web.poecdn.com/image/Art/2DItems/Currency/Enchantment.png?scale=1&w=1&h=1";
+
   @Autowired
   private ItemVariantService itemVariantService;
   @Autowired
@@ -58,6 +60,14 @@ public final class ItemParserService {
 
     if (ItemUtility.isComplex(itemDto, wrapper.getCategoryDto())) {
       parseComplex(wrapper);
+    }
+
+    if (ItemUtility.isLabEnchantment(wrapper)) {
+      parseEnchantment(wrapper);
+    }
+
+    if (ItemUtility.isAltArt(wrapper)) {
+      parseAltArt(wrapper);
     }
 
     return wrapper.getItem();
@@ -227,7 +237,14 @@ public final class ItemParserService {
       throw new ItemParseException(ParseExceptionBasis.MISSING_CATEGORY);
     }
 
-    if (itemDto.getEnchantMods() != null) {
+    if (itemDto.getRaceReward() != null) {
+      wrapper.setCategoryDto(CategoryDto.altart);
+      log.info("[A5] (altart) {}", wrapper);
+      return;
+    }
+
+    // todo: accessories and armours can have enchanted mods without being enchanted.
+    if (ItemUtility.isLabEnchantment(wrapper)) {
       wrapper.setCategoryDto(CategoryDto.enchantment);
       return;
     }
@@ -320,6 +337,7 @@ public final class ItemParserService {
       case armour:
       case enchantment:
       case base:
+      case altart:
 
         for (var group : acceptedGroups) {
           if (group.equals(apiGroup)) {
@@ -481,6 +499,57 @@ public final class ItemParserService {
 
     var itemBase = builder.name(name).baseType(baseType).build();
     wrapper.getItem().setBase(itemBase);
+  }
+
+  public void parseEnchantment(ItemWrapper wrapper) throws ItemParseException {
+    var itemDto = wrapper.getItemDto();
+    var item = wrapper.getItem();
+    var base = item.getBase();
+
+    var enchantName = ItemUtility.extractEnchantmentName(itemDto);
+    var rolls = ItemUtility.extractEnchantmentRolls(itemDto);
+
+    base.setName(enchantName);
+    item.setIcon(ENCHANTMENT_ICON);
+    base.setFrameType(0);
+
+    if (rolls != null) {
+      flattenEnchantRolls(enchantName, rolls);
+      item.setEnchantMin(rolls[0]);
+      item.setEnchantMax(rolls[1]);
+    }
+  }
+
+  private void flattenEnchantRolls(String enchantName, Double[] rolls) {
+    // Assume name variable has the enchant name with numbers replaced by pound signs
+    switch (enchantName) {
+      case "Lacerate deals # to # added Physical Damage against Bleeding Enemies":
+        // Merc: (4-8) to (10-15)
+        if (rolls[0] <= 8 && rolls[1] <= 15) {
+          rolls[0] = 8d;
+          rolls[1] = 15d;
+        }
+        // Uber: (14-18) to (20-25)
+        else if (rolls[0] >= 14 && rolls[0] <= 18 && rolls[1] <= 25 && rolls[1] >= 20) {
+          rolls[0] = 18d;
+          rolls[1] = 25d;
+        }
+
+        break;
+    }
+  }
+
+  private void parseAltArt(ItemWrapper wrapper) {
+    var itemDto = wrapper.getItemDto();
+    var base = wrapper.getItem().getBase();
+
+    var iconName = ItemUtility.extractIconName(wrapper.getItemDto().getIcon());
+    wrapper.getItem().setVariation(iconName);
+
+    var frameType = itemDto.getFrameType();
+    if (frameType == Rarity.Magic || frameType == Rarity.Rare) {
+      base.setFrameType(0);
+    }
   }
 
 }
