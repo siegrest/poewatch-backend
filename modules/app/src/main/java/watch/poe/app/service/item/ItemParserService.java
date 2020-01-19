@@ -4,10 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.CategoryDto;
-import watch.poe.app.domain.DiscardBasis;
-import watch.poe.app.domain.GroupDto;
-import watch.poe.app.domain.Rarity;
+import watch.poe.app.domain.*;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.GroupMappingService;
 import watch.poe.app.service.resource.ItemVariantService;
@@ -200,12 +197,12 @@ public final class ItemParserService {
   public void parseCategoryDto(Wrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
     if (itemDto == null) {
-      throw new ItemParseException("Missing item");
+      throw new ItemParseException(ParseExceptionBasis.MISSING_ITEM);
     }
 
     var apiCategory = itemDto.getExtended().getCategory();
     if (apiCategory == null) {
-      throw new ItemParseException("Missing category");
+      throw new ItemParseException(ParseExceptionBasis.MISSING_CATEGORY);
     }
 
     if (itemDto.getEnchantMods() != null) {
@@ -260,7 +257,7 @@ public final class ItemParserService {
     }
 
     // todo: leaguestones have [apiCategory="leaguestones"]
-    throw new ItemParseException("Could not determine category");
+    throw new ItemParseException(ParseExceptionBasis.PARSE_CATEGORY);
   }
 
   public void parseGroup(Wrapper wrapper) throws ItemParseException {
@@ -268,9 +265,9 @@ public final class ItemParserService {
     var categoryDto = wrapper.getCategoryDto();
 
     if (itemDto == null) {
-      throw new ItemParseException("Missing item");
+      throw new ItemParseException(ParseExceptionBasis.MISSING_ITEM);
     } else if (categoryDto == null) {
-      throw new ItemParseException("Missing category");
+      throw new ItemParseException(ParseExceptionBasis.MISSING_CATEGORY);
     }
 
     var apiGroup = ItemUtility.getFirstApiGroup(itemDto);
@@ -407,7 +404,7 @@ public final class ItemParserService {
 
     }
 
-    throw new ItemParseException("Could not determine group");
+    throw new ItemParseException(ParseExceptionBasis.PARSE_GROUP);
   }
 
   public void parseItemBase(Wrapper wrapper) throws ItemParseException {
@@ -425,7 +422,7 @@ public final class ItemParserService {
       .build();
 
     if (itemDto.getFrameType() == null) {
-      throw new ItemParseException("Invalid frame type");
+      throw new ItemParseException(ParseExceptionBasis.MISSING_FRAME_TYPE);
     }
 
     var builder = ItemBase.builder()
