@@ -18,4 +18,8 @@ public class ItemParseException extends Exception {
     super(discardBasis.name());
     this.discardBasis = discardBasis;
   }
+
+  public ItemParseException(String msg) {
+    super(msg);
+  }
 }
