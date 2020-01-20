@@ -94,7 +94,7 @@ public class ItemCategorizationService {
       .iconCategory(ItemUtility.findIconCategory(itemDto))
       .build();
 
-    var oGroup = parseCommonCategories(categoryWrapper);
+    var oGroup = parseCommonGroups(categoryWrapper);
     if (oGroup.isPresent()) {
       return oGroup;
     }
@@ -103,37 +103,37 @@ public class ItemCategorizationService {
       case card:
         return Optional.of(GroupDto.card);
       case currency:
-        return parseCurrencyCategory(categoryWrapper);
+        return parseCurrencyGroups(categoryWrapper);
       case flask:
         return Optional.of(GroupDto.flask);
       case gem:
-        return parseGemCategory(categoryWrapper);
+        return parseGemGroups(categoryWrapper);
       case jewel:
         return Optional.of(GroupDto.jewel);
       case map:
-        return parseMapCategory(categoryWrapper);
+        return parseMapGroups(categoryWrapper);
       case prophecy:
         return Optional.of(GroupDto.prophecy);
       case beast:
-        return parseBeastCategory(categoryWrapper);
+        return parseBeastGroups(categoryWrapper);
       case leaguestone:
         return Optional.of(GroupDto.leaguestone);
       case fragment:
         break;
       case altart:
-        return parseAltArtCategory(categoryWrapper);
+        return parseAltArtGroups(categoryWrapper);
       case accessory:
       case weapon:
       case armour:
       case enchantment:
       case base:
-        return parseCommonCategories(categoryWrapper);
+        return parseCommonGroups(categoryWrapper);
     }
 
     throw new ItemParseException(ParseExceptionBasis.UNHANDLED_CATEGORY);
   }
 
-  public Optional<GroupDto> parseCommonCategories(CategoryWrapper wrapper) {
+  public Optional<GroupDto> parseCommonGroups(CategoryWrapper wrapper) {
     var apiGroup = wrapper.getApiGroup();
     for (var group : GroupDto.values()) {
       if (group.name().equals(apiGroup)) {
@@ -144,7 +144,7 @@ public class ItemCategorizationService {
     return Optional.empty();
   }
 
-  public Optional<GroupDto> parseCurrencyCategory(CategoryWrapper wrapper) {
+  public Optional<GroupDto> parseCurrencyGroups(CategoryWrapper wrapper) {
     switch (wrapper.getIconCategory()) {
       case "currency":
       case "divination": // stacked deck
@@ -189,7 +189,7 @@ public class ItemCategorizationService {
     return Optional.empty();
   }
 
-  public Optional<GroupDto> parseGemCategory(CategoryWrapper wrapper) {
+  public Optional<GroupDto> parseGemGroups(CategoryWrapper wrapper) {
     if ("vaalgems".equals(wrapper.getIconCategory())) {
       return Optional.of(GroupDto.vaal);
     } else if ("activegem".equals(wrapper.getApiGroup())) {
@@ -201,7 +201,7 @@ public class ItemCategorizationService {
     return Optional.empty();
   }
 
-  public Optional<GroupDto> parseAltArtCategory(CategoryWrapper wrapper) {
+  public Optional<GroupDto> parseAltArtGroups(CategoryWrapper wrapper) {
     var apiGroup = wrapper.getApiGroup();
     for (var group : GroupDto.values()) {
       if (group.name().equals(apiGroup)) {
@@ -216,7 +216,7 @@ public class ItemCategorizationService {
     return Optional.empty();
   }
 
-  public Optional<GroupDto> parseMapCategory(CategoryWrapper wrapper) {
+  public Optional<GroupDto> parseMapGroups(CategoryWrapper wrapper) {
     if (wrapper.getItemDto().getFrameType() == Rarity.Unique || wrapper.getItemDto().getFrameType() == Rarity.Relic) {
       return Optional.of(GroupDto.unique);
     } else if ("breach".equals(wrapper.getIconCategory())) {
@@ -235,7 +235,7 @@ public class ItemCategorizationService {
     return Optional.empty();
   }
 
-  public Optional<GroupDto> parseBeastCategory(CategoryWrapper wrapper) {
+  public Optional<GroupDto> parseBeastGroups(CategoryWrapper wrapper) {
     if ("sample".equals(wrapper.getApiGroup())) {
       return Optional.of(GroupDto.sample);
     } else if ("beast".equals(wrapper.getApiGroup())) {
