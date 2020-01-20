@@ -62,7 +62,6 @@ public class StashRepositoryService {
     stash.setItemCount(stashDto.getItems().size());
 
     if (stashDto.getItems() == null || stashDto.getItems().isEmpty()) {
-      // todo: does it cascade the items or should itementryservice be added and .deleteAll() be called?
       stash.setItems(Set.of());
     }
 

@@ -24,12 +24,26 @@ public final class ItemParserService {
   private ItemVariantService itemVariantService;
   @Autowired
   private CorruptedItemService corruptedItemService;
+  @Autowired
+  private ItemCategorizationService categorizationService;
 
   public Item parse(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
 
-    parseCategoryDto(wrapper);
-    parseGroupDto(wrapper);
+    var oCategoryDto = categorizationService.parseCategoryDto(wrapper);
+    if (oCategoryDto.isEmpty()) {
+      throw new ItemParseException(ParseExceptionBasis.PARSE_CATEGORY);
+    } else {
+      wrapper.setCategoryDto(oCategoryDto.get());
+    }
+
+    var oGroupDto = categorizationService.parseGroupDto(wrapper);
+    if (oGroupDto.isEmpty()) {
+      throw new ItemParseException(ParseExceptionBasis.PARSE_GROUP);
+    } else {
+      wrapper.setGroupDto(oGroupDto.get());
+    }
+
     parseItemBase(wrapper);
     parseIcon(wrapper);
     parseCorrupted(wrapper);
@@ -223,235 +237,6 @@ public final class ItemParserService {
     }
   }
 
-  public void parseCategoryDto(ItemWrapper wrapper) throws ItemParseException {
-    var itemDto = wrapper.getItemDto();
-    if (itemDto == null) {
-      throw new ItemParseException(ParseExceptionBasis.MISSING_ITEM);
-    }
-
-    var apiCategory = itemDto.getExtended().getCategory();
-    if (apiCategory == null) {
-      throw new ItemParseException(ParseExceptionBasis.MISSING_CATEGORY);
-    }
-
-    if (itemDto.getRaceReward() != null) {
-      wrapper.setCategoryDto(CategoryDto.altart);
-      log.info("[A5] (altart) {}", wrapper);
-      return;
-    }
-
-    // todo: accessories and armours can have enchanted mods without being enchanted.
-    if (ItemUtility.isLabEnchantment(wrapper)) {
-      wrapper.setCategoryDto(CategoryDto.enchantment);
-      return;
-    }
-
-    // todo: abyssal jewels and belts and flasks are not included
-    // todo: maps are included?
-    if (ItemUtility.isCraftable(itemDto) && ItemUtility.hasInfluence(itemDto)) {
-      wrapper.setCategoryDto(CategoryDto.base);
-      return;
-    }
-
-    if (itemDto.getFrameType() == Rarity.Prophecy) {
-      wrapper.setCategoryDto(CategoryDto.prophecy);
-      return;
-    }
-
-    switch (apiCategory) {
-      case "currency":
-        wrapper.setCategoryDto(CategoryDto.currency);
-        return;
-      case "gems":
-        wrapper.setCategoryDto(CategoryDto.gem);
-        return;
-      case "maps":
-      case "watchstones":
-        wrapper.setCategoryDto(CategoryDto.map);
-        return;
-      case "cards":
-        wrapper.setCategoryDto(CategoryDto.card);
-        return;
-      case "flasks":
-        wrapper.setCategoryDto(CategoryDto.flask);
-        return;
-      case "jewels":
-        wrapper.setCategoryDto(CategoryDto.jewel);
-        return;
-      case "monsters":
-        wrapper.setCategoryDto(CategoryDto.beast);
-        return;
-      case "armour":
-        wrapper.setCategoryDto(CategoryDto.armour);
-        return;
-      case "accessories":
-        wrapper.setCategoryDto(CategoryDto.accessory);
-        return;
-      case "weapons":
-        wrapper.setCategoryDto(CategoryDto.weapon);
-        return;
-      case "leaguestones":
-        wrapper.setCategoryDto(CategoryDto.leaguestone);
-        return;
-    }
-
-    // todo: leaguestones have [apiCategory="leaguestones"]
-    throw new ItemParseException(ParseExceptionBasis.PARSE_CATEGORY);
-  }
-
-  public void parseGroupDto(ItemWrapper wrapper) throws ItemParseException {
-    var itemDto = wrapper.getItemDto();
-    var categoryDto = wrapper.getCategoryDto();
-
-    if (itemDto == null) {
-      throw new ItemParseException(ParseExceptionBasis.MISSING_ITEM);
-    } else if (categoryDto == null) {
-      throw new ItemParseException(ParseExceptionBasis.MISSING_CATEGORY);
-    }
-
-    var apiCategory = itemDto.getExtended().getCategory();
-    var apiGroup = ItemUtility.getFirstApiGroup(itemDto);
-    var iconCategory = ItemUtility.findIconCategory(itemDto);
-
-    switch (categoryDto) {
-      case card:
-        wrapper.setGroupDto(GroupDto.card);
-        return;
-      case flask:
-        wrapper.setGroupDto(GroupDto.flask);
-        return;
-      case jewel:
-        wrapper.setGroupDto(GroupDto.jewel);
-        return;
-      case prophecy:
-        wrapper.setGroupDto(GroupDto.prophecy);
-        return;
-      case leaguestone:
-        wrapper.setGroupDto(GroupDto.leaguestone);
-        return;
-      case accessory:
-      case weapon:
-      case armour:
-      case enchantment:
-      case base:
-      case altart:
-
-        for (var group : GroupDto.values()) {
-          if (group.name().equals(apiGroup)) {
-            wrapper.setGroupDto(GroupDto.valueOf(apiGroup));
-            return;
-          }
-        }
-
-        break;
-    }
-
-    if (categoryDto == CategoryDto.altart && "jewel".equals(apiCategory)) {
-      wrapper.setGroupDto(GroupDto.jewel);
-      return;
-    }
-
-    if (categoryDto == CategoryDto.currency) {
-      switch (iconCategory) {
-        case "currency":
-        case "divination": // stacked deck
-          wrapper.setGroupDto(GroupDto.currency);
-          return;
-        case "essence":
-          wrapper.setGroupDto(GroupDto.essence);
-          return;
-        case "breach":
-          wrapper.setGroupDto(GroupDto.splinter);
-          return;
-        case "oils":
-          wrapper.setGroupDto(GroupDto.oil);
-          return;
-        case "catalysts":
-          wrapper.setGroupDto(GroupDto.catalyst);
-          return;
-        case "influence exalts":
-          wrapper.setGroupDto(GroupDto.influence);
-          return;
-      }
-
-      if (apiGroup != null) {
-        switch (apiGroup) {
-          case "piece":
-            wrapper.setGroupDto(GroupDto.piece);
-            return;
-          case "resonator":
-            wrapper.setGroupDto(GroupDto.resonator);
-            return;
-          case "fossil":
-            wrapper.setGroupDto(GroupDto.fossil);
-            return;
-          case "incubator":
-            wrapper.setGroupDto(GroupDto.incubator);
-            return;
-        }
-      }
-
-      if (itemDto.getTypeLine() != null && itemDto.getTypeLine().startsWith("Vial of ")) {
-        wrapper.setGroupDto(GroupDto.vial);
-        return;
-      }
-
-      if (itemDto.getTypeLine() != null && itemDto.getTypeLine().startsWith("Timeless")
-        && itemDto.getTypeLine().endsWith("Splinter")) {
-        wrapper.setGroupDto(GroupDto.splinter);
-        return;
-      }
-    }
-
-    if (categoryDto == CategoryDto.gem) {
-      if ("vaalgems".equals(iconCategory)) {
-        wrapper.setGroupDto(GroupDto.vaal);
-        return;
-      } else if ("activegem".equals(apiGroup)) {
-        wrapper.setGroupDto(GroupDto.skill);
-        return;
-      } else if ("supportgem".equals(apiGroup)) {
-        wrapper.setGroupDto(GroupDto.support);
-        return;
-      }
-    }
-
-    if (categoryDto == CategoryDto.map) {
-      if (itemDto.getFrameType() == Rarity.Unique || itemDto.getFrameType() == Rarity.Relic) {
-        wrapper.setGroupDto(GroupDto.unique);
-        return;
-      } else if ("breach".equals(iconCategory)) {
-        wrapper.setGroupDto(GroupDto.fragment);
-        return;
-      } else if ("scarabs".equals(iconCategory)) {
-        wrapper.setGroupDto(GroupDto.scarab);
-        return;
-      } else if (itemDto.getProperties() == null) {
-        // mortal fragments
-        wrapper.setGroupDto(GroupDto.fragment);
-        return;
-      } else if ("watchstones".equals(itemDto.getExtended().getCategory())) {
-        wrapper.setGroupDto(GroupDto.watchstone);
-        return;
-      } else if (apiGroup == null) {
-        wrapper.setGroupDto(GroupDto.map);
-        return;
-      }
-    }
-
-    if (CategoryDto.beast == categoryDto) {
-      if ("sample".equals(apiGroup)) {
-        wrapper.setGroupDto(GroupDto.sample);
-        return;
-      } else if ("beast".equals(apiGroup)) {
-        wrapper.setGroupDto(GroupDto.beast);
-        return;
-      }
-    }
-
-    throw new ItemParseException(ParseExceptionBasis.PARSE_GROUP);
-  }
-
   public void parseItemBase(ItemWrapper wrapper) throws ItemParseException {
     var categoryDto = wrapper.getCategoryDto();
     var groupDto = wrapper.getGroupDto();
@@ -550,9 +335,5 @@ public final class ItemParserService {
       base.setFrameType(0);
     }
   }
-
-//  SELECT * FROM CATEGORIES ;
-//  SELECT * FROM ITEMS_BASE where fk_category = 7017;
-//  SELECT * FROM ITEMS where item_base = 24469;
 
 }

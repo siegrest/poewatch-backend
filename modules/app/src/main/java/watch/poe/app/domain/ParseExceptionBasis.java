@@ -10,6 +10,7 @@ public enum ParseExceptionBasis {
   INVALID_ENCHANTMENT_ROLLS("Invalid enchantment rolls"),
 
   PARSE_CATEGORY("Could not determine category"),
+  UNHANDLED_CATEGORY("Category is defined but not handled"),
   PARSE_GROUP("Could not determine group");
 
   private String description;
