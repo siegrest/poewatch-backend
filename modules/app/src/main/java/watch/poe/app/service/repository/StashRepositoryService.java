@@ -27,20 +27,30 @@ public class StashRepositoryService {
 
     var stash = stashRepository.findById(stashDto.getId());
     if (stash.isEmpty()) {
-      return saveNewStash(league, account, stashDto.getId());
+      if (league == null || account == null || stashDto.getItems() == null || stashDto.getItems().isEmpty()) {
+        return null;
+      }
+
+      return saveNewStash(league, account, stashDto);
     } else {
+      if (league == null || account == null || stashDto.getItems() == null || stashDto.getItems().isEmpty()) {
+        stashRepository.deleteById(stashDto.getId());
+        return null;
+      }
+
       return updateStash(stash.get(), stashDto);
     }
   }
 
-  private Stash saveNewStash(League league, Account account, String id) {
+  private Stash saveNewStash(League league, Account account, StashDto stashDto) {
     var stash = Stash.builder()
       .account(account)
       .league(league)
       .updates(0)
       .found(new Date())
       .seen(new Date())
-      .id(id)
+      .itemCount(stashDto.getItems().size())
+      .id(stashDto.getId())
       .build();
 
     return stashRepository.save(stash);
@@ -49,6 +59,7 @@ public class StashRepositoryService {
   private Stash updateStash(Stash stash, StashDto stashDto) {
     stash.setUpdates(stash.getUpdates() + 1);
     stash.setSeen(new Date());
+    stash.setItemCount(stashDto.getItems().size());
 
     if (stashDto.getItems() == null || stashDto.getItems().isEmpty()) {
       // todo: does it cascade the items or should itementryservice be added and .deleteAll() be called?

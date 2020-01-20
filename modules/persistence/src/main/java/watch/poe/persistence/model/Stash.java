@@ -40,5 +40,7 @@ public class Stash {
 
     @Column(name = "updates", nullable = false)
     private Integer updates;
+    @Column(name = "item_count", nullable = false)
+    private Integer itemCount;
 
 }

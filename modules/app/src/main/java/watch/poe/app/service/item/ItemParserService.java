@@ -551,4 +551,8 @@ public final class ItemParserService {
     }
   }
 
+//  SELECT * FROM CATEGORIES ;
+//  SELECT * FROM ITEMS_BASE where fk_category = 7017;
+//  SELECT * FROM ITEMS where item_base = 24469;
+
 }
