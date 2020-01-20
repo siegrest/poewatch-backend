@@ -39,6 +39,11 @@ public class RiverWorkerService {
     @Async
     public Future<String> queryNext() {
         var nextChangeId = jobSchedulerService.getJob();
+        if (nextChangeId == null) {
+            log.error("Worker provided empty job");
+            return new AsyncResult<>("worker finished prematurely");
+        }
+
         log.info("Started worker with job {}", nextChangeId);
 
         var stashJsonString = downloadStashJson(nextChangeId);
