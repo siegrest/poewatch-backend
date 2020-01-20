@@ -17,6 +17,4 @@ public enum CategoryDto {
     leaguestone,
     fragment,
     altart
-    // todo: add fragment category
-    // todo: add altart category
 }

@@ -26,6 +26,8 @@ public final class ItemParserService {
   private CorruptedItemService corruptedItemService;
   @Autowired
   private ItemCategorizationService categorizationService;
+  @Autowired
+  private ItemGroupingService groupingService;
 
   public Item parse(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
@@ -37,7 +39,7 @@ public final class ItemParserService {
       wrapper.setCategoryDto(oCategoryDto.get());
     }
 
-    var oGroupDto = categorizationService.parseGroupDto(wrapper);
+    var oGroupDto = groupingService.parseGroupDto(wrapper);
     if (oGroupDto.isEmpty()) {
       throw new ItemParseException(ParseExceptionBasis.PARSE_GROUP);
     } else {
