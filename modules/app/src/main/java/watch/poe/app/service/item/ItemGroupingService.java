@@ -158,15 +158,6 @@ public class ItemGroupingService {
   public Optional<GroupDto> parseMapGroups(CategoryWrapper wrapper) {
     if (wrapper.getItemDto().getFrameType() == Rarity.Unique || wrapper.getItemDto().getFrameType() == Rarity.Relic) {
       return Optional.of(GroupDto.unique);
-    } else if ("breach".equals(wrapper.getIconCategory())) {
-      return Optional.of(GroupDto.fragment);
-    } else if ("scarabs".equals(wrapper.getIconCategory())) {
-      return Optional.of(GroupDto.scarab);
-    } else if (wrapper.getItemDto().getProperties() == null) {
-      // mortal fragments
-      return Optional.of(GroupDto.fragment);
-    } else if ("watchstones".equals(wrapper.getItemDto().getExtended().getCategory())) {
-      return Optional.of(GroupDto.watchstone);
     } else if (wrapper.getApiGroup() == null) {
       return Optional.of(GroupDto.map);
     }
