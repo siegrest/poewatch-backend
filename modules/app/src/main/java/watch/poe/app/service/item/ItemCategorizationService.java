@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.Rarity;
-import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.utility.ItemUtility;
 
 import java.util.Optional;
@@ -13,7 +12,7 @@ import java.util.Optional;
 @Service
 public class ItemCategorizationService {
 
-  public Optional<CategoryDto> parseCategoryDto(ItemWrapper wrapper) throws ItemParseException {
+  public Optional<CategoryDto> parseCategoryDto(ItemWrapper wrapper) {
     var itemDto = wrapper.getItemDto();
     var categoryWrapper = CategoryWrapper.builder()
       .itemDto(itemDto)
@@ -52,33 +51,7 @@ public class ItemCategorizationService {
       return oCat;
     }
 
-    switch (categoryWrapper.getApiCategory()) {
-      case "gems":
-        return Optional.of(CategoryDto.gem);
-      case "maps":
-        return Optional.of(CategoryDto.map);
-      case "watchstones":
-        return Optional.of(CategoryDto.fragment);
-      case "cards":
-        return Optional.of(CategoryDto.card);
-      case "flasks":
-        return Optional.of(CategoryDto.flask);
-      case "jewels":
-        return Optional.of(CategoryDto.jewel);
-      case "monsters":
-        return Optional.of(CategoryDto.beast);
-      case "armour":
-        return Optional.of(CategoryDto.armour);
-      case "accessories":
-        return Optional.of(CategoryDto.accessory);
-      case "weapons":
-        return Optional.of(CategoryDto.weapon);
-      case "leaguestones":
-        return Optional.of(CategoryDto.leaguestone);
-    }
-
-    // todo: leaguestones have [apiCategory="leaguestones"]
-    return Optional.empty();
+    return parseSpecificCategories(categoryWrapper);
   }
 
   public Optional<CategoryDto> parseAltArtCategory(CategoryWrapper wrapper) {
@@ -109,16 +82,18 @@ public class ItemCategorizationService {
   }
 
   public Optional<CategoryDto> parseCraftingBaseCategory(CategoryWrapper wrapper) {
-    // todo: abyssal jewels and belts and flasks are not included
-    // todo: maps are included?
-
-    if (wrapper.getItemDto().getIsCorrupted() != null && wrapper.getItemDto().getIsCorrupted()) {
+    if (ItemUtility.isCorrupted(wrapper.getItemDto())) {
       return Optional.empty();
     }
 
-    var frameType = wrapper.getItemDto().getFrameType();
-    if (frameType != Rarity.Normal && frameType != Rarity.Magic && frameType != Rarity.Rare) {
+    if (!ItemUtility.isCraftable(wrapper.getItemDto())) {
       return Optional.empty();
+    }
+
+    // todo: abyssal belts and flasks are not included
+    if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
+      log.info("[A12] (crafting jewel) {}", wrapper);
+      return Optional.of(CategoryDto.base);
     }
 
     if (!ItemUtility.hasInfluence(wrapper.getItemDto())) {
@@ -177,6 +152,35 @@ public class ItemCategorizationService {
     if (wrapper.getItemDto().getProperties() == null) {
       log.info("[A11] (fragment) {}", itemDto);
       return Optional.of(CategoryDto.fragment);
+    }
+
+    return Optional.empty();
+  }
+
+  public Optional<CategoryDto> parseSpecificCategories(CategoryWrapper wrapper) {
+    switch (wrapper.getApiCategory()) {
+      case "gems":
+        return Optional.of(CategoryDto.gem);
+      case "maps":
+        return Optional.of(CategoryDto.map);
+      case "watchstones":
+        return Optional.of(CategoryDto.fragment);
+      case "cards":
+        return Optional.of(CategoryDto.card);
+      case "flasks":
+        return Optional.of(CategoryDto.flask);
+      case "jewels":
+        return Optional.of(CategoryDto.jewel);
+      case "monsters":
+        return Optional.of(CategoryDto.beast);
+      case "armour":
+        return Optional.of(CategoryDto.armour);
+      case "accessories":
+        return Optional.of(CategoryDto.accessory);
+      case "weapons":
+        return Optional.of(CategoryDto.weapon);
+      case "leaguestones":
+        return Optional.of(CategoryDto.leaguestone);
     }
 
     return Optional.empty();

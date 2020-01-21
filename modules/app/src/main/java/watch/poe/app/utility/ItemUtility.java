@@ -42,8 +42,7 @@ public final class ItemUtility {
 
   public static boolean isCraftable(ItemDto itemDto) {
     var frameType = itemDto.getFrameType();
-    var corrupted = itemDto.getIsCorrupted() != null && itemDto.getIsCorrupted();
-    return !corrupted && (frameType == Rarity.Normal || frameType == Rarity.Magic || frameType == Rarity.Rare);
+    return frameType == Rarity.Normal || frameType == Rarity.Magic || frameType == Rarity.Rare;
   }
 
   public static boolean isSpecialSupportGem(ItemDto itemDto) {
@@ -85,6 +84,14 @@ public final class ItemUtility {
       && extended != null
       && "armour".equals(extended.getCategory())
       && ("helmets".equals(firstGroup) || "gloves".equals(firstGroup) || "boots".equals(firstGroup));
+  }
+
+  public static boolean isAbyssalJewel(ItemDto itemDto) {
+    return itemDto.getAbyssJewel() != null && itemDto.getAbyssJewel();
+  }
+
+  public static boolean isCorrupted(ItemDto itemDto) {
+    return itemDto.getIsCorrupted() != null && itemDto.getIsCorrupted();
   }
 
   public static boolean isAltArt(ItemWrapper wrapper) {
