@@ -63,8 +63,7 @@ public final class ItemParserService {
     }
 
     if (ItemUtility.isLinkable(wrapper)) {
-      var links = ItemUtility.extractLinks(wrapper);
-      wrapper.getItem().setLinks(links);
+      parseLinks(wrapper);
     }
 
     if (itemVariantService.hasVariation(wrapper.getItemDto())) {
@@ -116,10 +115,10 @@ public final class ItemParserService {
     }
 
     if (wrapper.getGroupDto() == GroupDto.map) {
-      var tier = ItemUtility.extractMapTier(wrapper);
+      var tier = ItemUtility.extractMapTier(itemDto);
       item.setMapTier(tier);
 
-      var series = ItemUtility.extractMapSeries(wrapper);
+      var series = ItemUtility.extractMapSeries(itemDto);
       item.setMapSeries(series);
     }
 
@@ -187,11 +186,8 @@ public final class ItemParserService {
   }
 
   public void parseStackSize(ItemWrapper wrapper) throws ItemParseException {
-    var itemDto = wrapper.getItemDto();
-    var item = wrapper.getItem();
-
-    var stackSize = ItemUtility.extractMaxStackSize(itemDto);
-    item.setStackSize(stackSize);
+    var stackSize = ItemUtility.extractMaxStackSize(wrapper.getItemDto());
+    wrapper.getItem().setStackSize(stackSize);
   }
 
   public void parseVariant(ItemWrapper wrapper) {
@@ -232,7 +228,7 @@ public final class ItemParserService {
 
     // todo: leaguestones, talismans, breach rings
 
-    if (ItemUtility.isUnique(wrapper)) {
+    if (ItemUtility.isUnique(itemDto)) {
       if (corruptedItemService.isCorrupted(itemDto.getName())) {
         item.setCorrupted(itemDto.getIsCorrupted());
       }
@@ -336,6 +332,11 @@ public final class ItemParserService {
     if (frameType == Rarity.Magic || frameType == Rarity.Rare) {
       base.setFrameType(0);
     }
+  }
+
+  private void parseLinks(ItemWrapper wrapper) throws ItemParseException {
+    var links = ItemUtility.extractLinks(wrapper.getItemDto());
+    wrapper.getItem().setLinks(links);
   }
 
 }

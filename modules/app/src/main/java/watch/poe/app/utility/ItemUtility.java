@@ -71,9 +71,8 @@ public final class ItemUtility {
       && itemDto.getSockets() != null;
   }
 
-  public static boolean isUnique(ItemWrapper wrapper) {
-    var frameType = wrapper.getItemDto().getFrameType();
-    return frameType == Rarity.Unique || frameType == Rarity.Relic;
+  public static boolean isUnique(ItemDto itemDto) {
+    return itemDto.getFrameType() == Rarity.Unique || itemDto.getFrameType() == Rarity.Relic;
   }
 
   public static boolean isLabEnchantment(ItemWrapper wrapper) {
@@ -177,8 +176,7 @@ public final class ItemUtility {
     return null;
   }
 
-  public static Integer extractMapTier(ItemWrapper wrapper) throws ItemParseException {
-    var itemDto = wrapper.getItemDto();
+  public static Integer extractMapTier(ItemDto itemDto) throws ItemParseException {
     if (itemDto.getProperties() != null) {
       for (PropertyDto prop : itemDto.getProperties()) {
         if (!"Map Tier".equals(prop.getName()) || prop.getValues().isEmpty()) {
@@ -194,23 +192,15 @@ public final class ItemUtility {
     throw new ItemParseException(DiscardBasis.MAP_TIER_MISSING);
   }
 
-  public static String replaceMapSuperiorPrefix(ItemDto itemDto) {
-    return itemDto.getName() != null && itemDto.getName().startsWith("Superior ")
-      ? itemDto.getName().replace("Superior ", "")
-      : itemDto.getName();
-  }
-
-  public static Integer extractMapSeries(ItemWrapper wrapper) throws ItemParseException {
-    var itemDto = wrapper.getItemDto();
-
-        /* Currently the series are as such:
-         http://web.poecdn.com/image/Art/2DItems/Maps/Map45.png?scale=1&w=1&h=1
-         http://web.poecdn.com/image/Art/2DItems/Maps/act4maps/Map76.png?scale=1&w=1&h=1
-         http://web.poecdn.com/image/Art/2DItems/Maps/AtlasMaps/Chimera.png?scale=1&scaleIndex=0&w=1&h=1
-         http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/VaalTempleBase.png?scale=1&w=1&h=1&mn=1&mt=0
-         http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/VaalTempleBase.png?scale=1&w=1&h=1&mn=2&mt=0
-         http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/VaalTempleBase.png?scale=1&w=1&h=1&mn=3&mt=0
-        */
+  public static Integer extractMapSeries(ItemDto itemDto) throws ItemParseException {
+    /* Currently the series are as such:
+     http://web.poecdn.com/image/Art/2DItems/Maps/Map45.png?scale=1&w=1&h=1
+     http://web.poecdn.com/image/Art/2DItems/Maps/act4maps/Map76.png?scale=1&w=1&h=1
+     http://web.poecdn.com/image/Art/2DItems/Maps/AtlasMaps/Chimera.png?scale=1&scaleIndex=0&w=1&h=1
+     http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/VaalTempleBase.png?scale=1&w=1&h=1&mn=1&mt=0
+     http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/VaalTempleBase.png?scale=1&w=1&h=1&mn=2&mt=0
+     http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/VaalTempleBase.png?scale=1&w=1&h=1&mn=3&mt=0
+    */
 
     var iconCategory = ItemUtility.findIconCategory(itemDto);
     var seriesNumber = 0;
@@ -242,9 +232,7 @@ public final class ItemUtility {
     }
   }
 
-  public static Integer extractLinks(ItemWrapper wrapper) throws ItemParseException {
-    var itemDto = wrapper.getItemDto();
-
+  public static Integer extractLinks(ItemDto itemDto) throws ItemParseException {
     if (itemDto.getSockets() == null) {
       throw new ItemParseException(DiscardBasis.NO_SOCKETS);
     }
