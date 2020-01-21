@@ -21,6 +21,7 @@ public class ItemDto {
   private String icon, league, id, name, typeLine, note;
   private Integer stackSize;
   private String prophecyText;
+  private Boolean abyssJewel;
 
   @SerializedName(value = "raceReward", alternate = {"seaRaceReward", "cisRaceReward", "thRaceReward", "RaceReward"})
   private Object raceReward;
