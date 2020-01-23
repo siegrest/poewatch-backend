@@ -14,7 +14,6 @@ public enum DiscardBasis {
   GEM_BRAND_RECALL_LEVEL_OUT_OF_RANGE("Level is out of range for Brand Recall"),
   GEM_API_BUG("Encountered API bug for gems"),
 
-  PARSE_UNID_UNIQUE_MAP("Cannot parse unidentified unique map"),
   PARSE_MAGIC_MAP("Cannot parse magic maps"),
   PARSE_RARE_MAP("Cannot parse rare maps"),
 

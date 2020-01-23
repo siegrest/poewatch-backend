@@ -1,7 +1,6 @@
 package watch.poe.app.service.item;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.*;
@@ -10,10 +9,7 @@ import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.CorruptedItemService;
 import watch.poe.app.service.resource.ItemVariantService;
 import watch.poe.app.utility.ItemUtility;
-import watch.poe.persistence.model.Category;
-import watch.poe.persistence.model.Group;
 import watch.poe.persistence.model.Item;
-import watch.poe.persistence.model.ItemBase;
 
 @Service
 @Slf4j
@@ -29,6 +25,8 @@ public final class ItemParserService {
   private ItemCategorizationService categorizationService;
   @Autowired
   private ItemGroupingService groupingService;
+  @Autowired
+  private ItemBaseParserService itemBaseParserService;
 
   public Item parse(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
@@ -47,7 +45,9 @@ public final class ItemParserService {
       wrapper.setGroupDto(oGroupDto.get());
     }
 
-    parseItemBase(wrapper);
+    var base = itemBaseParserService.parseItemBase(oCategoryDto.get(), oGroupDto.get(), itemDto);
+    wrapper.getItem().setBase(base);
+
     parseIcon(wrapper);
     parseCorrupted(wrapper);
 
@@ -97,12 +97,6 @@ public final class ItemParserService {
     var item = wrapper.getItem();
     var itemDto = wrapper.getItemDto();
 
-    if (wrapper.getGroupDto() == GroupDto.unique && !itemDto.isIdentified()) {
-      // ItemDto(isIdentified=false, itemLevel=0, frameType=Unique, isCorrupted=null, isSynthesised=null, icon=http://web.poecdn.com/image/Art/2DItems/Maps/musicbox.png?scale=1&w=1&h=1&v=a8738647137a02c29c1b89d51d1bf58b, league=Standard, id=e703a5ae16defc94b606858fc4d53600be694ac8bed75f533b76f22ee90f03e3, name=, typeLine=Overgrown Shrine Map, note=null, stackSize=null, prophecyText=null, raceReward=null, influences=null, extended=ExtendedDto(category=maps, subcategories=null), properties=[PropertyDto(name=Map Tier, values=[[4, 0]])], sockets=null, explicitMods=null, enchantMods=null)
-      // todo: actually we could
-      wrapper.discard(DiscardBasis.PARSE_UNID_UNIQUE_MAP);
-      return;
-    }
     if (wrapper.getGroupDto() == GroupDto.map && itemDto.getFrameType() == Rarity.Magic) {
       // ItemDto(isIdentified=true, itemLevel=0, frameType=Magic, isCorrupted=null, isSynthesised=null, icon=http://web.poecdn.com/image/Art/2DItems/Maps/act4maps/Map66.png?scale=1&w=1&h=1&v=3557e95be294ee38dce858022f33f406, league=Standard, id=e48eef62374f21e1f1feea5436893b45ec2690aea37534546e7a28b2782284a4, name=, typeLine=Titan's Geode Map of Power, note=null, stackSize=null, prophecyText=null, raceReward=null, influences=null, extended=ExtendedDto(category=maps, subcategories=null), properties=[PropertyDto(name=Map Tier, values=[[3, 0]]), PropertyDto(name=Item Quantity, values=[[+24%, 1]]), PropertyDto(name=Item Rarity, values=[[+12%, 1]])], sockets=null, explicitMods=[Monsters gain 1 Power Charge every 20 seconds, Unique Boss has 25% increased Life, Unique Boss has 20% increased Area of Effect], enchantMods=null)
       wrapper.discard(DiscardBasis.PARSE_MAGIC_MAP);
@@ -234,54 +228,6 @@ public final class ItemParserService {
         item.setCorrupted(itemDto.getIsCorrupted());
       }
     }
-  }
-
-  public void parseItemBase(ItemWrapper wrapper) throws ItemParseException {
-    var categoryDto = wrapper.getCategoryDto();
-    var groupDto = wrapper.getGroupDto();
-    var itemDto = wrapper.getItemDto();
-
-    var category = Category.builder()
-      .name(categoryDto.name())
-      .build();
-    var group = Group.builder()
-      .name(groupDto.name())
-      .build();
-
-    if (itemDto.getFrameType() == null) {
-      throw new ItemParseException(ParseExceptionBasis.MISSING_FRAME_TYPE);
-    }
-
-    var builder = ItemBase.builder()
-      .category(category)
-      .group(group)
-      .frameType(itemDto.getFrameType().ordinal());
-
-    var name = itemDto.getName();
-    if (name != null) {
-      if (name.contains(">")) {
-        name = name.substring(name.lastIndexOf(">") + 1);
-      }
-
-      // "Superior Ashen Wood Map" -> "Ashen Wood Map"
-      if (name.startsWith("Superior ")) {
-        name = name.replace("Superior ", "");
-      }
-
-      if (itemDto.getFrameType() == Rarity.Rare || StringUtils.isBlank(itemDto.getName())) {
-        name = null;
-      }
-    }
-
-    var baseType = itemDto.getTypeLine();
-    if (baseType != null) {
-      if (baseType.startsWith("Synthesised ")) {
-        baseType = baseType.replace("Synthesised ", "");
-      }
-    }
-
-    var itemBase = builder.name(name).baseType(baseType).build();
-    wrapper.getItem().setBase(itemBase);
   }
 
   public void parseEnchantment(ItemWrapper wrapper) throws ItemParseException {
