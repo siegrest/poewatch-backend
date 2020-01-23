@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
-import watch.poe.app.service.statistics.StatType;
-import watch.poe.app.service.statistics.StatisticsService;
+import watch.poe.app.domain.statistics.StatType;
+import watch.poe.app.service.StatisticsService;
 import watch.poe.app.utility.ChangeIdUtility;
 import watch.poe.app.utility.StatsUtility;
 

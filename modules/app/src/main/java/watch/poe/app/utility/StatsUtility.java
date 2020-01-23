@@ -1,6 +1,6 @@
 package watch.poe.app.utility;
 
-import watch.poe.app.service.statistics.StatType;
+import watch.poe.app.domain.statistics.StatType;
 
 import java.util.regex.Pattern;
 

@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.Rarity;
+import watch.poe.app.domain.wrapper.CategoryWrapper;
+import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.utility.ItemUtility;
 
 import java.util.Optional;

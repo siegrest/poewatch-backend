@@ -1,9 +1,7 @@
-package watch.poe.app.service.statistics;
+package watch.poe.app.domain.statistics;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import watch.poe.app.domain.statistics.StatGroupType;
-import watch.poe.app.domain.statistics.TimeFrame;
 
 @Getter
 @AllArgsConstructor

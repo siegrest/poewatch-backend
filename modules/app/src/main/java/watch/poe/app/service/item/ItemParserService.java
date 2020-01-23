@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.*;
+import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.CorruptedItemService;
 import watch.poe.app.service.resource.ItemVariantService;

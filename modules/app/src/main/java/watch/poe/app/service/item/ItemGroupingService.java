@@ -6,6 +6,8 @@ import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.GroupDto;
 import watch.poe.app.domain.ParseExceptionBasis;
 import watch.poe.app.domain.Rarity;
+import watch.poe.app.domain.wrapper.CategoryWrapper;
+import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.utility.ItemUtility;
 

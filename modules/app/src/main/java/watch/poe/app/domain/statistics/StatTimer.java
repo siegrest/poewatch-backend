@@ -2,7 +2,6 @@ package watch.poe.app.domain.statistics;
 
 import lombok.Builder;
 import lombok.Getter;
-import watch.poe.app.service.statistics.StatType;
 
 @Getter
 @Builder

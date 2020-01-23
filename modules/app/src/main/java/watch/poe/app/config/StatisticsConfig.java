@@ -2,8 +2,8 @@ package watch.poe.app.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import watch.poe.app.service.statistics.StatCollector;
-import watch.poe.app.service.statistics.StatType;
+import watch.poe.app.domain.statistics.StatCollector;
+import watch.poe.app.domain.statistics.StatType;
 
 import java.util.HashSet;
 import java.util.Set;

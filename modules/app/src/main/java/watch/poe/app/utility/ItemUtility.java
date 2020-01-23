@@ -3,12 +3,12 @@ package watch.poe.app.utility;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import watch.poe.app.domain.*;
+import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.PropertyDto;
 import watch.poe.app.dto.river.SocketDto;
 import watch.poe.app.exception.InvalidIconException;
 import watch.poe.app.exception.ItemParseException;
-import watch.poe.app.service.item.ItemWrapper;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.ItemBase;
 

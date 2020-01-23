@@ -1,4 +1,4 @@
-package watch.poe.app.service.river;
+package watch.poe.app.domain.wrapper;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package watch.poe.app.service.statistics;
+package watch.poe.app.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,7 +6,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import watch.poe.app.domain.statistics.StatCollector;
 import watch.poe.app.domain.statistics.StatTimer;
+import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.statistics.ThreadTimer;
 import watch.poe.app.service.repository.StatisticsRepositoryService;
 
