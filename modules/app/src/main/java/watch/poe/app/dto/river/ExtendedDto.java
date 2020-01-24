@@ -10,4 +10,6 @@ import java.util.List;
 public class ExtendedDto {
     private String category;
     private List<String> subcategories;
+    private Integer prefixes;
+    private Integer suffixes;
 }
