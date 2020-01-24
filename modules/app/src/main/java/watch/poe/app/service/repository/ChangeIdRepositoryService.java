@@ -1,6 +1,6 @@
 package watch.poe.app.service.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import watch.poe.persistence.model.ChangeId;
 import watch.poe.persistence.repository.ChangeIdRepository;
@@ -9,12 +9,12 @@ import java.util.Date;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ChangeIdRepositoryService {
 
     public static final String RIVER = "river";
 
-    @Autowired
-    private ChangeIdRepository changeIdRepository;
+  private final ChangeIdRepository changeIdRepository;
 
     public ChangeId save(String name, String changeIdString) {
         var changeId = ChangeId.builder()

@@ -1,7 +1,7 @@
 package watch.poe.app.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.Price;
 import watch.poe.app.service.resource.CurrencyAliasService;
@@ -10,12 +10,12 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class NoteParseService {
 
     private static final List<String> acceptedPrefixes = List.of("~b/o", "~price");
 
-    @Autowired
-    private CurrencyAliasService currencyAliasService;
+  private final CurrencyAliasService currencyAliasService;
 
     public Price parsePrice(String stashNote, String itemNote) {
         var price = parseBuyoutNote(itemNote);

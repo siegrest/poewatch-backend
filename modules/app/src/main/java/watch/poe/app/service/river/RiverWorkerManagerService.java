@@ -1,7 +1,7 @@
 package watch.poe.app.service.river;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,29 +15,23 @@ import java.util.concurrent.Future;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RiverWorkerManagerService {
 
-    @Autowired
-    private RiverWorkerService riverWorkerService;
+  private final RiverWorkerService riverWorkerService;
+  private final RiverWorkerJobSchedulerService jobSchedulerService;
+  private final ChangeIdRepositoryService changeIdRepositoryService;
+  private final StatisticsService statisticsService;
 
-    @Autowired
-    private RiverWorkerJobSchedulerService jobSchedulerService;
+  @Value("${stash.worker.count}")
+  private int maxWorkerCount;
+  @Value("${stash.fetch.enabled}")
+  private boolean enabled;
 
-    @Autowired
-    private ChangeIdRepositoryService changeIdRepositoryService;
+  private LinkedList<Future<String>> workerResultQueue = new LinkedList<>();
 
-    @Autowired
-    private StatisticsService statisticsService;
-
-    @Value("${stash.worker.count}")
-    private int maxWorkerCount;
-    @Value("${stash.fetch.enabled}")
-    private boolean enabled;
-
-    private LinkedList<Future<String>> workerResultQueue = new LinkedList<>();
-
-    @Scheduled(fixedRateString = "${stash.worker.rate}")
-    public void scheduleWorker() {
+  @Scheduled(fixedRateString = "${stash.worker.rate}")
+  public void scheduleWorker() {
         if (!enabled) {
             return;
         }

@@ -1,6 +1,6 @@
 package watch.poe.app.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
@@ -10,10 +10,10 @@ import watch.poe.persistence.config.PersistenceModuleConfig;
 @Configuration
 @Import(PersistenceModuleConfig.class)
 @PropertySource({"classpath:poe-watch.properties"})
+@RequiredArgsConstructor
 public class AppModuleConfig {
 
-    @Autowired
-    private Environment env;
+    private final Environment env;
 
     public String getProperty(String pPropertyKey) {
         return env.getProperty(pPropertyKey);

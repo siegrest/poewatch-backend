@@ -1,7 +1,7 @@
 package watch.poe.app.service.river;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -20,24 +20,22 @@ import java.util.concurrent.Future;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RiverWorkerService {
 
-    @Autowired
-    private RiverWorkerJobSchedulerService jobSchedulerService;
-    @Autowired
-    private RiverParserService riverParserService;
-    @Autowired
-    private StatisticsService statisticsService;
+  private final RiverWorkerJobSchedulerService jobSchedulerService;
+  private final RiverParserService riverParserService;
+  private final StatisticsService statisticsService;
 
-    @Value("${stash.fetch.url}")
-    private String endpointUrl;
-    @Value("${stash.fetch.timeout.connect}")
-    private int connectTimeOut;
-    @Value("${stash.fetch.timeout.read}")
-    private int readTimeOut;
+  @Value("${stash.fetch.url}")
+  private String endpointUrl;
+  @Value("${stash.fetch.timeout.connect}")
+  private int connectTimeOut;
+  @Value("${stash.fetch.timeout.read}")
+  private int readTimeOut;
 
-    @Async
-    public Future<String> queryNext() {
+  @Async
+  public Future<String> queryNext() {
         var nextChangeId = jobSchedulerService.getJob();
         if (nextChangeId == null) {
             log.error("Worker provided empty job");

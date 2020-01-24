@@ -1,7 +1,7 @@
 package watch.poe.app.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
@@ -18,24 +18,23 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class LeagueQueryService {
 
-    @Autowired
-    private LeagueRepository leagueRepository;
-    @Autowired
-    private GsonService gsonService;
+  private final LeagueRepository leagueRepository;
+  private final GsonService gsonService;
 
-    @Value("${league.fetch.enabled}")
-    private boolean enabled;
-    @Value("${league.fetch.url}")
-    private String endpointUrl;
+  @Value("${league.fetch.enabled}")
+  private boolean enabled;
+  @Value("${league.fetch.url}")
+  private String endpointUrl;
 
-    @Scheduled(cron = "${league.fetch.cron}")
-    @EventListener(ApplicationStartedEvent.class)
-    public void cycle() {
-        if (!enabled) {
+  @Scheduled(cron = "${league.fetch.cron}")
+  @EventListener(ApplicationStartedEvent.class)
+  public void cycle() {
+    if (!enabled) {
             return;
         }
 

@@ -1,6 +1,6 @@
 package watch.poe.app.service.repository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import watch.poe.persistence.model.StatisticHistory;
 import watch.poe.persistence.model.StatisticPartial;
@@ -11,22 +11,21 @@ import java.util.Date;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class StatisticsRepositoryService {
 
-    @Autowired
-    private StatisticHistoryRepository statisticHistoryRepository;
-    @Autowired
-    private StatisticPartialRepository statisticPartialRepository;
+  private final StatisticHistoryRepository statisticHistoryRepository;
+  private final StatisticPartialRepository statisticPartialRepository;
 
-    public List<StatisticPartial> getPartialStatistics() {
-        return statisticPartialRepository.findAll();
-    }
+  public List<StatisticPartial> getPartialStatistics() {
+    return statisticPartialRepository.findAll();
+  }
 
-    public void deletePartialByType(String type) {
-        statisticPartialRepository.deleteByTypeEquals(type);
-    }
+  public void deletePartialByType(String type) {
+    statisticPartialRepository.deleteByTypeEquals(type);
+  }
 
-    public void saveToHistory(String type, Date time, Long value) {
+  public void saveToHistory(String type, Date time, Long value) {
         var s = StatisticHistory.builder()
                 .time(time)
                 .type(type)

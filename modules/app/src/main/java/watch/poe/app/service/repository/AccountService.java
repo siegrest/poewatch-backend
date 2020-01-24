@@ -1,8 +1,8 @@
 package watch.poe.app.service.repository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import watch.poe.persistence.model.Account;
@@ -12,10 +12,10 @@ import java.util.Date;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class AccountService {
 
-  @Autowired
-  private AccountRepository accountRepository;
+  private final AccountRepository accountRepository;
 
   @Transactional
   public Account save(String accountName) {

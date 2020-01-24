@@ -1,8 +1,8 @@
 package watch.poe.app.service.item;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.utility.ItemUtility;
 import watch.poe.persistence.model.Category;
@@ -18,18 +18,15 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public final class ItemIndexerService {
 
-  @Autowired
-  private ItemRepository itemRepository;
-  @Autowired
-  private ItemBaseRepository itemBaseRepository;
-  @Autowired
-  private GroupRepository groupRepository;
-  @Autowired
-  private CategoryRepository categoryRepository;
+  private final ItemRepository itemRepository;
+  private final ItemBaseRepository itemBaseRepository;
+  private final GroupRepository groupRepository;
+  private final CategoryRepository categoryRepository;
 
   public Item index(Item item) {
     var base = item.getBase();

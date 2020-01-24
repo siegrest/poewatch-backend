@@ -1,7 +1,7 @@
 package watch.poe.app.service.item;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.*;
 import watch.poe.app.domain.wrapper.ItemWrapper;
@@ -11,22 +11,18 @@ import watch.poe.app.service.resource.ItemVariantService;
 import watch.poe.app.utility.ItemUtility;
 import watch.poe.persistence.model.Item;
 
-@Service
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public final class ItemParserService {
 
   private static final String ENCHANTMENT_ICON = "http://web.poecdn.com/image/Art/2DItems/Currency/Enchantment.png?scale=1&w=1&h=1";
 
-  @Autowired
-  private ItemVariantService itemVariantService;
-  @Autowired
-  private CorruptedItemService corruptedItemService;
-  @Autowired
-  private ItemCategorizationService categorizationService;
-  @Autowired
-  private ItemGroupingService groupingService;
-  @Autowired
-  private ItemBaseParserService itemBaseParserService;
+  private final ItemVariantService itemVariantService;
+  private final CorruptedItemService corruptedItemService;
+  private final ItemCategorizationService categorizationService;
+  private final ItemGroupingService groupingService;
+  private final ItemBaseParserService itemBaseParserService;
 
   public Item parse(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();

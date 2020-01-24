@@ -1,7 +1,7 @@
 package watch.poe.app.service.river;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -30,28 +30,19 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RiverParserService {
 
-  @Autowired
-  private GsonService gsonService;
-  @Autowired
-  private StatisticsService statisticsService;
-  @Autowired
-  private LeagueService leagueService;
-  @Autowired
-  private StashRepositoryService stashRepositoryService;
-  @Autowired
-  private AccountService accountService;
-  @Autowired
-  private CharacterService characterService;
-  @Autowired
-  private NoteParseService noteParseService;
-  @Autowired
-  private ItemParserService itemParserService;
-  @Autowired
-  private ItemIndexerService itemIndexerService;
-  @Autowired
-  private LeagueItemEntryRepository itemEntryRepository;
+  private final GsonService gsonService;
+  private final StatisticsService statisticsService;
+  private final LeagueService leagueService;
+  private final StashRepositoryService stashRepositoryService;
+  private final AccountService accountService;
+  private final CharacterService characterService;
+  private final NoteParseService noteParseService;
+  private final ItemParserService itemParserService;
+  private final ItemIndexerService itemIndexerService;
+  private final LeagueItemEntryRepository itemEntryRepository;
 
   @Value("${item.accept.missing.price}")
   private boolean acceptMissingPrice;

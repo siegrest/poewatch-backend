@@ -1,7 +1,7 @@
 package watch.poe.app.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,22 +20,21 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class StatisticsService {
 
-    @Autowired
-    private StatisticsRepositoryService statisticsRepositoryService;
-    @Autowired
-    private Set<StatCollector> collectors;
+  private final StatisticsRepositoryService statisticsRepositoryService;
+  private final Set<StatCollector> collectors;
 
-    private Set<ThreadTimer> threadTimers = Collections.synchronizedSet(new HashSet<>());
+  private Set<ThreadTimer> threadTimers = Collections.synchronizedSet(new HashSet<>());
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void onReady() {
-        // Get ongoing statistics collectors from database
-        statisticsRepositoryService.getPartialStatistics().forEach(ps -> {
-            var collector = collectors.stream()
-              .filter(c -> c.getType().equals(StatType.valueOf(ps.getType())))
-              .findFirst();
+  @EventListener(ApplicationReadyEvent.class)
+  public void onReady() {
+    // Get ongoing statistics collectors from database
+    statisticsRepositoryService.getPartialStatistics().forEach(ps -> {
+      var collector = collectors.stream()
+        .filter(c -> c.getType().equals(StatType.valueOf(ps.getType())))
+        .findFirst();
             if (collector.isPresent()) {
                 collector.get().setCount(ps.getCount());
                 collector.get().setSum(ps.getSum());

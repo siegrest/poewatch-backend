@@ -1,7 +1,7 @@
 package watch.poe.app.service.resource;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -13,6 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class CorruptedItemService {
 
   // https://pathofexile.gamepedia.com/Corrupted
@@ -20,8 +21,7 @@ public class CorruptedItemService {
   private static final String FILE_LOCATION = "classpath:corrupted_items.json";
   private static final List<String> corrupted_uniques = new ArrayList<>();
 
-  @Autowired
-  private GsonService gsonService;
+  private final GsonService gsonService;
 
   @EventListener(ApplicationReadyEvent.class)
   public void loadAliases() {

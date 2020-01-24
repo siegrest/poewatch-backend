@@ -1,8 +1,8 @@
 package watch.poe.app.service.repository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.river.StashDto;
 import watch.poe.persistence.model.Account;
@@ -15,10 +15,10 @@ import java.util.Set;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class StashRepositoryService {
 
-  @Autowired
-  public StashRepository stashRepository;
+  public final StashRepository stashRepository;
 
   public Stash save(League league, Account account, StashDto stashDto) {
     if (stashDto.getId() == null || StringUtils.isBlank(stashDto.getId())) {
