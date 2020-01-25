@@ -137,7 +137,7 @@ public class ItemCategorizationService {
       return Optional.of(CategoryDto.fragment);
     }
 
-    if ("watchstones".equals(wrapper.getApiCategory())) {
+    if (CategorizationUtility.isWatchstone(itemDto)) {
       return Optional.of(CategoryDto.fragment);
     }
 
@@ -169,7 +169,6 @@ public class ItemCategorizationService {
       case "maps":
         return Optional.of(CategoryDto.map);
       case "watchstones":
-        log.info("[A13] (ivory watchstone) {}", wrapper.getItemDto());
         return Optional.of(CategoryDto.fragment);
       case "cards":
         return Optional.of(CategoryDto.card);

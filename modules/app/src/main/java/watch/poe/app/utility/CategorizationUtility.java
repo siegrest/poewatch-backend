@@ -19,6 +19,12 @@ public class CategorizationUtility {
     return splitItemType[splitItemType.length - 2].toLowerCase();
   }
 
+  public static String findIconName(ItemDto itemDto) {
+    var slashPos = itemDto.getIcon().lastIndexOf('/');
+    var dotPos = itemDto.getIcon().lastIndexOf(".png");
+    return itemDto.getIcon().substring(slashPos + 1, dotPos);
+  }
+
   public static String getFirstApiGroup(ItemDto itemDto) {
     var subCategories = itemDto.getExtended().getSubcategories();
 
@@ -67,6 +73,90 @@ public class CategorizationUtility {
       .findFirst();
 
     return qProperty.isPresent();
+  }
+
+  public static boolean isTimelessEmblem(ItemDto itemDto) {
+    return getApiGroups(itemDto).contains("fragment")
+      && itemDto.getTypeLine() != null
+      && itemDto.getTypeLine().startsWith("Timeless ")
+      && itemDto.getTypeLine().endsWith(" Emblem");
+  }
+
+  public static boolean isSacrificeFrag(ItemDto itemDto) {
+    return getApiGroups(itemDto).contains("fragment")
+      && itemDto.getTypeLine() != null
+      && itemDto.getTypeLine().startsWith("Sacrifice at ");
+  }
+
+  public static boolean isBreachstone(ItemDto itemDto) {
+    return getApiGroups(itemDto).contains("fragment")
+      && itemDto.getTypeLine() != null
+      && itemDto.getTypeLine().endsWith(" Breachstone");
+  }
+
+  public static boolean isMortalFrag(ItemDto itemDto) {
+    return getApiGroups(itemDto).contains("fragment")
+      && itemDto.getTypeLine() != null
+      && itemDto.getTypeLine().startsWith("Mortal ");
+  }
+
+  public static boolean isDivineVessel(ItemDto itemDto) {
+    return getApiGroups(itemDto).contains("fragment")
+      && itemDto.getTypeLine() != null
+      && itemDto.getTypeLine().equals("Divine Vessel");
+  }
+
+  public static boolean isShaperGuardianFrag(ItemDto itemDto) {
+    return getApiGroups(itemDto).contains("fragment")
+      && itemDto.getTypeLine() != null
+      && itemDto.getTypeLine().startsWith("Fragment of the ");
+  }
+
+  public static boolean isElderGuardianFrag(ItemDto itemDto) {
+    return getApiGroups(itemDto).contains("fragment")
+      && itemDto.getTypeLine() != null
+      && !itemDto.getTypeLine().startsWith("Fragment of the ")
+      && itemDto.getTypeLine().startsWith("Fragment of ")
+      && findIconName(itemDto).startsWith("AtlasMapGuardian");
+  }
+
+  public static boolean isUberElderFrag(ItemDto itemDto) {
+    return getApiGroups(itemDto).contains("fragment")
+      && itemDto.getTypeLine() != null
+      && itemDto.getTypeLine().startsWith("Fragment of ")
+      && findIconName(itemDto).startsWith("UberElder");
+  }
+
+  public static boolean isOfferingGoddess(ItemDto itemDto) {
+    return getApiGroups(itemDto).contains("fragment")
+      && itemDto.getTypeLine() != null
+      && itemDto.getTypeLine().equals("Offering to the Goddess");
+  }
+
+  public static boolean isPaleCourtFrag(ItemDto itemDto) {
+    return getApiGroups(itemDto).contains("fragment")
+      && itemDto.getTypeLine() != null
+      && itemDto.getTypeLine().endsWith(" Key")
+      && CategorizationUtility.findIconName(itemDto).contains("PaleCourt");
+  }
+
+  public static boolean isNetCurrency(ItemDto itemDto) {
+    // ItemDto(isIdentified=true, itemLevel=0, frameType=Currency, isCorrupted=null, isSynthesised=null, icon=http://web.poecdn.com/image/Art/2DItems/Currency/BestiaryTrap8.png?scale=1&w=1&h=1&v=1bc59150f49d6e2c882c3496cffdfbe0, league=Standard, id=1ccdba33dc1fb49ca2ae1ce2f89114fd428d090d06cdddec3115bcd5e8093f4a, name=, typeLine=Reinforced Steel Net, note=null, stackSize=38, prophecyText=null, abyssJewel=null, raceReward=null, influences=null, extended=ExtendedDto(category=currency, subcategories=null, prefixes=null, suffixes=null), properties=[PropertyDto(name=Stack Size, values=[[38/100, 0]]), PropertyDto(name=Net Tier, values=[[8, 0]])], sockets=null, explicitMods=[Effective against Beasts of levels 60 to 75.
+    return "currency".equals(itemDto.getExtended().getCategory())
+      && itemDto.getProperties() != null
+      && itemDto.getProperties().stream().anyMatch(p -> "Net Tier".equals(p.getName()));
+  }
+
+  public static boolean isVialCurrency(ItemDto itemDto) {
+    // ItemDto(isIdentified=true, itemLevel=0, frameType=Currency, isCorrupted=null, isSynthesised=null, icon=http://web.poecdn.com/image/Art/2DItems/Currency/VialCowardsChains.png?scale=1&w=1&h=1&v=d4db2a42dab6d3100560db88cc156762, league=Standard, id=9cf83469b33ff13bfc71332b15a2f3e7346b7486fcc9dd1f5066a23be954cbc4, name=, typeLine=Vial of Consequence, note=null, stackSize=1, prophecyText=null, abyssJewel=null, raceReward=null, influences=null, extended=ExtendedDto(category=currency, subcategories=null, prefixes=null, suffixes=null), properties=[PropertyDto(name=Stack Size, values=[[1/10, 0]])], sockets=null, explicitMods=null, enchantMods=null)
+    return "currency".equals(itemDto.getExtended().getCategory())
+      && itemDto.getTypeLine() != null
+      && itemDto.getTypeLine().startsWith("Vial of ");
+  }
+
+  public static boolean isWatchstone(ItemDto itemDto) {
+    // ItemDto(isIdentified=true, itemLevel=0, frameType=Unique, isCorrupted=null, isSynthesised=null, icon=http://web.poecdn.com/image/Art/2DItems/Currency/Strongholds/IvoryWatchstone5.png?scale=1&w=1&h=1&v=f9dbc175d87158a633ca2c12b1e395ba, league=Metamorph, id=4ef0794a4b787e39adbac89624e6a6d7cee4fd48ec01ba833f532748815acb4f, name=Territories Unknown, typeLine=Ivory Watchstone, note=null, stackSize=null, prophecyText=null, abyssJewel=null, raceReward=null, influences=null, extended=ExtendedDto(category=watchstones, subcategories=null, prefixes=null, suffixes=null), properties=null, sockets=null, explicitMods=[Map has 1 additional random Suffix, 18 uses remaining], enchantMods=null)
+    return itemDto.getExtended().getCategory().equals("watchstones");
   }
 
 }

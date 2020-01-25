@@ -9,6 +9,8 @@ public enum ParseExceptionBasis {
   MISSING_FRAME_TYPE("Invalid frame type"),
   INVALID_ENCHANTMENT_ROLLS("Invalid enchantment rolls"),
 
+  DEV("Development"),
+
   PARSE_UNID_UNIQUE_ITEM("Cannot parse unidentified unique items"),
   PARSE_UNID_UNIQUE_MAP("Unimplemented unidentified unique map encountered"),
   PARSE_CATEGORY("Could not determine category"),

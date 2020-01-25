@@ -19,7 +19,7 @@ public enum GroupDto {
   piece,
   fossil,
   resonator,
-  vial,
+  vial_currency,
   net,
 
   flask,
@@ -29,11 +29,9 @@ public enum GroupDto {
   vaal,
 
   jewel,
-  abyssaljewel,
+  abyssal_jewel,
 
-  map,
   fragment,
-  unique,
   scarab,
 
   prophecy,
@@ -55,6 +53,23 @@ public enum GroupDto {
   splinter,
   runedagger,
   warstaff,
+
+  shaped_map,
+  blighted_map,
+  regular_map,
+  unique_map,
+
+  breach_splinter,
+  timeless_splinter,
+  timeless_emblem,
+  sac_frag,
+  mortal_frag,
+  shaper_guardian_frag,
+  elder_guardian_frag,
+  breachstone,
+  misc_frag,
+  pale_court_frag,
+  uber_elder_frag,
 
   oil,
   beast,

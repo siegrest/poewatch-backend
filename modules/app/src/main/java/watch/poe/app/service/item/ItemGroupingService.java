@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.GroupDto;
 import watch.poe.app.domain.ParseExceptionBasis;
-import watch.poe.app.domain.Rarity;
 import watch.poe.app.domain.wrapper.CategoryWrapper;
 import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.exception.ItemParseException;
@@ -90,6 +89,7 @@ public class ItemGroupingService {
       case "essence":
         return Optional.of(GroupDto.essence);
       case "breach":
+        log.info("[A18] (invalid splinter) {}", wrapper.getItemDto());
         return Optional.of(GroupDto.splinter);
       case "oils":
         return Optional.of(GroupDto.oil);
@@ -116,12 +116,16 @@ public class ItemGroupingService {
 
     if (itemDto.getTypeLine() != null) {
       if (itemDto.getTypeLine().startsWith("Vial of ")) {
-        return Optional.of(GroupDto.vial);
+        return Optional.of(GroupDto.vial_currency);
       }
+    }
 
-      if (itemDto.getTypeLine().startsWith("Timeless") && itemDto.getTypeLine().endsWith("Splinter")) {
-        return Optional.of(GroupDto.splinter);
-      }
+    if (CategorizationUtility.isVialCurrency(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.vial_currency);
+    }
+
+    if (CategorizationUtility.isNetCurrency(itemDto)) {
+      return Optional.of(GroupDto.net);
     }
 
     return Optional.empty();
@@ -154,14 +158,26 @@ public class ItemGroupingService {
     return Optional.empty();
   }
 
-  public Optional<GroupDto> parseMapGroups(CategoryWrapper wrapper) {
-    if (wrapper.getItemDto().getFrameType() == Rarity.Unique || wrapper.getItemDto().getFrameType() == Rarity.Relic) {
-      return Optional.of(GroupDto.unique);
-    } else if (wrapper.getApiGroup() == null) {
-      return Optional.of(GroupDto.map);
+  public Optional<GroupDto> parseMapGroups(CategoryWrapper wrapper) throws ItemParseException {
+    if (ItemUtility.isUnique(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.unique_map);
     }
 
-    return Optional.empty();
+    if (wrapper.getItemDto().getTypeLine().startsWith("Blighted")) {
+      return Optional.of(GroupDto.blighted_map);
+    }
+
+    if (wrapper.getItemDto().getTypeLine().startsWith("Shaped ")) {
+      return Optional.of(GroupDto.shaped_map);
+    }
+
+    if (wrapper.getItemDto().getExtended().getSubcategories() == null) {
+      return Optional.of(GroupDto.regular_map);
+    }
+
+    // todo: remove me
+    throw new ItemParseException(ParseExceptionBasis.DEV);
+//    return Optional.empty();
   }
 
   public Optional<GroupDto> parseBeastGroups(CategoryWrapper wrapper) {
@@ -176,14 +192,71 @@ public class ItemGroupingService {
 
   public Optional<GroupDto> parseCraftingBaseGroups(CategoryWrapper wrapper) {
     if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.abyssaljewel);
+      return Optional.of(GroupDto.abyssal_jewel);
     }
 
     return parseCommonGroups(wrapper);
   }
 
-  public Optional<GroupDto> parseFragmentGroups(CategoryWrapper wrapper) {
-    return Optional.of(GroupDto.fragment);
+  public Optional<GroupDto> parseFragmentGroups(CategoryWrapper wrapper) throws ItemParseException {
+    if (CategorizationUtility.isWatchstone(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.watchstone);
+    }
+
+    if (CategorizationUtility.isBreachSplinter(wrapper)) {
+      return Optional.of(GroupDto.breach_splinter);
+    }
+
+    if (CategorizationUtility.isScarab(wrapper)) {
+      return Optional.of(GroupDto.scarab);
+    }
+
+    if (CategorizationUtility.isTimelessSplinter(wrapper)) {
+      return Optional.of(GroupDto.timeless_splinter);
+    }
+
+    if (CategorizationUtility.isTimelessEmblem(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.timeless_emblem);
+    }
+
+    if (CategorizationUtility.isSacrificeFrag(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.sac_frag);
+    }
+
+    if (CategorizationUtility.isMortalFrag(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.mortal_frag);
+    }
+
+    if (CategorizationUtility.isShaperGuardianFrag(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.shaper_guardian_frag);
+    }
+
+    if (CategorizationUtility.isBreachstone(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.breachstone);
+    }
+
+    if (CategorizationUtility.isDivineVessel(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.misc_frag);
+    }
+
+    if (CategorizationUtility.isOfferingGoddess(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.misc_frag);
+    }
+
+    if (CategorizationUtility.isPaleCourtFrag(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.pale_court_frag);
+    }
+
+    if (CategorizationUtility.isUberElderFrag(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.uber_elder_frag);
+    }
+
+    if (CategorizationUtility.isElderGuardianFrag(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.elder_guardian_frag);
+    }
+
+    // todo: remove me
+    throw new ItemParseException(ParseExceptionBasis.DEV);
   }
 
 }

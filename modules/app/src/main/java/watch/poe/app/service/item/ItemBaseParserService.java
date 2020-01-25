@@ -49,7 +49,7 @@ public final class ItemBaseParserService {
 
     var name = itemDto.getName();
 
-    if (categoryDto == CategoryDto.map && groupDto == GroupDto.unique && !itemDto.isIdentified()) {
+    if (categoryDto == CategoryDto.map && groupDto == GroupDto.unique_map && !itemDto.isIdentified()) {
       // ItemDto(isIdentified=false, itemLevel=0, frameType=Unique, isCorrupted=null, isSynthesised=null, icon=http://web.poecdn.com/image/Art/2DItems/Maps/musicbox.png?scale=1&w=1&h=1&v=a8738647137a02c29c1b89d51d1bf58b, league=Standard, id=e703a5ae16defc94b606858fc4d53600be694ac8bed75f533b76f22ee90f03e3, name=, typeLine=Overgrown Shrine Map, note=null, stackSize=null, prophecyText=null, raceReward=null, influences=null, extended=ExtendedDto(category=maps, subcategories=null), properties=[PropertyDto(name=Map Tier, values=[[4, 0]])], sockets=null, explicitMods=null, enchantMods=null)
 
       var mapMatch = uniqueMapService.identifyMap(itemDto);

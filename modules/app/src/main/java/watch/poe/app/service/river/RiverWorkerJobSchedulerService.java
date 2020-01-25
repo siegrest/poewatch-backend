@@ -14,7 +14,8 @@ public class RiverWorkerJobSchedulerService {
 
     // todo: query job from repository
 //    private String job = "541640378-559363977-529069322-602859172-572858041";
-    private String job = "542419420-560211954-529765688-603620935-57359360";
+//    private String job = "542419420-560211954-529765688-603620935-57359360";
+    private String job = "544998848-562898891-532480647-606437628-78043036";
     private long lastPollTime = 0;
 
     public String peekJob() {
