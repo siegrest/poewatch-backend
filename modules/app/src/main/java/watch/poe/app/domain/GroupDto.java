@@ -31,7 +31,6 @@ public enum GroupDto {
   jewel,
   abyssal_jewel,
 
-  fragment,
   scarab,
 
   prophecy,
@@ -50,7 +49,6 @@ public enum GroupDto {
   twosword,
   wand,
   incubator,
-  splinter,
   runedagger,
   warstaff,
 
