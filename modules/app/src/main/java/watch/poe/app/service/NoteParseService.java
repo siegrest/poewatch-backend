@@ -3,8 +3,12 @@ package watch.poe.app.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import watch.poe.app.domain.ParseExceptionBasis;
 import watch.poe.app.domain.Price;
+import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.CurrencyAliasService;
+import watch.poe.persistence.model.Item;
+import watch.poe.persistence.repository.ItemBaseRepository;
 
 import java.util.List;
 
@@ -16,6 +20,7 @@ public class NoteParseService {
   private static final List<String> acceptedPrefixes = List.of("~b/o", "~price");
 
   private final CurrencyAliasService currencyAliasService;
+  private final ItemBaseRepository itemBaseRepository;
 
   public Price parsePrice(String stashNote, String itemNote) {
     var price = parseBuyoutNote(itemNote);
@@ -94,6 +99,24 @@ public class NoteParseService {
     }
 
     return price;
+  }
+
+  public Item priceToItem(Price price) throws ItemParseException {
+    if (price == null) {
+      return null;
+    }
+
+    var base = itemBaseRepository.findByFrameTypeAndBaseType(5, price.getCurrencyName());
+    if (base.isEmpty()) {
+      throw new ItemParseException(ParseExceptionBasis.MISSING_CURRENCY);
+    }
+
+    var items = base.get().getItems();
+    if (items.size() != 1) {
+      throw new ItemParseException(ParseExceptionBasis.DUPLICATE_CURRENCY_ITEM);
+    }
+
+    return items.stream().findFirst().get();
   }
 
 }

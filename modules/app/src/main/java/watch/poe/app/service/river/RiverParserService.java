@@ -5,9 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.ItemWrapper;
-import watch.poe.app.domain.wrapper.RiverWrapper;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
@@ -20,10 +22,10 @@ import watch.poe.app.service.item.ItemIndexerService;
 import watch.poe.app.service.item.ItemParserService;
 import watch.poe.app.service.repository.AccountService;
 import watch.poe.app.service.repository.CharacterService;
+import watch.poe.app.service.repository.LeagueItemEntryService;
 import watch.poe.app.service.repository.StashRepositoryService;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.LeagueItemEntry;
-import watch.poe.persistence.repository.LeagueItemEntryRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +44,13 @@ public class RiverParserService {
   private final NoteParseService noteParseService;
   private final ItemParserService itemParserService;
   private final ItemIndexerService itemIndexerService;
-  private final LeagueItemEntryRepository itemEntryRepository;
+  private final LeagueItemEntryService itemEntryService;
 
   @Value("${item.accept.missing.price}")
   private boolean acceptMissingPrice;
 
   @Async
+  @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
   public void process(StringBuilder stashStringBuilder) {
     statisticsService.startTimer(StatType.TIME_REPLY_DESERIALIZE);
     var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
@@ -56,18 +59,18 @@ public class RiverParserService {
     log.info("got {} stashes", riverDto.getStashes().size());
 
     statisticsService.startTimer(StatType.TIME_REPLY_PARSE);
-    var riverWrappers = processRiver(riverDto);
+    var entries = processRiver(riverDto);
     statisticsService.clkTimer(StatType.TIME_REPLY_PARSE);
 
-    log.info("extracted {} valid items", riverWrappers.size());
+    log.info("extracted {} valid items", entries.size());
 
     statisticsService.startTimer(StatType.TIME_REPLY_INDEX);
-    processWrappers(riverWrappers);
+    processWrappers(entries);
     statisticsService.clkTimer(StatType.TIME_REPLY_INDEX);
   }
 
-  private List<RiverWrapper> processRiver(RiverDto riverDto) {
-    var riverWrappers = new ArrayList<RiverWrapper>();
+  private List<LeagueItemEntry> processRiver(RiverDto riverDto) {
+    var entries = new ArrayList<LeagueItemEntry>();
 
     for (StashDto stashDto : riverDto.getStashes()) {
       statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
@@ -103,9 +106,10 @@ public class RiverParserService {
           .item(Item.builder().build())
           .build();
 
-        Item item;
+        Item item, priceCurrencyItem;
         try {
           item = itemParserService.parse(wrapper);
+          priceCurrencyItem = noteParseService.priceToItem(price);
         } catch (ItemParseException ex) {
           log.info("Parse exception \"{}\" for {}", ex.getMessage(), wrapper);
           continue;
@@ -115,30 +119,28 @@ public class RiverParserService {
           continue;
         }
 
-        var riverWrapper = RiverWrapper.builder()
+        var entry = LeagueItemEntry.builder()
+          .id(itemDto.getId())
           .item(item)
-          .league(league.get())
-          .price(price)
+          .price(price == null ? null : price.getPrice())
+          .priceItem(priceCurrencyItem)
+          .stackSize(itemDto.getStackSize())
           .stash(stash)
           .build();
 
-        riverWrappers.add(riverWrapper);
+        entries.add(entry);
       }
     }
 
-    return riverWrappers;
+    return entries;
   }
 
-  private void processWrappers(List<RiverWrapper> riverWrappers) {
-
-    for (var wrapper : riverWrappers) {
-      var item = itemIndexerService.index(wrapper.getItem());
-
-      var itemEntry = LeagueItemEntry.builder().build();
-
-      // todo: persist itemEntry
+  private void processWrappers(List<LeagueItemEntry> entries) {
+    for (var entry : entries) {
+      var item = itemIndexerService.index(entry.getItem());
+      entry.setItem(item);
+      itemEntryService.save(entry);
     }
-
   }
 
 }

@@ -15,4 +15,6 @@ public interface ItemBaseRepository extends JpaRepository<ItemBase, Integer> {
 
   Optional<ItemBase> findByCategoryAndGroupAndFrameTypeAndNameAndBaseType(Category category, Group group, Integer frameType, String name, String baseType);
 
+  Optional<ItemBase> findByFrameTypeAndBaseType(Integer frameType, String baseType);
+
 }
