@@ -78,13 +78,14 @@ public final class ItemUtility {
   public static boolean isLabEnchantment(ItemWrapper wrapper) {
     // todo: double check the logic here
     var extended = wrapper.getItemDto().getExtended();
-    var firstGroup = getFirstApiGroup(wrapper.getItemDto());
+    var firstGroup = CategorizationUtility.getFirstApiGroup(wrapper.getItemDto());
     return wrapper.getItemDto().getEnchantMods() != null
       && extended != null
       && "armour".equals(extended.getCategory())
       && ("helmets".equals(firstGroup) || "gloves".equals(firstGroup) || "boots".equals(firstGroup));
   }
 
+  // todo: move to CategorizationUtility
   public static boolean isAbyssalJewel(ItemDto itemDto) {
     return itemDto.getAbyssJewel() != null && itemDto.getAbyssJewel();
   }
@@ -154,28 +155,6 @@ public final class ItemUtility {
     return fullIcon;
   }
 
-  /**
-   * Find icon cdn category. For example, if the icon path is
-   * "http://web.poecdn.com/image/Art/2DItems/Armours/Helmets/HarbingerShards/Shard1.png"
-   * then the icon category is "HarbingerShards"
-   *
-   * @return Extracted category
-   */
-  public static String findIconCategory(ItemDto itemDto) {
-    var splitItemType = itemDto.getIcon().split("/");
-    return splitItemType[splitItemType.length - 2].toLowerCase();
-  }
-
-  public static String getFirstApiGroup(ItemDto itemDto) {
-    var subCategories = itemDto.getExtended().getSubcategories();
-
-    if (subCategories != null && !subCategories.isEmpty()) {
-      return subCategories.get(0).toLowerCase();
-    }
-
-    return null;
-  }
-
   public static Integer extractMapTier(ItemDto itemDto) throws ItemParseException {
     if (itemDto.getProperties() != null) {
       for (PropertyDto prop : itemDto.getProperties()) {
@@ -202,7 +181,7 @@ public final class ItemUtility {
      http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/VaalTempleBase.png?scale=1&w=1&h=1&mn=3&mt=0
     */
 
-    var iconCategory = ItemUtility.findIconCategory(itemDto);
+    var iconCategory = CategorizationUtility.findIconCategory(itemDto);
     var seriesNumber = 0;
 
     // Attempt to find series number for newer maps

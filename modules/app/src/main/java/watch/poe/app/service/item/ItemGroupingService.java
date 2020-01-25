@@ -9,6 +9,7 @@ import watch.poe.app.domain.Rarity;
 import watch.poe.app.domain.wrapper.CategoryWrapper;
 import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.exception.ItemParseException;
+import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.app.utility.ItemUtility;
 
 import java.util.Optional;
@@ -31,14 +32,9 @@ public class ItemGroupingService {
       .itemDto(itemDto)
       .categoryDto(categoryDto)
       .apiCategory(itemDto.getExtended().getCategory())
-      .apiGroup(ItemUtility.getFirstApiGroup(itemDto))
-      .iconCategory(ItemUtility.findIconCategory(itemDto))
+      .apiGroup(CategorizationUtility.getFirstApiGroup(itemDto))
+      .iconCategory(CategorizationUtility.findIconCategory(itemDto))
       .build();
-
-    var oGroup = parseCommonGroups(categoryWrapper);
-    if (oGroup.isPresent()) {
-      return oGroup;
-    }
 
     switch (categoryDto) {
       case card:
@@ -60,15 +56,16 @@ public class ItemGroupingService {
       case leaguestone:
         return Optional.of(GroupDto.leaguestone);
       case fragment:
-        break;
+        return parseFragmentGroups(categoryWrapper);
       case altart:
         return parseAltArtGroups(categoryWrapper);
-      case accessory:
-      case weapon:
-      case armour:
-      case enchantment:
       case base:
-        return parseCommonGroups(categoryWrapper);
+        return parseCraftingBaseGroups(categoryWrapper);
+    }
+
+    var oGroup = parseCommonGroups(categoryWrapper);
+    if (oGroup.isPresent()) {
+      return oGroup;
     }
 
     throw new ItemParseException(ParseExceptionBasis.UNHANDLED_CATEGORY);
@@ -175,6 +172,18 @@ public class ItemGroupingService {
     }
 
     return Optional.empty();
+  }
+
+  public Optional<GroupDto> parseCraftingBaseGroups(CategoryWrapper wrapper) {
+    if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.abyssaljewel);
+    }
+
+    return parseCommonGroups(wrapper);
+  }
+
+  public Optional<GroupDto> parseFragmentGroups(CategoryWrapper wrapper) {
+    return Optional.of(GroupDto.fragment);
   }
 
 }

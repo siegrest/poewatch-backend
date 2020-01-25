@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import watch.poe.app.domain.ParseExceptionBasis;
 import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.dto.river.ItemDto;
@@ -50,7 +48,7 @@ public class RiverParserService {
   private boolean acceptMissingPrice;
 
   @Async
-  @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+//  @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
   public void process(StringBuilder stashStringBuilder) {
     statisticsService.startTimer(StatType.TIME_REPLY_DESERIALIZE);
     var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
@@ -111,7 +109,11 @@ public class RiverParserService {
           item = itemParserService.parse(wrapper);
           priceCurrencyItem = noteParseService.priceToItem(price);
         } catch (ItemParseException ex) {
-          log.info("Parse exception \"{}\" for {}", ex.getMessage(), wrapper);
+          // todo: remove this
+          if (ex.getParseExceptionBasis() != ParseExceptionBasis.MISSING_CURRENCY) {
+            log.info("Parse exception \"{}\" for {}", ex.getMessage(), wrapper);
+          }
+
           continue;
         }
 

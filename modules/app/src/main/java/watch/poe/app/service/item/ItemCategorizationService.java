@@ -6,6 +6,7 @@ import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.Rarity;
 import watch.poe.app.domain.wrapper.CategoryWrapper;
 import watch.poe.app.domain.wrapper.ItemWrapper;
+import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.app.utility.ItemUtility;
 
 import java.util.Optional;
@@ -19,8 +20,8 @@ public class ItemCategorizationService {
     var categoryWrapper = CategoryWrapper.builder()
       .itemDto(itemDto)
       .apiCategory(itemDto.getExtended().getCategory())
-      .apiGroup(ItemUtility.getFirstApiGroup(itemDto))
-      .iconCategory(ItemUtility.findIconCategory(itemDto))
+      .apiGroup(CategorizationUtility.getFirstApiGroup(itemDto))
+      .iconCategory(CategorizationUtility.findIconCategory(itemDto))
       .build();
 
     var oCat = parseAltArtCategory(categoryWrapper);
@@ -94,7 +95,6 @@ public class ItemCategorizationService {
 
     // todo: abyssal belts and flasks are not included
     if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
-      log.info("[A12] (crafting jewel) {}", wrapper);
       return Optional.of(CategoryDto.base);
     }
 
@@ -114,45 +114,48 @@ public class ItemCategorizationService {
   }
 
   public Optional<CategoryDto> parseCurrencyCategory(CategoryWrapper wrapper) {
-    var itemDto = wrapper.getItemDto();
+    if (!"currency".equals(wrapper.getApiCategory())) {
+      return Optional.empty();
+    }
 
-    if (itemDto.getTypeLine() != null) {
-      // todo: redo based on api group
-      if (itemDto.getTypeLine().contains("Splinter of ")) {
-        log.info("[A7] (splinter) {}", itemDto);
-        return Optional.empty();
-      }
-
-      // todo: redo based on api group
-      if (itemDto.getTypeLine().startsWith("Timeless ") && itemDto.getTypeLine().endsWith(" Splinter")) {
-        log.info("[A8] (timeless) {}", itemDto);
-        return Optional.empty();
-      }
+    // categorized as fragments
+    if (CategorizationUtility.isBreachSplinter(wrapper) || CategorizationUtility.isTimelessSplinter(wrapper)) {
+      return Optional.empty();
     }
 
     return Optional.of(CategoryDto.currency);
   }
 
   public Optional<CategoryDto> parseFragmentCategory(CategoryWrapper wrapper) {
+    if (!"maps".equals(wrapper.getApiCategory()) && !"currency".equals(wrapper.getApiCategory())) {
+      return Optional.empty();
+    }
+
     var itemDto = wrapper.getItemDto();
+
+    if (CategorizationUtility.getApiGroups(itemDto).contains("fragment")) {
+      return Optional.of(CategoryDto.fragment);
+    }
 
     if ("watchstones".equals(wrapper.getApiCategory())) {
       return Optional.of(CategoryDto.fragment);
     }
 
-    if ("breach".equals(wrapper.getIconCategory())) {
-      log.info("[A9] (breach frag) {}", itemDto);
+    if (CategorizationUtility.isBreachSplinter(wrapper)) {
       return Optional.of(CategoryDto.fragment);
     }
 
-    if ("scarabs".equals(wrapper.getIconCategory())) {
-      log.info("[A10] (scarab) {}", itemDto);
+    if (CategorizationUtility.isScarab(wrapper)) {
       return Optional.of(CategoryDto.fragment);
     }
 
-    // mortal fragments
+    if (CategorizationUtility.isTimelessSplinter(wrapper)) {
+      return Optional.of(CategoryDto.fragment);
+    }
+
+    // reliquary keys
     if (wrapper.getItemDto().getProperties() == null) {
-      log.info("[A11] (fragment) {}", itemDto);
+      //  ItemDto(isIdentified=true, itemLevel=0, frameType=Normal, isCorrupted=null, isSynthesised=null, icon=http://web.poecdn.com/image/Art/2DItems/Maps/VaultMap.png?scale=1&w=1&h=1&v=cb50511b7087323b10a19559bfb2be29, league=Standard, id=1e6bfa14344cf93a9697366578d3a9a79dd1796b224daa5dd6f2dd9368b9e9cf, name=, typeLine=Ancient Reliquary Key, note=null, stackSize=null, prophecyText=null, abyssJewel=null, raceReward=null, influences=null, extended=ExtendedDto(category=maps, subcategories=null, prefixes=null, suffixes=null), properties=null, sockets=null, explicitMods=null, enchantMods=null)
       return Optional.of(CategoryDto.fragment);
     }
 
@@ -166,6 +169,7 @@ public class ItemCategorizationService {
       case "maps":
         return Optional.of(CategoryDto.map);
       case "watchstones":
+        log.info("[A13] (ivory watchstone) {}", wrapper.getItemDto());
         return Optional.of(CategoryDto.fragment);
       case "cards":
         return Optional.of(CategoryDto.card);

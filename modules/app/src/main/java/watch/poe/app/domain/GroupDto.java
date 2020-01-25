@@ -29,6 +29,7 @@ public enum GroupDto {
   vaal,
 
   jewel,
+  abyssaljewel,
 
   map,
   fragment,

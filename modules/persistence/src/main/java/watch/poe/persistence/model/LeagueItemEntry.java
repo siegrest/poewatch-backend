@@ -42,7 +42,7 @@ public class LeagueItemEntry {
   @Column(name = "price", nullable = true)
   private Double price;
 
-  @ManyToOne(optional = false, fetch = FetchType.LAZY)
+  @ManyToOne(optional = true, fetch = FetchType.LAZY)
   @JoinColumn(name = "fk_price_item", nullable = true)
   private Item priceItem;
 
