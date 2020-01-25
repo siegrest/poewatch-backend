@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import watch.poe.app.domain.DiscardBasis;
 import watch.poe.app.domain.ParseExceptionBasis;
 import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.ItemWrapper;
@@ -110,7 +111,9 @@ public class RiverParserService {
           priceCurrencyItem = noteParseService.priceToItem(price);
         } catch (ItemParseException ex) {
           // todo: remove this
-          if (ex.getParseExceptionBasis() != ParseExceptionBasis.MISSING_CURRENCY) {
+          if (ex.getParseExceptionBasis() != ParseExceptionBasis.MISSING_CURRENCY
+            && ex.getDiscardBasis() != DiscardBasis.PARSE_COMPLEX_MAGIC
+            && ex.getDiscardBasis() != DiscardBasis.PARSE_COMPLEX_RARE) {
             log.info("Parse exception \"{}\" for {}", ex.getMessage(), wrapper);
           }
 

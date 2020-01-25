@@ -41,7 +41,7 @@ public final class ItemParserService {
       wrapper.setGroupDto(oGroupDto.get());
     }
 
-    var base = itemBaseParserService.parseItemBase(oCategoryDto.get(), oGroupDto.get(), itemDto);
+    var base = itemBaseParserService.parse(oCategoryDto.get(), oGroupDto.get(), itemDto);
     wrapper.getItem().setBase(base);
 
     parseIcon(wrapper);
@@ -65,10 +65,6 @@ public final class ItemParserService {
 
     if (itemVariantService.hasVariation(wrapper.getItemDto())) {
       parseVariant(wrapper);
-    }
-
-    if (ItemUtility.isComplex(itemDto, wrapper.getCategoryDto())) {
-      parseComplex(wrapper);
     }
 
     if (ItemUtility.isLabEnchantment(wrapper)) {
@@ -191,20 +187,6 @@ public final class ItemParserService {
     }
 
     item.setVariation(variant.get().getVariation());
-  }
-
-  public void parseComplex(ItemWrapper wrapper) {
-    var itemDto = wrapper.getItemDto();
-
-    if (itemDto.getFrameType() == Rarity.Rare) {
-      wrapper.discard(DiscardBasis.PARSE_COMPLEX_RARE);
-      return;
-    }
-
-    if (itemDto.getFrameType() == Rarity.Magic) {
-      wrapper.discard(DiscardBasis.PARSE_COMPLEX_MAGIC);
-      return;
-    }
   }
 
   public void parseCorrupted(ItemWrapper wrapper) {

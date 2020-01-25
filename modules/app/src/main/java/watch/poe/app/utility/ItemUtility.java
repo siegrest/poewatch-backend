@@ -36,6 +36,7 @@ public final class ItemUtility {
       || categoryDto == CategoryDto.jewel
       || categoryDto == CategoryDto.map
       || categoryDto == CategoryDto.flask
+      || categoryDto == CategoryDto.base
       || categoryDto == CategoryDto.altart
       || categoryDto == CategoryDto.weapon);
   }

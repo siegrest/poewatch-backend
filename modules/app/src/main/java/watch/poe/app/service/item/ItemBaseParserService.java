@@ -4,10 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.CategoryDto;
-import watch.poe.app.domain.GroupDto;
-import watch.poe.app.domain.ParseExceptionBasis;
-import watch.poe.app.domain.Rarity;
+import watch.poe.app.domain.*;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.UniqueMapIdentificationService;
@@ -22,13 +19,11 @@ public final class ItemBaseParserService {
 
   private final UniqueMapIdentificationService uniqueMapService;
 
-  public ItemBase parseItemBase(CategoryDto categoryDto, GroupDto groupDto, ItemDto itemDto) throws ItemParseException {
+  public ItemBase parse(CategoryDto categoryDto, GroupDto groupDto, ItemDto itemDto) throws ItemParseException {
     var category = Category.builder().name(categoryDto.name()).build();
     var group = Group.builder().name(groupDto.name()).build();
 
-    if (itemDto.getFrameType() == null) {
-      throw new ItemParseException(ParseExceptionBasis.MISSING_FRAME_TYPE);
-    }
+    checkFrameType(itemDto);
 
     var name = parseName(categoryDto, groupDto, itemDto);
     var baseType = parseBaseType(categoryDto, groupDto, itemDto);
@@ -76,6 +71,8 @@ public final class ItemBaseParserService {
 
     if (itemDto.getFrameType() == Rarity.Rare) {
       baseType = replacePrefix("Synthesised ", baseType);
+    } else if (itemDto.getFrameType() == Rarity.Magic) {
+      throw new ItemParseException(DiscardBasis.PARSE_COMPLEX_MAGIC);
     }
 
     return baseType;
@@ -92,6 +89,20 @@ public final class ItemBaseParserService {
     }
 
     return name;
+  }
+
+  private void checkFrameType(ItemDto itemDto) throws ItemParseException {
+    if (itemDto.getFrameType() == null) {
+      throw new ItemParseException(ParseExceptionBasis.MISSING_FRAME_TYPE);
+    }
+
+    if (itemDto.getFrameType() == Rarity.Rare) {
+      throw new ItemParseException(DiscardBasis.PARSE_COMPLEX_RARE);
+    }
+
+    if (itemDto.getFrameType() == Rarity.Magic) {
+      throw new ItemParseException(DiscardBasis.PARSE_COMPLEX_MAGIC);
+    }
   }
 
 }
