@@ -3,8 +3,12 @@ package watch.poe.app.service.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.*;
+import watch.poe.app.domain.CategoryDto;
+import watch.poe.app.domain.DiscardBasis;
+import watch.poe.app.domain.GroupDto;
+import watch.poe.app.domain.Rarity;
 import watch.poe.app.domain.wrapper.ItemWrapper;
+import watch.poe.app.exception.GroupingException;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.CorruptedItemService;
 import watch.poe.app.service.resource.ItemVariantService;
@@ -24,24 +28,16 @@ public final class ItemParserService {
   private final ItemGroupingService groupingService;
   private final ItemBaseParserService itemBaseParserService;
 
-  public Item parse(ItemWrapper wrapper) throws ItemParseException {
+  public Item parse(ItemWrapper wrapper) throws ItemParseException, GroupingException {
     var itemDto = wrapper.getItemDto();
 
-    var oCategoryDto = categorizationService.parseCategoryDto(wrapper);
-    if (oCategoryDto.isEmpty()) {
-      throw new ItemParseException(ParseExceptionBasis.PARSE_CATEGORY);
-    } else {
-      wrapper.setCategoryDto(oCategoryDto.get());
-    }
+    var categoryDto = categorizationService.parseCategoryDto(wrapper);
+    wrapper.setCategoryDto(categoryDto);
 
-    var oGroupDto = groupingService.parseGroupDto(wrapper);
-    if (oGroupDto.isEmpty()) {
-      throw new ItemParseException(ParseExceptionBasis.PARSE_GROUP);
-    } else {
-      wrapper.setGroupDto(oGroupDto.get());
-    }
+    var groupDto = groupingService.parseGroupDto(wrapper);
+    wrapper.setGroupDto(groupDto);
 
-    var base = itemBaseParserService.parse(oCategoryDto.get(), oGroupDto.get(), itemDto);
+    var base = itemBaseParserService.parse(categoryDto, groupDto, itemDto);
     wrapper.getItem().setBase(base);
 
     parseIcon(wrapper);

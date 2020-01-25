@@ -4,30 +4,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.GroupDto;
-import watch.poe.app.domain.ParseExceptionBasis;
+import watch.poe.app.domain.GroupingExceptionBasis;
 import watch.poe.app.domain.wrapper.CategoryWrapper;
 import watch.poe.app.domain.wrapper.ItemWrapper;
-import watch.poe.app.exception.ItemParseException;
+import watch.poe.app.exception.GroupingException;
 import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.app.utility.ItemUtility;
-
-import java.util.Optional;
 
 @Slf4j
 @Service
 public class ItemGroupingService {
 
-  public Optional<GroupDto> parseGroupDto(ItemWrapper wrapper) throws ItemParseException {
-    var itemDto = wrapper.getItemDto();
-    var categoryDto = wrapper.getCategoryDto();
-
-    if (itemDto == null) {
-      throw new ItemParseException(ParseExceptionBasis.MISSING_ITEM);
-    } else if (categoryDto == null) {
-      throw new ItemParseException(ParseExceptionBasis.MISSING_CATEGORY);
-    }
-
-    var categoryWrapper = CategoryWrapper.builder()
+  public GroupDto parseGroupDto(ItemWrapper itemWrapper) throws GroupingException {
+    var itemDto = itemWrapper.getItemDto();
+    var categoryDto = itemWrapper.getCategoryDto();
+    var wrapper = CategoryWrapper.builder()
       .itemDto(itemDto)
       .categoryDto(categoryDto)
       .apiCategory(itemDto.getExtended().getCategory())
@@ -37,279 +28,268 @@ public class ItemGroupingService {
 
     switch (categoryDto) {
       case CARD:
-        return Optional.of(GroupDto.CARD);
-      case CURRENCY:
-        return parseCurrencyGroups(categoryWrapper);
+        return GroupDto.CARD;
       case FLASK:
-        return Optional.of(GroupDto.FLASK);
-      case GEM:
-        return parseGemGroups(categoryWrapper);
+        return GroupDto.FLASK;
       case JEWEL:
-        return Optional.of(GroupDto.JEWEL);
-      case MAP:
-        return parseMapGroups(categoryWrapper);
+        return GroupDto.JEWEL;
       case PROPHECY:
-        return Optional.of(GroupDto.PROPHECY);
-      case BEAST:
-        return parseBeastGroups(categoryWrapper);
+        return GroupDto.PROPHECY;
       case LEAGUESTONE:
-        return Optional.of(GroupDto.LEAGUESTONE);
+        return GroupDto.LEAGUESTONE;
+      case CURRENCY:
+        return parseCurrencyGroups(wrapper);
+      case GEM:
+        return parseGemGroups(wrapper);
+      case MAP:
+        return parseMapGroups(wrapper);
+      case BEAST:
+        return parseBeastGroups(wrapper);
       case FRAGMENT:
-        return parseFragmentGroups(categoryWrapper);
+        return parseFragmentGroups(wrapper);
       case ALTART:
-        return parseAltArtGroups(categoryWrapper);
+        return parseAltArtGroups(wrapper);
       case CRAFTING_BASE:
-        return parseCraftingBaseGroups(categoryWrapper);
+        return parseCraftingBaseGroups(wrapper);
+      case ACCESSORY:
+      case ARMOUR:
+      case WEAPON:
+      case ENCHANTMENT:
+        return parseCommonGroups(wrapper);
+      default:
+        throw new GroupingException(GroupingExceptionBasis.UNHANDLED_CATEGORY);
     }
-
-    var oGroup = parseCommonGroups(categoryWrapper);
-    if (oGroup.isPresent()) {
-      return oGroup;
-    }
-
-    throw new ItemParseException(ParseExceptionBasis.UNHANDLED_CATEGORY);
   }
 
-  public Optional<GroupDto> parseCommonGroups(CategoryWrapper wrapper) {
+  private GroupDto parseCommonGroups(CategoryWrapper wrapper) throws GroupingException {
     if (wrapper.getApiGroup() == null) {
-      return Optional.empty();
+      throw new GroupingException(GroupingExceptionBasis.PARSE);
     }
 
     switch (wrapper.getApiGroup()) {
       case "amulet":
-        return Optional.of(GroupDto.AMULET);
+        return GroupDto.AMULET;
       case "belt":
-        return Optional.of(GroupDto.BELT);
+        return GroupDto.BELT;
       case "ring":
-        return Optional.of(GroupDto.RING);
+        return GroupDto.RING;
 
       case "boots":
-        return Optional.of(GroupDto.BOOTS);
+        return GroupDto.BOOTS;
       case "chest":
-        return Optional.of(GroupDto.CHEST);
+        return GroupDto.CHEST;
       case "gloves":
-        return Optional.of(GroupDto.GLOVES);
+        return GroupDto.GLOVES;
       case "helmet":
-        return Optional.of(GroupDto.HELMET);
+        return GroupDto.HELMET;
       case "quiver":
-        return Optional.of(GroupDto.QUIVER);
+        return GroupDto.QUIVER;
       case "shield":
-        return Optional.of(GroupDto.SHIELD);
+        return GroupDto.SHIELD;
 
       case "bow":
-        return Optional.of(GroupDto.BOW);
+        return GroupDto.BOW;
       case "claw":
-        return Optional.of(GroupDto.CLAW);
+        return GroupDto.CLAW;
       case "dagger":
-        return Optional.of(GroupDto.DAGGER);
+        return GroupDto.DAGGER;
       case "oneaxe":
-        return Optional.of(GroupDto.ONE_HAND_AXE);
+        return GroupDto.ONE_HAND_AXE;
       case "onemace":
-        return Optional.of(GroupDto.ONE_HAND_MACE);
+        return GroupDto.ONE_HAND_MACE;
       case "onesword":
-        return Optional.of(GroupDto.ONE_HAND_SWORD);
+        return GroupDto.ONE_HAND_SWORD;
       case "rod":
-        return Optional.of(GroupDto.ROD);
+        return GroupDto.ROD;
       case "sceptre":
-        return Optional.of(GroupDto.SCEPTRE);
+        return GroupDto.SCEPTRE;
       case "staff":
-        return Optional.of(GroupDto.STAFF);
+        return GroupDto.STAFF;
       case "twoaxe":
-        return Optional.of(GroupDto.TWO_HAND_AXE);
+        return GroupDto.TWO_HAND_AXE;
       case "twomace":
-        return Optional.of(GroupDto.TWO_HAND_MACE);
+        return GroupDto.TWO_HAND_MACE;
       case "twosword":
-        return Optional.of(GroupDto.TWO_HAND_SWORD);
+        return GroupDto.TWO_HAND_SWORD;
       case "wand":
-        return Optional.of(GroupDto.WAND);
+        return GroupDto.WAND;
       case "runedagger":
-        return Optional.of(GroupDto.RUNE_DAGGER);
+        return GroupDto.RUNE_DAGGER;
       case "warstaff":
-        return Optional.of(GroupDto.WARSTAFF);
+        return GroupDto.WARSTAFF;
     }
 
-    return Optional.empty();
+    throw new GroupingException(GroupingExceptionBasis.PARSE);
   }
 
-  public Optional<GroupDto> parseCurrencyGroups(CategoryWrapper wrapper) throws ItemParseException {
+  private GroupDto parseCurrencyGroups(CategoryWrapper wrapper) throws GroupingException {
     switch (wrapper.getIconCategory()) {
       case "currency":
       case "divination": // stacked deck
-        return Optional.of(GroupDto.CURRENCY);
+        return GroupDto.CURRENCY;
       case "essence":
-        return Optional.of(GroupDto.ESSENCE);
-      case "breach":
-        throw new ItemParseException(ParseExceptionBasis.DEPRECATED_GROUP);
+        return GroupDto.ESSENCE;
       case "oils":
-        return Optional.of(GroupDto.OIL);
+        return GroupDto.OIL;
       case "catalysts":
-        return Optional.of(GroupDto.CATALYST);
+        return GroupDto.CATALYST;
       case "influence exalts":
-        return Optional.of(GroupDto.INFLUENCE_EXALT);
+        return GroupDto.INFLUENCE_EXALT;
+      case "breach":
+        throw new GroupingException(GroupingExceptionBasis.DEPRECATED);
     }
 
     if (wrapper.getApiGroup() != null) {
       switch (wrapper.getApiGroup()) {
         case "piece":
-          return Optional.of(GroupDto.HARBINGER_PIECE);
+          return GroupDto.HARBINGER_PIECE;
         case "resonator":
-          return Optional.of(GroupDto.RESONATOR);
+          return GroupDto.RESONATOR;
         case "fossil":
-          return Optional.of(GroupDto.FOSSIL);
+          return GroupDto.FOSSIL;
         case "incubator":
-          return Optional.of(GroupDto.INCUBATOR);
-      }
-    }
-
-    var itemDto = wrapper.getItemDto();
-
-    if (itemDto.getTypeLine() != null) {
-      if (itemDto.getTypeLine().startsWith("Vial of ")) {
-        return Optional.of(GroupDto.VIAL);
+          return GroupDto.INCUBATOR;
       }
     }
 
     if (CategorizationUtility.isVialCurrency(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.VIAL);
+      return GroupDto.VIAL;
     }
 
-    if (CategorizationUtility.isNetCurrency(itemDto)) {
-      return Optional.of(GroupDto.NET);
+    if (CategorizationUtility.isNetCurrency(wrapper.getItemDto())) {
+      return GroupDto.NET;
     }
 
-    return Optional.empty();
+    throw new GroupingException(GroupingExceptionBasis.PARSE);
   }
 
-  public Optional<GroupDto> parseGemGroups(CategoryWrapper wrapper) {
+  private GroupDto parseGemGroups(CategoryWrapper wrapper) throws GroupingException {
     if ("vaalgems".equals(wrapper.getIconCategory())) {
-      return Optional.of(GroupDto.VAAL_GEM);
+      return GroupDto.VAAL_GEM;
     } else if ("activegem".equals(wrapper.getApiGroup())) {
-      return Optional.of(GroupDto.SKILL_GEM);
+      return GroupDto.SKILL_GEM;
     } else if ("supportgem".equals(wrapper.getApiGroup())) {
-      return Optional.of(GroupDto.SUPPORT_GEM);
+      return GroupDto.SUPPORT_GEM;
     }
 
-    return Optional.empty();
+    throw new GroupingException(GroupingExceptionBasis.PARSE);
   }
 
-  public Optional<GroupDto> parseAltArtGroups(CategoryWrapper wrapper) {
+  private GroupDto parseAltArtGroups(CategoryWrapper wrapper) throws GroupingException {
     var apiGroup = wrapper.getApiGroup();
     for (var group : GroupDto.values()) {
       if (group.name().equals(apiGroup)) {
-        return Optional.of(GroupDto.valueOf(apiGroup));
+        return GroupDto.valueOf(apiGroup);
       }
     }
 
     if (wrapper.getCategoryDto() == CategoryDto.ALTART && "jewel".equals(wrapper.getApiCategory())) {
-      return Optional.of(GroupDto.JEWEL);
+      return GroupDto.JEWEL;
     }
 
-    return Optional.empty();
+    throw new GroupingException(GroupingExceptionBasis.PARSE);
   }
 
-  public Optional<GroupDto> parseMapGroups(CategoryWrapper wrapper) throws ItemParseException {
+  private GroupDto parseMapGroups(CategoryWrapper wrapper) throws GroupingException {
     if (ItemUtility.isUnique(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.UNIQUE_MAP);
+      return GroupDto.UNIQUE_MAP;
     }
 
     if (wrapper.getItemDto().getTypeLine().startsWith("Blighted")) {
-      return Optional.of(GroupDto.BLIGHTED_MAP);
+      return GroupDto.BLIGHTED_MAP;
     }
 
     if (wrapper.getItemDto().getTypeLine().startsWith("Shaped ")) {
-      return Optional.of(GroupDto.SHAPED_MAP);
+      return GroupDto.SHAPED_MAP;
     }
 
     if (wrapper.getItemDto().getExtended().getSubcategories() == null) {
-      return Optional.of(GroupDto.REGULAR_MAP);
+      return GroupDto.REGULAR_MAP;
     }
 
-    // todo: remove me
-    throw new ItemParseException(ParseExceptionBasis.DEV);
-//    return Optional.empty();
+    throw new GroupingException(GroupingExceptionBasis.PARSE);
   }
 
-  public Optional<GroupDto> parseBeastGroups(CategoryWrapper wrapper) {
+  private GroupDto parseBeastGroups(CategoryWrapper wrapper) throws GroupingException {
     if ("sample".equals(wrapper.getApiGroup())) {
-      return Optional.of(GroupDto.SAMPLE);
+      return GroupDto.SAMPLE;
     } else if ("beast".equals(wrapper.getApiGroup())) {
-      return Optional.of(GroupDto.BEAST);
+      return GroupDto.BEAST;
     }
 
-    return Optional.empty();
+    throw new GroupingException(GroupingExceptionBasis.PARSE);
   }
 
-  public Optional<GroupDto> parseCraftingBaseGroups(CategoryWrapper wrapper) {
+  private GroupDto parseCraftingBaseGroups(CategoryWrapper wrapper) throws GroupingException {
     if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.ABYSSAL_JEWEL);
+      return GroupDto.ABYSSAL_JEWEL;
     }
 
-    return parseCommonGroups(wrapper);
+    throw new GroupingException(GroupingExceptionBasis.PARSE);
   }
 
-  public Optional<GroupDto> parseFragmentGroups(CategoryWrapper wrapper) throws ItemParseException {
+  private GroupDto parseFragmentGroups(CategoryWrapper wrapper) throws GroupingException {
     if (CategorizationUtility.isWatchstone(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.WATCHSTONE);
+      return GroupDto.WATCHSTONE;
     }
 
     if (CategorizationUtility.isBreachSplinter(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.BREACH_SPLINTER);
+      return GroupDto.BREACH_SPLINTER;
     }
 
     if (CategorizationUtility.isScarab(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.SCARAB);
+      return GroupDto.SCARAB;
     }
 
     if (CategorizationUtility.isTimelessSplinter(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.TIMELESS_SPLINTER);
+      return GroupDto.TIMELESS_SPLINTER;
     }
 
     if (CategorizationUtility.isTimelessEmblem(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.TIMELESS_EMBLEM);
+      return GroupDto.TIMELESS_EMBLEM;
     }
 
     if (CategorizationUtility.isSacrificeFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.SAC_FRAG);
+      return GroupDto.SAC_FRAG;
     }
 
     if (CategorizationUtility.isMortalFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.MORTAL_FRAG);
+      return GroupDto.MORTAL_FRAG;
     }
 
     if (CategorizationUtility.isShaperGuardianFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.SHAPER_GUARDIAN_FRAG);
+      return GroupDto.SHAPER_GUARDIAN_FRAG;
     }
 
     if (CategorizationUtility.isBreachstone(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.BREACHSTONE);
+      return GroupDto.BREACHSTONE;
     }
 
     if (CategorizationUtility.isDivineVessel(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.MISC_FRAG);
+      return GroupDto.MISC_FRAG;
     }
 
     if (CategorizationUtility.isOfferingGoddess(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.MISC_FRAG);
+      return GroupDto.MISC_FRAG;
     }
 
     if (CategorizationUtility.isPaleCourtFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.PALE_COURT_FRAG);
+      return GroupDto.PALE_COURT_FRAG;
     }
 
     if (CategorizationUtility.isUberElderFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.UBER_ELDER_FRAG);
+      return GroupDto.UBER_ELDER_FRAG;
     }
 
     if (CategorizationUtility.isElderGuardianFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.ELDER_GUARDIAN_FRAG);
+      return GroupDto.ELDER_GUARDIAN_FRAG;
     }
 
     if (CategorizationUtility.isBreachBlessing(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.BREACH_BLESSING);
+      return GroupDto.BREACH_BLESSING;
     }
 
-    // todo: remove me
-    throw new ItemParseException(ParseExceptionBasis.DEV);
+    throw new GroupingException(GroupingExceptionBasis.PARSE);
   }
 
 }

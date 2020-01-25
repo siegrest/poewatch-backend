@@ -3,9 +3,11 @@ package watch.poe.app.service.item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryDto;
+import watch.poe.app.domain.ParseExceptionBasis;
 import watch.poe.app.domain.Rarity;
 import watch.poe.app.domain.wrapper.CategoryWrapper;
 import watch.poe.app.domain.wrapper.ItemWrapper;
+import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.app.utility.ItemUtility;
 
@@ -15,7 +17,7 @@ import java.util.Optional;
 @Service
 public class ItemCategorizationService {
 
-  public Optional<CategoryDto> parseCategoryDto(ItemWrapper wrapper) {
+  public CategoryDto parseCategoryDto(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
     var categoryWrapper = CategoryWrapper.builder()
       .itemDto(itemDto)
@@ -26,38 +28,43 @@ public class ItemCategorizationService {
 
     var oCat = parseAltArtCategory(categoryWrapper);
     if (oCat.isPresent()) {
-      return oCat;
+      return oCat.get();
     }
 
     oCat = parseEnchantmentCategory(categoryWrapper);
     if (oCat.isPresent()) {
-      return oCat;
+      return oCat.get();
     }
 
     oCat = parseCraftingBaseCategory(categoryWrapper);
     if (oCat.isPresent()) {
-      return oCat;
+      return oCat.get();
     }
 
     oCat = parseProphecyCategory(categoryWrapper);
     if (oCat.isPresent()) {
-      return oCat;
+      return oCat.get();
     }
 
     oCat = parseCurrencyCategory(categoryWrapper);
     if (oCat.isPresent()) {
-      return oCat;
+      return oCat.get();
     }
 
     oCat = parseFragmentCategory(categoryWrapper);
     if (oCat.isPresent()) {
-      return oCat;
+      return oCat.get();
     }
 
-    return parseSpecificCategories(categoryWrapper);
+    oCat = parseSpecificCategories(categoryWrapper);
+    if (oCat.isPresent()) {
+      return oCat.get();
+    }
+
+    throw new ItemParseException(ParseExceptionBasis.PARSE_CATEGORY);
   }
 
-  public Optional<CategoryDto> parseAltArtCategory(CategoryWrapper wrapper) {
+  private Optional<CategoryDto> parseAltArtCategory(CategoryWrapper wrapper) {
     if (wrapper.getItemDto().getRaceReward() != null) {
       return Optional.of(CategoryDto.ALTART);
     }
@@ -65,7 +72,7 @@ public class ItemCategorizationService {
     return Optional.empty();
   }
 
-  public Optional<CategoryDto> parseEnchantmentCategory(CategoryWrapper wrapper) {
+  private Optional<CategoryDto> parseEnchantmentCategory(CategoryWrapper wrapper) {
     if (wrapper.getItemDto().getEnchantMods() == null) {
       return Optional.empty();
     }
@@ -84,7 +91,7 @@ public class ItemCategorizationService {
     return Optional.of(CategoryDto.ENCHANTMENT);
   }
 
-  public Optional<CategoryDto> parseCraftingBaseCategory(CategoryWrapper wrapper) {
+  private Optional<CategoryDto> parseCraftingBaseCategory(CategoryWrapper wrapper) {
     if (ItemUtility.isCorrupted(wrapper.getItemDto())) {
       return Optional.empty();
     }
@@ -105,7 +112,7 @@ public class ItemCategorizationService {
     return Optional.of(CategoryDto.CRAFTING_BASE);
   }
 
-  public Optional<CategoryDto> parseProphecyCategory(CategoryWrapper wrapper) {
+  private Optional<CategoryDto> parseProphecyCategory(CategoryWrapper wrapper) {
     if (wrapper.getItemDto().getFrameType() == Rarity.Prophecy) {
       return Optional.of(CategoryDto.PROPHECY);
     }
@@ -113,7 +120,7 @@ public class ItemCategorizationService {
     return Optional.empty();
   }
 
-  public Optional<CategoryDto> parseCurrencyCategory(CategoryWrapper wrapper) {
+  private Optional<CategoryDto> parseCurrencyCategory(CategoryWrapper wrapper) {
     if (!"currency".equals(wrapper.getApiCategory())) {
       return Optional.empty();
     }
@@ -136,7 +143,7 @@ public class ItemCategorizationService {
     return Optional.of(CategoryDto.CURRENCY);
   }
 
-  public Optional<CategoryDto> parseFragmentCategory(CategoryWrapper wrapper) {
+  private Optional<CategoryDto> parseFragmentCategory(CategoryWrapper wrapper) {
     if (!"maps".equals(wrapper.getApiCategory()) && !"currency".equals(wrapper.getApiCategory())) {
       return Optional.empty();
     }
@@ -174,7 +181,7 @@ public class ItemCategorizationService {
     return Optional.empty();
   }
 
-  public Optional<CategoryDto> parseSpecificCategories(CategoryWrapper wrapper) {
+  private Optional<CategoryDto> parseSpecificCategories(CategoryWrapper wrapper) {
     switch (wrapper.getApiCategory()) {
       case "gems":
         return Optional.of(CategoryDto.GEM);

@@ -12,6 +12,7 @@ import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
+import watch.poe.app.exception.GroupingException;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.service.LeagueService;
@@ -118,6 +119,9 @@ public class RiverParserService {
             log.info("Parse exception \"{}\" for {}", ex.getMessage(), wrapper);
           }
 
+          continue;
+        } catch (GroupingException ex) {
+          log.info("Grouping exception \"{}\" for {}", ex.getMessage(), wrapper);
           continue;
         }
 
