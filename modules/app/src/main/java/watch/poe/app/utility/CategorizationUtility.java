@@ -57,4 +57,16 @@ public class CategorizationUtility {
     return getApiGroups(wrapper.getItemDto()).contains("scarab");
   }
 
+  public static boolean hasQuality(ItemDto itemDto) {
+    if (itemDto.getProperties() == null) {
+      return false;
+    }
+
+    var qProperty = itemDto.getProperties().stream()
+      .filter(p -> "Quality".equals(p.getName()))
+      .findFirst();
+
+    return qProperty.isPresent();
+  }
+
 }

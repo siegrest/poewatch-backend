@@ -8,6 +8,7 @@ import watch.poe.app.domain.*;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.UniqueMapIdentificationService;
+import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.persistence.model.Category;
 import watch.poe.persistence.model.Group;
 import watch.poe.persistence.model.ItemBase;
@@ -44,10 +45,6 @@ public final class ItemBaseParserService {
 
     var name = itemDto.getName();
 
-    if (categoryDto == CategoryDto.map) {
-      name = replacePrefix("Superior ", name);
-    }
-
     if (categoryDto == CategoryDto.map && groupDto == GroupDto.unique && !itemDto.isIdentified()) {
       // ItemDto(isIdentified=false, itemLevel=0, frameType=Unique, isCorrupted=null, isSynthesised=null, icon=http://web.poecdn.com/image/Art/2DItems/Maps/musicbox.png?scale=1&w=1&h=1&v=a8738647137a02c29c1b89d51d1bf58b, league=Standard, id=e703a5ae16defc94b606858fc4d53600be694ac8bed75f533b76f22ee90f03e3, name=, typeLine=Overgrown Shrine Map, note=null, stackSize=null, prophecyText=null, raceReward=null, influences=null, extended=ExtendedDto(category=maps, subcategories=null), properties=[PropertyDto(name=Map Tier, values=[[4, 0]])], sockets=null, explicitMods=null, enchantMods=null)
 
@@ -69,6 +66,10 @@ public final class ItemBaseParserService {
       return null;
     }
 
+    if (categoryDto == CategoryDto.map && CategorizationUtility.hasQuality(itemDto)) {
+      baseType = replacePrefix("Superior ", baseType);
+    }
+
     if (itemDto.getFrameType() == Rarity.Rare) {
       baseType = replacePrefix("Synthesised ", baseType);
     } else if (itemDto.getFrameType() == Rarity.Magic) {
@@ -85,7 +86,7 @@ public final class ItemBaseParserService {
 
     // "Superior Ashen Wood Map" -> "Ashen Wood Map"
     if (name.startsWith(prefix)) {
-      return name.substring(0, prefix.length());
+      return name.substring(prefix.length());
     }
 
     return name;
