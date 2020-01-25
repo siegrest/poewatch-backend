@@ -31,14 +31,14 @@ public final class ItemUtility {
   public static boolean isComplex(ItemDto itemDto, CategoryDto categoryDto) {
     var frameType = itemDto.getFrameType();
     return (frameType == Rarity.Magic || frameType == Rarity.Rare)
-      && (categoryDto == CategoryDto.accessory
-      || categoryDto == CategoryDto.armour
-      || categoryDto == CategoryDto.jewel
-      || categoryDto == CategoryDto.map
-      || categoryDto == CategoryDto.flask
-      || categoryDto == CategoryDto.crafting_base
-      || categoryDto == CategoryDto.altart
-      || categoryDto == CategoryDto.weapon);
+      && (categoryDto == CategoryDto.ACCESSORY
+      || categoryDto == CategoryDto.ARMOUR
+      || categoryDto == CategoryDto.JEWEL
+      || categoryDto == CategoryDto.MAP
+      || categoryDto == CategoryDto.FLASK
+      || categoryDto == CategoryDto.CRAFTING_BASE
+      || categoryDto == CategoryDto.ALTART
+      || categoryDto == CategoryDto.WEAPON);
   }
 
   public static boolean isCraftable(ItemDto itemDto) {
@@ -60,15 +60,15 @@ public final class ItemUtility {
     var categoryDto = wrapper.getCategoryDto();
     var groupDto = wrapper.getGroupDto();
     var itemDto = wrapper.getItemDto();
-    return (CategoryDto.weapon == categoryDto
-      || CategoryDto.armour == categoryDto)
-      && (GroupDto.chest == groupDto
-      || GroupDto.staff == groupDto
-      || GroupDto.two_hand_sword == groupDto
-      || GroupDto.two_hand_mace == groupDto
-      || GroupDto.two_hand_axe == groupDto
-      || GroupDto.bow == groupDto
-      || GroupDto.warstaff == groupDto)
+    return (CategoryDto.WEAPON == categoryDto
+      || CategoryDto.ARMOUR == categoryDto)
+      && (GroupDto.CHEST == groupDto
+      || GroupDto.STAFF == groupDto
+      || GroupDto.TWO_HAND_SWORD == groupDto
+      || GroupDto.TWO_HAND_MACE == groupDto
+      || GroupDto.TWO_HAND_AXE == groupDto
+      || GroupDto.BOW == groupDto
+      || GroupDto.WARSTAFF == groupDto)
       && itemDto.getSockets() != null;
   }
 

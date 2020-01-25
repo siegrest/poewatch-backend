@@ -36,29 +36,29 @@ public class ItemGroupingService {
       .build();
 
     switch (categoryDto) {
-      case card:
-        return Optional.of(GroupDto.card);
-      case currency:
+      case CARD:
+        return Optional.of(GroupDto.CARD);
+      case CURRENCY:
         return parseCurrencyGroups(categoryWrapper);
-      case flask:
-        return Optional.of(GroupDto.flask);
-      case gem:
+      case FLASK:
+        return Optional.of(GroupDto.FLASK);
+      case GEM:
         return parseGemGroups(categoryWrapper);
-      case jewel:
-        return Optional.of(GroupDto.jewel);
-      case map:
+      case JEWEL:
+        return Optional.of(GroupDto.JEWEL);
+      case MAP:
         return parseMapGroups(categoryWrapper);
-      case prophecy:
-        return Optional.of(GroupDto.prophecy);
-      case beast:
+      case PROPHECY:
+        return Optional.of(GroupDto.PROPHECY);
+      case BEAST:
         return parseBeastGroups(categoryWrapper);
-      case leaguestone:
-        return Optional.of(GroupDto.leaguestone);
-      case fragment:
+      case LEAGUESTONE:
+        return Optional.of(GroupDto.LEAGUESTONE);
+      case FRAGMENT:
         return parseFragmentGroups(categoryWrapper);
-      case altart:
+      case ALTART:
         return parseAltArtGroups(categoryWrapper);
-      case crafting_base:
+      case CRAFTING_BASE:
         return parseCraftingBaseGroups(categoryWrapper);
     }
 
@@ -77,55 +77,55 @@ public class ItemGroupingService {
 
     switch (wrapper.getApiGroup()) {
       case "amulet":
-        return Optional.of(GroupDto.amulet);
+        return Optional.of(GroupDto.AMULET);
       case "belt":
-        return Optional.of(GroupDto.belt);
+        return Optional.of(GroupDto.BELT);
       case "ring":
-        return Optional.of(GroupDto.ring);
+        return Optional.of(GroupDto.RING);
 
       case "boots":
-        return Optional.of(GroupDto.boots);
+        return Optional.of(GroupDto.BOOTS);
       case "chest":
-        return Optional.of(GroupDto.chest);
+        return Optional.of(GroupDto.CHEST);
       case "gloves":
-        return Optional.of(GroupDto.gloves);
+        return Optional.of(GroupDto.GLOVES);
       case "helmet":
-        return Optional.of(GroupDto.helmet);
+        return Optional.of(GroupDto.HELMET);
       case "quiver":
-        return Optional.of(GroupDto.quiver);
+        return Optional.of(GroupDto.QUIVER);
       case "shield":
-        return Optional.of(GroupDto.shield);
+        return Optional.of(GroupDto.SHIELD);
 
       case "bow":
-        return Optional.of(GroupDto.bow);
+        return Optional.of(GroupDto.BOW);
       case "claw":
-        return Optional.of(GroupDto.claw);
+        return Optional.of(GroupDto.CLAW);
       case "dagger":
-        return Optional.of(GroupDto.dagger);
+        return Optional.of(GroupDto.DAGGER);
       case "oneaxe":
-        return Optional.of(GroupDto.one_hand_axe);
+        return Optional.of(GroupDto.ONE_HAND_AXE);
       case "onemace":
-        return Optional.of(GroupDto.one_hand_mace);
+        return Optional.of(GroupDto.ONE_HAND_MACE);
       case "onesword":
-        return Optional.of(GroupDto.one_hand_sword);
+        return Optional.of(GroupDto.ONE_HAND_SWORD);
       case "rod":
-        return Optional.of(GroupDto.rod);
+        return Optional.of(GroupDto.ROD);
       case "sceptre":
-        return Optional.of(GroupDto.sceptre);
+        return Optional.of(GroupDto.SCEPTRE);
       case "staff":
-        return Optional.of(GroupDto.staff);
+        return Optional.of(GroupDto.STAFF);
       case "twoaxe":
-        return Optional.of(GroupDto.two_hand_axe);
+        return Optional.of(GroupDto.TWO_HAND_AXE);
       case "twomace":
-        return Optional.of(GroupDto.two_hand_mace);
+        return Optional.of(GroupDto.TWO_HAND_MACE);
       case "twosword":
-        return Optional.of(GroupDto.two_hand_sword);
+        return Optional.of(GroupDto.TWO_HAND_SWORD);
       case "wand":
-        return Optional.of(GroupDto.wand);
+        return Optional.of(GroupDto.WAND);
       case "runedagger":
-        return Optional.of(GroupDto.rune_dagger);
+        return Optional.of(GroupDto.RUNE_DAGGER);
       case "warstaff":
-        return Optional.of(GroupDto.warstaff);
+        return Optional.of(GroupDto.WARSTAFF);
     }
 
     return Optional.empty();
@@ -135,29 +135,29 @@ public class ItemGroupingService {
     switch (wrapper.getIconCategory()) {
       case "currency":
       case "divination": // stacked deck
-        return Optional.of(GroupDto.currency);
+        return Optional.of(GroupDto.CURRENCY);
       case "essence":
-        return Optional.of(GroupDto.essence);
+        return Optional.of(GroupDto.ESSENCE);
       case "breach":
         throw new ItemParseException(ParseExceptionBasis.DEPRECATED_GROUP);
       case "oils":
-        return Optional.of(GroupDto.oil);
+        return Optional.of(GroupDto.OIL);
       case "catalysts":
-        return Optional.of(GroupDto.catalyst);
+        return Optional.of(GroupDto.CATALYST);
       case "influence exalts":
-        return Optional.of(GroupDto.influence_exalt);
+        return Optional.of(GroupDto.INFLUENCE_EXALT);
     }
 
     if (wrapper.getApiGroup() != null) {
       switch (wrapper.getApiGroup()) {
         case "piece":
-          return Optional.of(GroupDto.harbinger_piece);
+          return Optional.of(GroupDto.HARBINGER_PIECE);
         case "resonator":
-          return Optional.of(GroupDto.resonator);
+          return Optional.of(GroupDto.RESONATOR);
         case "fossil":
-          return Optional.of(GroupDto.fossil);
+          return Optional.of(GroupDto.FOSSIL);
         case "incubator":
-          return Optional.of(GroupDto.incubator);
+          return Optional.of(GroupDto.INCUBATOR);
       }
     }
 
@@ -165,16 +165,16 @@ public class ItemGroupingService {
 
     if (itemDto.getTypeLine() != null) {
       if (itemDto.getTypeLine().startsWith("Vial of ")) {
-        return Optional.of(GroupDto.vial_currency);
+        return Optional.of(GroupDto.VIAL);
       }
     }
 
     if (CategorizationUtility.isVialCurrency(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.vial_currency);
+      return Optional.of(GroupDto.VIAL);
     }
 
     if (CategorizationUtility.isNetCurrency(itemDto)) {
-      return Optional.of(GroupDto.net);
+      return Optional.of(GroupDto.NET);
     }
 
     return Optional.empty();
@@ -182,11 +182,11 @@ public class ItemGroupingService {
 
   public Optional<GroupDto> parseGemGroups(CategoryWrapper wrapper) {
     if ("vaalgems".equals(wrapper.getIconCategory())) {
-      return Optional.of(GroupDto.vaal_gem);
+      return Optional.of(GroupDto.VAAL_GEM);
     } else if ("activegem".equals(wrapper.getApiGroup())) {
-      return Optional.of(GroupDto.skill_gem);
+      return Optional.of(GroupDto.SKILL_GEM);
     } else if ("supportgem".equals(wrapper.getApiGroup())) {
-      return Optional.of(GroupDto.support_gem);
+      return Optional.of(GroupDto.SUPPORT_GEM);
     }
 
     return Optional.empty();
@@ -200,8 +200,8 @@ public class ItemGroupingService {
       }
     }
 
-    if (wrapper.getCategoryDto() == CategoryDto.altart && "jewel".equals(wrapper.getApiCategory())) {
-      return Optional.of(GroupDto.jewel);
+    if (wrapper.getCategoryDto() == CategoryDto.ALTART && "jewel".equals(wrapper.getApiCategory())) {
+      return Optional.of(GroupDto.JEWEL);
     }
 
     return Optional.empty();
@@ -209,19 +209,19 @@ public class ItemGroupingService {
 
   public Optional<GroupDto> parseMapGroups(CategoryWrapper wrapper) throws ItemParseException {
     if (ItemUtility.isUnique(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.unique_map);
+      return Optional.of(GroupDto.UNIQUE_MAP);
     }
 
     if (wrapper.getItemDto().getTypeLine().startsWith("Blighted")) {
-      return Optional.of(GroupDto.blighted_map);
+      return Optional.of(GroupDto.BLIGHTED_MAP);
     }
 
     if (wrapper.getItemDto().getTypeLine().startsWith("Shaped ")) {
-      return Optional.of(GroupDto.shaped_map);
+      return Optional.of(GroupDto.SHAPED_MAP);
     }
 
     if (wrapper.getItemDto().getExtended().getSubcategories() == null) {
-      return Optional.of(GroupDto.regular_map);
+      return Optional.of(GroupDto.REGULAR_MAP);
     }
 
     // todo: remove me
@@ -231,9 +231,9 @@ public class ItemGroupingService {
 
   public Optional<GroupDto> parseBeastGroups(CategoryWrapper wrapper) {
     if ("sample".equals(wrapper.getApiGroup())) {
-      return Optional.of(GroupDto.sample);
+      return Optional.of(GroupDto.SAMPLE);
     } else if ("beast".equals(wrapper.getApiGroup())) {
-      return Optional.of(GroupDto.beast);
+      return Optional.of(GroupDto.BEAST);
     }
 
     return Optional.empty();
@@ -241,7 +241,7 @@ public class ItemGroupingService {
 
   public Optional<GroupDto> parseCraftingBaseGroups(CategoryWrapper wrapper) {
     if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.abyssal_jewel);
+      return Optional.of(GroupDto.ABYSSAL_JEWEL);
     }
 
     return parseCommonGroups(wrapper);
@@ -249,63 +249,63 @@ public class ItemGroupingService {
 
   public Optional<GroupDto> parseFragmentGroups(CategoryWrapper wrapper) throws ItemParseException {
     if (CategorizationUtility.isWatchstone(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.watchstone);
+      return Optional.of(GroupDto.WATCHSTONE);
     }
 
     if (CategorizationUtility.isBreachSplinter(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.breach_splinter);
+      return Optional.of(GroupDto.BREACH_SPLINTER);
     }
 
     if (CategorizationUtility.isScarab(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.scarab);
+      return Optional.of(GroupDto.SCARAB);
     }
 
     if (CategorizationUtility.isTimelessSplinter(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.timeless_splinter);
+      return Optional.of(GroupDto.TIMELESS_SPLINTER);
     }
 
     if (CategorizationUtility.isTimelessEmblem(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.timeless_emblem);
+      return Optional.of(GroupDto.TIMELESS_EMBLEM);
     }
 
     if (CategorizationUtility.isSacrificeFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.sac_frag);
+      return Optional.of(GroupDto.SAC_FRAG);
     }
 
     if (CategorizationUtility.isMortalFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.mortal_frag);
+      return Optional.of(GroupDto.MORTAL_FRAG);
     }
 
     if (CategorizationUtility.isShaperGuardianFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.shaper_guardian_frag);
+      return Optional.of(GroupDto.SHAPER_GUARDIAN_FRAG);
     }
 
     if (CategorizationUtility.isBreachstone(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.breachstone);
+      return Optional.of(GroupDto.BREACHSTONE);
     }
 
     if (CategorizationUtility.isDivineVessel(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.misc_frag);
+      return Optional.of(GroupDto.MISC_FRAG);
     }
 
     if (CategorizationUtility.isOfferingGoddess(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.misc_frag);
+      return Optional.of(GroupDto.MISC_FRAG);
     }
 
     if (CategorizationUtility.isPaleCourtFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.pale_court_frag);
+      return Optional.of(GroupDto.PALE_COURT_FRAG);
     }
 
     if (CategorizationUtility.isUberElderFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.uber_elder_frag);
+      return Optional.of(GroupDto.UBER_ELDER_FRAG);
     }
 
     if (CategorizationUtility.isElderGuardianFrag(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.elder_guardian_frag);
+      return Optional.of(GroupDto.ELDER_GUARDIAN_FRAG);
     }
 
     if (CategorizationUtility.isBreachBlessing(wrapper.getItemDto())) {
-      return Optional.of(GroupDto.breach_blessing);
+      return Optional.of(GroupDto.BREACH_BLESSING);
     }
 
     // todo: remove me

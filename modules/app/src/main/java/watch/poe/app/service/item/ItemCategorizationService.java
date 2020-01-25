@@ -59,7 +59,7 @@ public class ItemCategorizationService {
 
   public Optional<CategoryDto> parseAltArtCategory(CategoryWrapper wrapper) {
     if (wrapper.getItemDto().getRaceReward() != null) {
-      return Optional.of(CategoryDto.altart);
+      return Optional.of(CategoryDto.ALTART);
     }
 
     return Optional.empty();
@@ -81,7 +81,7 @@ public class ItemCategorizationService {
     }
 
     // todo: accessories and armours can have enchanted mods without being enchanted.
-    return Optional.of(CategoryDto.enchantment);
+    return Optional.of(CategoryDto.ENCHANTMENT);
   }
 
   public Optional<CategoryDto> parseCraftingBaseCategory(CategoryWrapper wrapper) {
@@ -95,19 +95,19 @@ public class ItemCategorizationService {
 
     // todo: abyssal belts and flasks are not included
     if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
-      return Optional.of(CategoryDto.crafting_base);
+      return Optional.of(CategoryDto.CRAFTING_BASE);
     }
 
     if (!ItemUtility.hasInfluence(wrapper.getItemDto())) {
       return Optional.empty();
     }
 
-    return Optional.of(CategoryDto.crafting_base);
+    return Optional.of(CategoryDto.CRAFTING_BASE);
   }
 
   public Optional<CategoryDto> parseProphecyCategory(CategoryWrapper wrapper) {
     if (wrapper.getItemDto().getFrameType() == Rarity.Prophecy) {
-      return Optional.of(CategoryDto.prophecy);
+      return Optional.of(CategoryDto.PROPHECY);
     }
 
     return Optional.empty();
@@ -133,7 +133,7 @@ public class ItemCategorizationService {
       return Optional.empty();
     }
 
-    return Optional.of(CategoryDto.currency);
+    return Optional.of(CategoryDto.CURRENCY);
   }
 
   public Optional<CategoryDto> parseFragmentCategory(CategoryWrapper wrapper) {
@@ -144,31 +144,31 @@ public class ItemCategorizationService {
     var itemDto = wrapper.getItemDto();
 
     if (CategorizationUtility.getApiGroups(itemDto).contains("fragment")) {
-      return Optional.of(CategoryDto.fragment);
+      return Optional.of(CategoryDto.FRAGMENT);
     }
 
     if (CategorizationUtility.isWatchstone(itemDto)) {
-      return Optional.of(CategoryDto.fragment);
+      return Optional.of(CategoryDto.FRAGMENT);
     }
 
     if (CategorizationUtility.isBreachSplinter(itemDto)) {
-      return Optional.of(CategoryDto.fragment);
+      return Optional.of(CategoryDto.FRAGMENT);
     }
 
     if (CategorizationUtility.isScarab(itemDto)) {
-      return Optional.of(CategoryDto.fragment);
+      return Optional.of(CategoryDto.FRAGMENT);
     }
 
     if (CategorizationUtility.isTimelessSplinter(itemDto)) {
-      return Optional.of(CategoryDto.fragment);
+      return Optional.of(CategoryDto.FRAGMENT);
     }
 
     if (CategorizationUtility.isBreachBlessing(itemDto)) {
-      return Optional.of(CategoryDto.fragment);
+      return Optional.of(CategoryDto.FRAGMENT);
     }
 
     if (CategorizationUtility.isReliquaryKey(itemDto)) {
-      return Optional.of(CategoryDto.fragment);
+      return Optional.of(CategoryDto.FRAGMENT);
     }
 
     return Optional.empty();
@@ -177,27 +177,27 @@ public class ItemCategorizationService {
   public Optional<CategoryDto> parseSpecificCategories(CategoryWrapper wrapper) {
     switch (wrapper.getApiCategory()) {
       case "gems":
-        return Optional.of(CategoryDto.gem);
+        return Optional.of(CategoryDto.GEM);
       case "maps":
-        return Optional.of(CategoryDto.map);
+        return Optional.of(CategoryDto.MAP);
       case "watchstones":
-        return Optional.of(CategoryDto.fragment);
+        return Optional.of(CategoryDto.FRAGMENT);
       case "cards":
-        return Optional.of(CategoryDto.card);
+        return Optional.of(CategoryDto.CARD);
       case "flasks":
-        return Optional.of(CategoryDto.flask);
+        return Optional.of(CategoryDto.FLASK);
       case "jewels":
-        return Optional.of(CategoryDto.jewel);
+        return Optional.of(CategoryDto.JEWEL);
       case "monsters":
-        return Optional.of(CategoryDto.beast);
+        return Optional.of(CategoryDto.BEAST);
       case "armour":
-        return Optional.of(CategoryDto.armour);
+        return Optional.of(CategoryDto.ARMOUR);
       case "accessories":
-        return Optional.of(CategoryDto.accessory);
+        return Optional.of(CategoryDto.ACCESSORY);
       case "weapons":
-        return Optional.of(CategoryDto.weapon);
+        return Optional.of(CategoryDto.WEAPON);
       case "leaguestones":
-        return Optional.of(CategoryDto.leaguestone);
+        return Optional.of(CategoryDto.LEAGUESTONE);
     }
 
     return Optional.empty();
