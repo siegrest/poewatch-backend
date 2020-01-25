@@ -119,7 +119,17 @@ public class ItemCategorizationService {
     }
 
     // categorized as fragments
-    if (CategorizationUtility.isBreachSplinter(wrapper) || CategorizationUtility.isTimelessSplinter(wrapper)) {
+    if (CategorizationUtility.isBreachSplinter(wrapper.getItemDto())) {
+      return Optional.empty();
+    }
+
+    // categorized as fragments
+    if (CategorizationUtility.isTimelessSplinter(wrapper.getItemDto())) {
+      return Optional.empty();
+    }
+
+    // categorized as fragments
+    if (CategorizationUtility.isBreachBlessing(wrapper.getItemDto())) {
       return Optional.empty();
     }
 
@@ -141,21 +151,23 @@ public class ItemCategorizationService {
       return Optional.of(CategoryDto.fragment);
     }
 
-    if (CategorizationUtility.isBreachSplinter(wrapper)) {
+    if (CategorizationUtility.isBreachSplinter(itemDto)) {
       return Optional.of(CategoryDto.fragment);
     }
 
-    if (CategorizationUtility.isScarab(wrapper)) {
+    if (CategorizationUtility.isScarab(itemDto)) {
       return Optional.of(CategoryDto.fragment);
     }
 
-    if (CategorizationUtility.isTimelessSplinter(wrapper)) {
+    if (CategorizationUtility.isTimelessSplinter(itemDto)) {
       return Optional.of(CategoryDto.fragment);
     }
 
-    // reliquary keys
-    if (wrapper.getItemDto().getProperties() == null) {
-      //  ItemDto(isIdentified=true, itemLevel=0, frameType=Normal, isCorrupted=null, isSynthesised=null, icon=http://web.poecdn.com/image/Art/2DItems/Maps/VaultMap.png?scale=1&w=1&h=1&v=cb50511b7087323b10a19559bfb2be29, league=Standard, id=1e6bfa14344cf93a9697366578d3a9a79dd1796b224daa5dd6f2dd9368b9e9cf, name=, typeLine=Ancient Reliquary Key, note=null, stackSize=null, prophecyText=null, abyssJewel=null, raceReward=null, influences=null, extended=ExtendedDto(category=maps, subcategories=null, prefixes=null, suffixes=null), properties=null, sockets=null, explicitMods=null, enchantMods=null)
+    if (CategorizationUtility.isBreachBlessing(itemDto)) {
+      return Optional.of(CategoryDto.fragment);
+    }
+
+    if (CategorizationUtility.isReliquaryKey(itemDto)) {
       return Optional.of(CategoryDto.fragment);
     }
 

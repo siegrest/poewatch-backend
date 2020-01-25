@@ -203,15 +203,15 @@ public class ItemGroupingService {
       return Optional.of(GroupDto.watchstone);
     }
 
-    if (CategorizationUtility.isBreachSplinter(wrapper)) {
+    if (CategorizationUtility.isBreachSplinter(wrapper.getItemDto())) {
       return Optional.of(GroupDto.breach_splinter);
     }
 
-    if (CategorizationUtility.isScarab(wrapper)) {
+    if (CategorizationUtility.isScarab(wrapper.getItemDto())) {
       return Optional.of(GroupDto.scarab);
     }
 
-    if (CategorizationUtility.isTimelessSplinter(wrapper)) {
+    if (CategorizationUtility.isTimelessSplinter(wrapper.getItemDto())) {
       return Optional.of(GroupDto.timeless_splinter);
     }
 
