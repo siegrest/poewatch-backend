@@ -95,14 +95,14 @@ public class ItemCategorizationService {
 
     // todo: abyssal belts and flasks are not included
     if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
-      return Optional.of(CategoryDto.base);
+      return Optional.of(CategoryDto.crafting_base);
     }
 
     if (!ItemUtility.hasInfluence(wrapper.getItemDto())) {
       return Optional.empty();
     }
 
-    return Optional.of(CategoryDto.base);
+    return Optional.of(CategoryDto.crafting_base);
   }
 
   public Optional<CategoryDto> parseProphecyCategory(CategoryWrapper wrapper) {

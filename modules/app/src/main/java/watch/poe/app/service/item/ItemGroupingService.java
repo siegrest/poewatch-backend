@@ -58,7 +58,7 @@ public class ItemGroupingService {
         return parseFragmentGroups(categoryWrapper);
       case altart:
         return parseAltArtGroups(categoryWrapper);
-      case base:
+      case crafting_base:
         return parseCraftingBaseGroups(categoryWrapper);
     }
 
@@ -71,11 +71,61 @@ public class ItemGroupingService {
   }
 
   public Optional<GroupDto> parseCommonGroups(CategoryWrapper wrapper) {
-    var apiGroup = wrapper.getApiGroup();
-    for (var group : GroupDto.values()) {
-      if (group.name().equals(apiGroup)) {
-        return Optional.of(GroupDto.valueOf(apiGroup));
-      }
+    if (wrapper.getApiGroup() == null) {
+      return Optional.empty();
+    }
+
+    switch (wrapper.getApiGroup()) {
+      case "amulet":
+        return Optional.of(GroupDto.amulet);
+      case "belt":
+        return Optional.of(GroupDto.belt);
+      case "ring":
+        return Optional.of(GroupDto.ring);
+
+      case "boots":
+        return Optional.of(GroupDto.boots);
+      case "chest":
+        return Optional.of(GroupDto.chest);
+      case "gloves":
+        return Optional.of(GroupDto.gloves);
+      case "helmet":
+        return Optional.of(GroupDto.helmet);
+      case "quiver":
+        return Optional.of(GroupDto.quiver);
+      case "shield":
+        return Optional.of(GroupDto.shield);
+
+      case "bow":
+        return Optional.of(GroupDto.bow);
+      case "claw":
+        return Optional.of(GroupDto.claw);
+      case "dagger":
+        return Optional.of(GroupDto.dagger);
+      case "oneaxe":
+        return Optional.of(GroupDto.one_hand_axe);
+      case "onemace":
+        return Optional.of(GroupDto.one_hand_mace);
+      case "onesword":
+        return Optional.of(GroupDto.one_hand_sword);
+      case "rod":
+        return Optional.of(GroupDto.rod);
+      case "sceptre":
+        return Optional.of(GroupDto.sceptre);
+      case "staff":
+        return Optional.of(GroupDto.staff);
+      case "twoaxe":
+        return Optional.of(GroupDto.two_hand_axe);
+      case "twomace":
+        return Optional.of(GroupDto.two_hand_mace);
+      case "twosword":
+        return Optional.of(GroupDto.two_hand_sword);
+      case "wand":
+        return Optional.of(GroupDto.wand);
+      case "runedagger":
+        return Optional.of(GroupDto.rune_dagger);
+      case "warstaff":
+        return Optional.of(GroupDto.warstaff);
     }
 
     return Optional.empty();
@@ -95,13 +145,13 @@ public class ItemGroupingService {
       case "catalysts":
         return Optional.of(GroupDto.catalyst);
       case "influence exalts":
-        return Optional.of(GroupDto.influence);
+        return Optional.of(GroupDto.influence_exalt);
     }
 
     if (wrapper.getApiGroup() != null) {
       switch (wrapper.getApiGroup()) {
         case "piece":
-          return Optional.of(GroupDto.piece);
+          return Optional.of(GroupDto.harbinger_piece);
         case "resonator":
           return Optional.of(GroupDto.resonator);
         case "fossil":
@@ -132,11 +182,11 @@ public class ItemGroupingService {
 
   public Optional<GroupDto> parseGemGroups(CategoryWrapper wrapper) {
     if ("vaalgems".equals(wrapper.getIconCategory())) {
-      return Optional.of(GroupDto.vaal);
+      return Optional.of(GroupDto.vaal_gem);
     } else if ("activegem".equals(wrapper.getApiGroup())) {
-      return Optional.of(GroupDto.skill);
+      return Optional.of(GroupDto.skill_gem);
     } else if ("supportgem".equals(wrapper.getApiGroup())) {
-      return Optional.of(GroupDto.support);
+      return Optional.of(GroupDto.support_gem);
     }
 
     return Optional.empty();

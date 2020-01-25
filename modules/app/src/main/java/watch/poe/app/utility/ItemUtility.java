@@ -36,7 +36,7 @@ public final class ItemUtility {
       || categoryDto == CategoryDto.jewel
       || categoryDto == CategoryDto.map
       || categoryDto == CategoryDto.flask
-      || categoryDto == CategoryDto.base
+      || categoryDto == CategoryDto.crafting_base
       || categoryDto == CategoryDto.altart
       || categoryDto == CategoryDto.weapon);
   }
@@ -64,9 +64,9 @@ public final class ItemUtility {
       || CategoryDto.armour == categoryDto)
       && (GroupDto.chest == groupDto
       || GroupDto.staff == groupDto
-      || GroupDto.twosword == groupDto
-      || GroupDto.twomace == groupDto
-      || GroupDto.twoaxe == groupDto
+      || GroupDto.two_hand_sword == groupDto
+      || GroupDto.two_hand_mace == groupDto
+      || GroupDto.two_hand_axe == groupDto
       || GroupDto.bow == groupDto
       || GroupDto.warstaff == groupDto)
       && itemDto.getSockets() != null;

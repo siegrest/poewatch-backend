@@ -12,49 +12,51 @@ public enum GroupDto {
   quiver,
   shield,
 
-  card,
-
   currency,
   essence,
-  piece,
+  harbinger_piece,
   fossil,
   resonator,
   vial_currency,
   net,
+  incubator,
+  oil,
+  catalyst,
+  influence_exalt,
 
+  skill_gem,
+  support_gem,
+  vaal_gem,
+
+  card,
   flask,
-
-  skill,
-  support,
-  vaal,
-
   jewel,
   abyssal_jewel,
-
-  scarab,
-
   prophecy,
+  beast,
+  sample,
+  watchstone,
+  leaguestone,
 
   bow,
   claw,
   dagger,
-  oneaxe,
-  onemace,
-  onesword,
+  one_hand_axe,
+  one_hand_mace,
+  one_hand_sword,
   rod,
   sceptre,
   staff,
-  twoaxe,
-  twomace,
-  twosword,
+  two_hand_axe,
+  two_hand_mace,
+  two_hand_sword,
   wand,
-  incubator,
-  runedagger,
+  rune_dagger,
   warstaff,
 
+  regular_map,
   shaped_map,
   blighted_map,
-  regular_map,
   unique_map,
 
   breach_splinter,
@@ -69,12 +71,6 @@ public enum GroupDto {
   pale_court_frag,
   uber_elder_frag,
   breach_blessing,
+  scarab
 
-  oil,
-  beast,
-  sample,
-  catalyst,
-  influence,
-  watchstone,
-  leaguestone
 }
