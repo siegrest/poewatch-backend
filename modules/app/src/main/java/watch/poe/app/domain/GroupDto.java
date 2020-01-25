@@ -70,6 +70,7 @@ public enum GroupDto {
   misc_frag,
   pale_court_frag,
   uber_elder_frag,
+  breach_blessing,
 
   oil,
   beast,

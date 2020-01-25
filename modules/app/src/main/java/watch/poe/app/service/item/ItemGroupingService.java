@@ -254,6 +254,10 @@ public class ItemGroupingService {
       return Optional.of(GroupDto.elder_guardian_frag);
     }
 
+    if (CategorizationUtility.isBreachBlessing(wrapper.getItemDto())) {
+      return Optional.of(GroupDto.breach_blessing);
+    }
+
     // todo: remove me
     throw new ItemParseException(ParseExceptionBasis.DEV);
   }
