@@ -44,7 +44,7 @@ public enum GroupDto {
   ONE_HAND_AXE,
   ONE_HAND_MACE,
   ONE_HAND_SWORD,
-  ROD,
+  FISHING_ROD,
   SCEPTRE,
   STAFF,
   TWO_HAND_AXE,

@@ -100,7 +100,7 @@ public class ItemGroupingService {
       case "onesword":
         return GroupDto.ONE_HAND_SWORD;
       case "rod":
-        return GroupDto.ROD;
+        return GroupDto.FISHING_ROD;
       case "sceptre":
         return GroupDto.SCEPTRE;
       case "staff":
