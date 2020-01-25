@@ -39,6 +39,10 @@ public final class ItemBaseParserService {
   }
 
   private String parseName(CategoryDto categoryDto, GroupDto groupDto, ItemDto itemDto) throws ItemParseException {
+    if (!itemDto.isIdentified() && itemDto.getFrameType() == Rarity.Unique) {
+      throw new ItemParseException(ParseExceptionBasis.PARSE_UNID_UNIQUE_ITEM);
+    }
+
     if (itemDto.getFrameType() == Rarity.Rare || StringUtils.isBlank(itemDto.getName())) {
       return null;
     }
@@ -79,6 +83,7 @@ public final class ItemBaseParserService {
     return baseType;
   }
 
+  // todo: move to utility
   private String replacePrefix(String prefix, String name) {
     if (name == null || StringUtils.isBlank(name)) {
       return name;
