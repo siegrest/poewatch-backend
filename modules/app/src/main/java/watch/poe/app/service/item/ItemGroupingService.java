@@ -81,7 +81,7 @@ public class ItemGroupingService {
     return Optional.empty();
   }
 
-  public Optional<GroupDto> parseCurrencyGroups(CategoryWrapper wrapper) {
+  public Optional<GroupDto> parseCurrencyGroups(CategoryWrapper wrapper) throws ItemParseException {
     switch (wrapper.getIconCategory()) {
       case "currency":
       case "divination": // stacked deck
@@ -89,8 +89,7 @@ public class ItemGroupingService {
       case "essence":
         return Optional.of(GroupDto.essence);
       case "breach":
-        log.info("[A18] (invalid splinter) {}", wrapper.getItemDto());
-        return Optional.of(GroupDto.splinter);
+        throw new ItemParseException(ParseExceptionBasis.DEPRECATED_GROUP);
       case "oils":
         return Optional.of(GroupDto.oil);
       case "catalysts":
