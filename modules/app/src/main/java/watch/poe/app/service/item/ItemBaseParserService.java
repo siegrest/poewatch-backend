@@ -9,6 +9,7 @@ import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.UniqueMapIdentificationService;
 import watch.poe.app.utility.CategorizationUtility;
+import watch.poe.app.utility.ItemUtility;
 import watch.poe.persistence.model.Category;
 import watch.poe.persistence.model.Group;
 import watch.poe.persistence.model.ItemBase;
@@ -29,13 +30,19 @@ public final class ItemBaseParserService {
     var name = parseName(categoryDto, groupDto, itemDto);
     var baseType = parseBaseType(categoryDto, groupDto, itemDto);
 
-    return ItemBase.builder()
+    var base = ItemBase.builder()
       .category(category)
       .group(group)
       .frameType(itemDto.getFrameType().ordinal())
       .name(name)
       .baseType(baseType)
       .build();
+
+    if (ItemUtility.isLabEnchantment(itemDto)) {
+      parseEnchantment(base, itemDto);
+    }
+
+    return base;
   }
 
   private String parseName(CategoryDto categoryDto, GroupDto groupDto, ItemDto itemDto) throws ItemParseException {
@@ -119,6 +126,14 @@ public final class ItemBaseParserService {
       throw new ItemParseException(DiscardBasis.UNIQUE_ONLY);
     }
 
+  }
+
+  private void parseEnchantment(ItemBase base, ItemDto itemDto) {
+    var enchantName = ItemUtility.extractEnchantmentName(itemDto);
+    // todo: or maybe the other way around?
+    base.setName(enchantName);
+    base.setBaseType(null);
+    base.setFrameType(0);
   }
 
 }

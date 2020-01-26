@@ -76,13 +76,11 @@ public final class ItemUtility {
     return itemDto.getFrameType() == Rarity.Unique || itemDto.getFrameType() == Rarity.Relic;
   }
 
-  public static boolean isLabEnchantment(ItemWrapper wrapper) {
+  public static boolean isLabEnchantment(ItemDto itemDto) {
     // todo: double check the logic here
-    var extended = wrapper.getItemDto().getExtended();
-    var firstGroup = CategorizationUtility.getFirstApiGroup(wrapper.getItemDto());
-    return wrapper.getItemDto().getEnchantMods() != null
-      && extended != null
-      && "armour".equals(extended.getCategory())
+    var firstGroup = CategorizationUtility.getFirstApiGroup(itemDto);
+    return itemDto.getEnchantMods() != null
+      && "armour".equals(itemDto.getExtended().getCategory())
       && ("helmets".equals(firstGroup) || "gloves".equals(firstGroup) || "boots".equals(firstGroup));
   }
 

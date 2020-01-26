@@ -63,7 +63,7 @@ public final class ItemParserService {
       parseVariant(wrapper);
     }
 
-    if (ItemUtility.isLabEnchantment(wrapper)) {
+    if (ItemUtility.isLabEnchantment(wrapper.getItemDto())) {
       parseEnchantment(wrapper);
     }
 
@@ -207,14 +207,11 @@ public final class ItemParserService {
   public void parseEnchantment(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
     var item = wrapper.getItem();
-    var base = item.getBase();
 
     var enchantName = ItemUtility.extractEnchantmentName(itemDto);
     var rolls = ItemUtility.extractEnchantmentRolls(itemDto);
 
-    base.setName(enchantName);
     item.setIcon(ENCHANTMENT_ICON);
-    base.setFrameType(0);
 
     if (rolls != null) {
       flattenEnchantRolls(enchantName, rolls);

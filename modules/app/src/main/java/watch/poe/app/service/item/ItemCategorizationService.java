@@ -73,22 +73,12 @@ public class ItemCategorizationService {
   }
 
   private Optional<CategoryDto> parseEnchantmentCategory(CategoryWrapper wrapper) {
-    if (wrapper.getItemDto().getEnchantMods() == null) {
-      return Optional.empty();
-    }
-
-    if (!"armour".equals(wrapper.getApiCategory())) {
-      return Optional.empty();
-    }
-
-    if ("helmets".equals(wrapper.getApiGroup())
-      || "gloves".equals(wrapper.getApiGroup())
-      || "boots".equals(wrapper.getApiGroup())) {
-      return Optional.empty();
+    if (ItemUtility.isLabEnchantment(wrapper.getItemDto())) {
+      return Optional.of(CategoryDto.ENCHANTMENT);
     }
 
     // todo: accessories and armours can have enchanted mods without being enchanted.
-    return Optional.of(CategoryDto.ENCHANTMENT);
+    return Optional.empty();
   }
 
   private Optional<CategoryDto> parseCraftingBaseCategory(CategoryWrapper wrapper) {
