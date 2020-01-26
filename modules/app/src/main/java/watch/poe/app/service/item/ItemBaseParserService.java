@@ -24,7 +24,7 @@ public final class ItemBaseParserService {
     var category = Category.builder().name(categoryDto.name()).build();
     var group = Group.builder().name(groupDto.name()).build();
 
-    checkFrameType(itemDto);
+    checkFrameType(categoryDto, itemDto);
 
     var name = parseName(categoryDto, groupDto, itemDto);
     var baseType = parseBaseType(categoryDto, groupDto, itemDto);
@@ -97,7 +97,7 @@ public final class ItemBaseParserService {
     return name;
   }
 
-  private void checkFrameType(ItemDto itemDto) throws ItemParseException {
+  private void checkFrameType(CategoryDto categoryDto, ItemDto itemDto) throws ItemParseException {
     if (itemDto.getFrameType() == null) {
       throw new ItemParseException(ParseExceptionBasis.MISSING_FRAME_TYPE);
     }
@@ -109,6 +109,16 @@ public final class ItemBaseParserService {
     if (itemDto.getFrameType() == Rarity.Magic) {
       throw new ItemParseException(DiscardBasis.PARSE_COMPLEX_MAGIC);
     }
+
+    if (itemDto.getFrameType() != Rarity.Unique
+      && (categoryDto == CategoryDto.ARMOUR
+      || categoryDto == CategoryDto.WEAPON
+      || categoryDto == CategoryDto.ACCESSORY
+      || categoryDto == CategoryDto.FLASK
+      || categoryDto == CategoryDto.JEWEL)) {
+      throw new ItemParseException(DiscardBasis.UNIQUE_ONLY);
+    }
+
   }
 
 }

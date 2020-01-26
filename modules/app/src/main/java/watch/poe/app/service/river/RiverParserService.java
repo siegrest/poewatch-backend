@@ -115,6 +115,7 @@ public class RiverParserService {
           if (ex.getParseExceptionBasis() != ParseExceptionBasis.MISSING_CURRENCY
             && ex.getParseExceptionBasis() != ParseExceptionBasis.PARSE_UNID_UNIQUE_ITEM
             && ex.getDiscardBasis() != DiscardBasis.PARSE_COMPLEX_MAGIC
+            && ex.getDiscardBasis() != DiscardBasis.UNIQUE_ONLY
             && ex.getDiscardBasis() != DiscardBasis.PARSE_COMPLEX_RARE) {
             log.info("Parse exception \"{}\" for {}", ex.getMessage(), wrapper);
           }

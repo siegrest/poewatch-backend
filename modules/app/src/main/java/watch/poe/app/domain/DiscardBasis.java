@@ -17,6 +17,8 @@ public enum DiscardBasis {
   PARSE_MAGIC_MAP("Cannot parse magic maps"),
   PARSE_RARE_MAP("Cannot parse rare maps"),
 
+  UNIQUE_ONLY("Expected a unique item for this category but got something else"),
+
   MAP_TIER_MISSING("No map tier found"),
   PARSE_MAP_SERIES_FAILED("Failed to extract map series"),
   INVALID_MAP_SERIES("Invalid map series found"),
