@@ -27,16 +27,16 @@ public final class ItemBaseParserService {
     var category = Category.builder().name(categoryDto.name()).build();
     var group = Group.builder().name(groupDto.name()).build();
 
-    var name = parseName(categoryDto, groupDto, itemDto);
-    var baseType = parseBaseType(categoryDto, groupDto, itemDto);
-
     var base = ItemBase.builder()
       .category(category)
       .group(group)
       .frameType(itemDto.getFrameType().ordinal())
-      .name(name)
-      .baseType(baseType)
+      .name(null)
+      .baseType(null)
       .build();
+
+    parseName(categoryDto, groupDto, base, itemDto);
+    parseBaseType(categoryDto, groupDto, base, itemDto);
 
     if (ItemUtility.isLabEnchantment(itemDto)) {
       parseEnchantment(base, itemDto);
@@ -45,13 +45,13 @@ public final class ItemBaseParserService {
     return base;
   }
 
-  private String parseName(CategoryDto categoryDto, GroupDto groupDto, ItemDto itemDto) throws ItemParseException {
+  private void parseName(CategoryDto categoryDto, GroupDto groupDto, ItemBase base, ItemDto itemDto) throws ItemParseException {
     if (!itemDto.isIdentified() && itemDto.getFrameType() == Rarity.Unique) {
       throw new ItemParseException(ParseExceptionBasis.PARSE_UNID_UNIQUE_ITEM);
     }
 
     if (itemDto.getFrameType() == Rarity.Rare || StringUtils.isBlank(itemDto.getName())) {
-      return null;
+      return;
     }
 
     var name = itemDto.getName();
@@ -67,14 +67,14 @@ public final class ItemBaseParserService {
       name = mapMatch.get().getName();
     }
 
-    return name;
+    base.setName(name);
   }
 
-  private String parseBaseType(CategoryDto categoryDto, GroupDto groupDto, ItemDto itemDto) {
+  private void parseBaseType(CategoryDto categoryDto, GroupDto groupDto, ItemBase base, ItemDto itemDto) {
     var baseType = itemDto.getTypeLine();
 
     if (baseType == null || StringUtils.isBlank(baseType)) {
-      return null;
+      return;
     }
 
     if (categoryDto == CategoryDto.MAP && CategorizationUtility.hasQuality(itemDto)) {
@@ -85,7 +85,7 @@ public final class ItemBaseParserService {
       baseType = CategorizationUtility.replacePrefix("Synthesised ", baseType);
     }
 
-    return baseType;
+    base.setBaseType(baseType);
   }
 
   private void checkFrameType(CategoryDto categoryDto, ItemDto itemDto) throws ItemParseException {
