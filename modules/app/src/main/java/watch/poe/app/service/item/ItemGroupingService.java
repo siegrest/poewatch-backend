@@ -2,7 +2,6 @@ package watch.poe.app.service.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.GroupDto;
 import watch.poe.app.domain.GroupingExceptionBasis;
 import watch.poe.app.domain.wrapper.CategoryWrapper;
@@ -10,6 +9,8 @@ import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.exception.GroupingException;
 import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.app.utility.ItemUtility;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -55,71 +56,71 @@ public class ItemGroupingService {
       case ARMOUR:
       case WEAPON:
       case ENCHANTMENT:
-        return parseCommonGroups(wrapper);
+        return parseCommonGroups(wrapper).orElseThrow(() -> new GroupingException(GroupingExceptionBasis.PARSE));
       default:
         throw new GroupingException(GroupingExceptionBasis.UNHANDLED_CATEGORY);
     }
   }
 
-  private GroupDto parseCommonGroups(CategoryWrapper wrapper) throws GroupingException {
+  private Optional<GroupDto> parseCommonGroups(CategoryWrapper wrapper) {
     if (wrapper.getApiGroup() == null) {
-      throw new GroupingException(GroupingExceptionBasis.PARSE);
+      return Optional.empty();
     }
 
     switch (wrapper.getApiGroup()) {
       case "amulet":
-        return GroupDto.AMULET;
+        return Optional.of(GroupDto.AMULET);
       case "belt":
-        return GroupDto.BELT;
+        return Optional.of(GroupDto.BELT);
       case "ring":
-        return GroupDto.RING;
+        return Optional.of(GroupDto.RING);
 
       case "boots":
-        return GroupDto.BOOTS;
+        return Optional.of(GroupDto.BOOTS);
       case "chest":
-        return GroupDto.CHEST;
+        return Optional.of(GroupDto.CHEST);
       case "gloves":
-        return GroupDto.GLOVES;
+        return Optional.of(GroupDto.GLOVES);
       case "helmet":
-        return GroupDto.HELMET;
+        return Optional.of(GroupDto.HELMET);
       case "quiver":
-        return GroupDto.QUIVER;
+        return Optional.of(GroupDto.QUIVER);
       case "shield":
-        return GroupDto.SHIELD;
+        return Optional.of(GroupDto.SHIELD);
 
       case "bow":
-        return GroupDto.BOW;
+        return Optional.of(GroupDto.BOW);
       case "claw":
-        return GroupDto.CLAW;
+        return Optional.of(GroupDto.CLAW);
       case "dagger":
-        return GroupDto.DAGGER;
+        return Optional.of(GroupDto.DAGGER);
       case "oneaxe":
-        return GroupDto.ONE_HAND_AXE;
+        return Optional.of(GroupDto.ONE_HAND_AXE);
       case "onemace":
-        return GroupDto.ONE_HAND_MACE;
+        return Optional.of(GroupDto.ONE_HAND_MACE);
       case "onesword":
-        return GroupDto.ONE_HAND_SWORD;
+        return Optional.of(GroupDto.ONE_HAND_SWORD);
       case "rod":
-        return GroupDto.FISHING_ROD;
+        return Optional.of(GroupDto.FISHING_ROD);
       case "sceptre":
-        return GroupDto.SCEPTRE;
+        return Optional.of(GroupDto.SCEPTRE);
       case "staff":
-        return GroupDto.STAFF;
+        return Optional.of(GroupDto.STAFF);
       case "twoaxe":
-        return GroupDto.TWO_HAND_AXE;
+        return Optional.of(GroupDto.TWO_HAND_AXE);
       case "twomace":
-        return GroupDto.TWO_HAND_MACE;
+        return Optional.of(GroupDto.TWO_HAND_MACE);
       case "twosword":
-        return GroupDto.TWO_HAND_SWORD;
+        return Optional.of(GroupDto.TWO_HAND_SWORD);
       case "wand":
-        return GroupDto.WAND;
+        return Optional.of(GroupDto.WAND);
       case "runedagger":
-        return GroupDto.RUNE_DAGGER;
+        return Optional.of(GroupDto.RUNE_DAGGER);
       case "warstaff":
-        return GroupDto.WARSTAFF;
+        return Optional.of(GroupDto.WARSTAFF);
     }
 
-    throw new GroupingException(GroupingExceptionBasis.PARSE);
+    return Optional.empty();
   }
 
   private GroupDto parseCurrencyGroups(CategoryWrapper wrapper) throws GroupingException {
@@ -176,14 +177,12 @@ public class ItemGroupingService {
   }
 
   private GroupDto parseAltArtGroups(CategoryWrapper wrapper) throws GroupingException {
-    var apiGroup = wrapper.getApiGroup();
-    for (var group : GroupDto.values()) {
-      if (group.name().equals(apiGroup)) {
-        return GroupDto.valueOf(apiGroup);
-      }
+    var oGrp = parseCommonGroups(wrapper);
+    if (oGrp.isPresent()) {
+      return oGrp.get();
     }
 
-    if (wrapper.getCategoryDto() == CategoryDto.ALTART && "jewel".equals(wrapper.getApiCategory())) {
+    if ("jewel".equals(wrapper.getApiCategory())) {
       return GroupDto.JEWEL;
     }
 
@@ -221,6 +220,11 @@ public class ItemGroupingService {
   }
 
   private GroupDto parseCraftingBaseGroups(CategoryWrapper wrapper) throws GroupingException {
+    var oGrp = parseCommonGroups(wrapper);
+    if (oGrp.isPresent()) {
+      return oGrp.get();
+    }
+
     if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
       return GroupDto.ABYSSAL_JEWEL;
     }

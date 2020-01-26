@@ -8,7 +8,7 @@ public class GroupingException extends Exception {
   private GroupingExceptionBasis basis;
 
   public GroupingException(GroupingExceptionBasis basis) {
-    super(basis.name());
+    super(basis.getDescription());
     this.basis = basis;
   }
 }
