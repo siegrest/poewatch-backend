@@ -9,6 +9,7 @@ import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.UniqueMapIdentificationService;
 import watch.poe.app.utility.CategorizationUtility;
+import watch.poe.app.utility.ItemTypeUtility;
 import watch.poe.app.utility.ItemUtility;
 import watch.poe.persistence.model.Category;
 import watch.poe.persistence.model.Group;
@@ -38,7 +39,7 @@ public final class ItemBaseParserService {
     parseName(categoryDto, groupDto, base, itemDto);
     parseBaseType(categoryDto, groupDto, base, itemDto);
 
-    if (ItemUtility.isLabEnchantment(itemDto)) {
+    if (ItemTypeUtility.isLabEnchantment(itemDto)) {
       parseEnchantment(base, itemDto);
     }
 

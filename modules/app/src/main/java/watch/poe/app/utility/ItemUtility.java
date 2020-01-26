@@ -46,12 +46,6 @@ public final class ItemUtility {
     return frameType == Rarity.Normal || frameType == Rarity.Magic || frameType == Rarity.Rare;
   }
 
-  public static boolean isSpecialSupportGem(ItemDto itemDto) {
-    return itemDto.getTypeLine().equals("Empower Support")
-      || itemDto.getTypeLine().equals("Enlighten Support")
-      || itemDto.getTypeLine().equals("Enhance Support");
-  }
-
   public static boolean isStackable(ItemDto itemDto) {
     return itemDto.getStackSize() != null && itemDto.getProperties() != null;
   }
@@ -76,25 +70,8 @@ public final class ItemUtility {
     return itemDto.getFrameType() == Rarity.Unique || itemDto.getFrameType() == Rarity.Relic;
   }
 
-  public static boolean isLabEnchantment(ItemDto itemDto) {
-    // todo: double check the logic here
-    var firstGroup = CategorizationUtility.getFirstApiGroup(itemDto);
-    return itemDto.getEnchantMods() != null
-      && "armour".equals(itemDto.getExtended().getCategory())
-      && ("helmets".equals(firstGroup) || "gloves".equals(firstGroup) || "boots".equals(firstGroup));
-  }
-
-  // todo: move to CategorizationUtility
-  public static boolean isAbyssalJewel(ItemDto itemDto) {
-    return itemDto.getAbyssJewel() != null && itemDto.getAbyssJewel();
-  }
-
   public static boolean isCorrupted(ItemDto itemDto) {
     return itemDto.getCorrupted() != null && itemDto.getCorrupted();
-  }
-
-  public static boolean isAltArt(ItemWrapper wrapper) {
-    return wrapper.getItemDto().getRaceReward() != null;
   }
 
   /**

@@ -8,6 +8,7 @@ import watch.poe.app.domain.wrapper.CategoryWrapper;
 import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.exception.GroupingException;
 import watch.poe.app.utility.CategorizationUtility;
+import watch.poe.app.utility.ItemTypeUtility;
 import watch.poe.app.utility.ItemUtility;
 
 import java.util.Optional;
@@ -153,11 +154,11 @@ public class ItemGroupingService {
       }
     }
 
-    if (CategorizationUtility.isVialCurrency(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isVialCurrency(wrapper.getItemDto())) {
       return GroupDto.VIAL;
     }
 
-    if (CategorizationUtility.isNetCurrency(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isNetCurrency(wrapper.getItemDto())) {
       return GroupDto.NET;
     }
 
@@ -225,7 +226,7 @@ public class ItemGroupingService {
       return oGrp.get();
     }
 
-    if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isAbyssalJewel(wrapper.getItemDto())) {
       return GroupDto.ABYSSAL_JEWEL;
     }
 
@@ -233,63 +234,63 @@ public class ItemGroupingService {
   }
 
   private GroupDto parseFragmentGroups(CategoryWrapper wrapper) throws GroupingException {
-    if (CategorizationUtility.isWatchstone(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isWatchstone(wrapper.getItemDto())) {
       return GroupDto.WATCHSTONE;
     }
 
-    if (CategorizationUtility.isBreachSplinter(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isBreachSplinter(wrapper.getItemDto())) {
       return GroupDto.BREACH_SPLINTER;
     }
 
-    if (CategorizationUtility.isScarab(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isScarab(wrapper.getItemDto())) {
       return GroupDto.SCARAB;
     }
 
-    if (CategorizationUtility.isTimelessSplinter(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isTimelessSplinter(wrapper.getItemDto())) {
       return GroupDto.TIMELESS_SPLINTER;
     }
 
-    if (CategorizationUtility.isTimelessEmblem(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isTimelessEmblem(wrapper.getItemDto())) {
       return GroupDto.TIMELESS_EMBLEM;
     }
 
-    if (CategorizationUtility.isSacrificeFrag(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isSacrificeFrag(wrapper.getItemDto())) {
       return GroupDto.SAC_FRAG;
     }
 
-    if (CategorizationUtility.isMortalFrag(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isMortalFrag(wrapper.getItemDto())) {
       return GroupDto.MORTAL_FRAG;
     }
 
-    if (CategorizationUtility.isShaperGuardianFrag(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isShaperGuardianFrag(wrapper.getItemDto())) {
       return GroupDto.SHAPER_GUARDIAN_FRAG;
     }
 
-    if (CategorizationUtility.isBreachstone(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isBreachstone(wrapper.getItemDto())) {
       return GroupDto.BREACHSTONE;
     }
 
-    if (CategorizationUtility.isDivineVessel(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isDivineVessel(wrapper.getItemDto())) {
       return GroupDto.MISC_FRAG;
     }
 
-    if (CategorizationUtility.isOfferingGoddess(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isOfferingGoddess(wrapper.getItemDto())) {
       return GroupDto.MISC_FRAG;
     }
 
-    if (CategorizationUtility.isPaleCourtFrag(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isPaleCourtFrag(wrapper.getItemDto())) {
       return GroupDto.PALE_COURT_FRAG;
     }
 
-    if (CategorizationUtility.isUberElderFrag(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isUberElderFrag(wrapper.getItemDto())) {
       return GroupDto.UBER_ELDER_FRAG;
     }
 
-    if (CategorizationUtility.isElderGuardianFrag(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isElderGuardianFrag(wrapper.getItemDto())) {
       return GroupDto.ELDER_GUARDIAN_FRAG;
     }
 
-    if (CategorizationUtility.isBreachBlessing(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isBreachBlessing(wrapper.getItemDto())) {
       return GroupDto.BREACH_BLESSING;
     }
 

@@ -12,6 +12,7 @@ import watch.poe.app.exception.GroupingException;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.CorruptedItemService;
 import watch.poe.app.service.resource.ItemVariantService;
+import watch.poe.app.utility.ItemTypeUtility;
 import watch.poe.app.utility.ItemUtility;
 import watch.poe.persistence.model.Item;
 
@@ -63,11 +64,11 @@ public final class ItemParserService {
       parseVariant(wrapper);
     }
 
-    if (ItemUtility.isLabEnchantment(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isLabEnchantment(wrapper.getItemDto())) {
       parseEnchantment(wrapper);
     }
 
-    if (ItemUtility.isAltArt(wrapper)) {
+    if (ItemTypeUtility.isAltArt(wrapper)) {
       parseAltArt(wrapper);
     }
 
@@ -137,7 +138,7 @@ public final class ItemParserService {
     }
 
     // Begin the long block that filters out gems based on a number of properties
-    if (ItemUtility.isSpecialSupportGem(itemDto)) {
+    if (ItemTypeUtility.isSpecialSupportGem(itemDto)) {
       // Quality doesn't matter for lvl 3 and 4
       if (level > 2) {
         quality = 0;

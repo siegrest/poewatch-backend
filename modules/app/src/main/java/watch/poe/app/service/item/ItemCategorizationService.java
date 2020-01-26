@@ -9,6 +9,7 @@ import watch.poe.app.domain.wrapper.CategoryWrapper;
 import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.utility.CategorizationUtility;
+import watch.poe.app.utility.ItemTypeUtility;
 import watch.poe.app.utility.ItemUtility;
 
 import java.util.Optional;
@@ -73,7 +74,7 @@ public class ItemCategorizationService {
   }
 
   private Optional<CategoryDto> parseEnchantmentCategory(CategoryWrapper wrapper) {
-    if (ItemUtility.isLabEnchantment(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isLabEnchantment(wrapper.getItemDto())) {
       return Optional.of(CategoryDto.ENCHANTMENT);
     }
 
@@ -91,7 +92,7 @@ public class ItemCategorizationService {
     }
 
     // todo: abyssal belts and flasks are not included
-    if (ItemUtility.isAbyssalJewel(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isAbyssalJewel(wrapper.getItemDto())) {
       return Optional.of(CategoryDto.CRAFTING_BASE);
     }
 
@@ -116,17 +117,17 @@ public class ItemCategorizationService {
     }
 
     // categorized as fragments
-    if (CategorizationUtility.isBreachSplinter(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isBreachSplinter(wrapper.getItemDto())) {
       return Optional.empty();
     }
 
     // categorized as fragments
-    if (CategorizationUtility.isTimelessSplinter(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isTimelessSplinter(wrapper.getItemDto())) {
       return Optional.empty();
     }
 
     // categorized as fragments
-    if (CategorizationUtility.isBreachBlessing(wrapper.getItemDto())) {
+    if (ItemTypeUtility.isBreachBlessing(wrapper.getItemDto())) {
       return Optional.empty();
     }
 
@@ -144,27 +145,27 @@ public class ItemCategorizationService {
       return Optional.of(CategoryDto.FRAGMENT);
     }
 
-    if (CategorizationUtility.isWatchstone(itemDto)) {
+    if (ItemTypeUtility.isWatchstone(itemDto)) {
       return Optional.of(CategoryDto.FRAGMENT);
     }
 
-    if (CategorizationUtility.isBreachSplinter(itemDto)) {
+    if (ItemTypeUtility.isBreachSplinter(itemDto)) {
       return Optional.of(CategoryDto.FRAGMENT);
     }
 
-    if (CategorizationUtility.isScarab(itemDto)) {
+    if (ItemTypeUtility.isScarab(itemDto)) {
       return Optional.of(CategoryDto.FRAGMENT);
     }
 
-    if (CategorizationUtility.isTimelessSplinter(itemDto)) {
+    if (ItemTypeUtility.isTimelessSplinter(itemDto)) {
       return Optional.of(CategoryDto.FRAGMENT);
     }
 
-    if (CategorizationUtility.isBreachBlessing(itemDto)) {
+    if (ItemTypeUtility.isBreachBlessing(itemDto)) {
       return Optional.of(CategoryDto.FRAGMENT);
     }
 
-    if (CategorizationUtility.isReliquaryKey(itemDto)) {
+    if (ItemTypeUtility.isReliquaryKey(itemDto)) {
       return Optional.of(CategoryDto.FRAGMENT);
     }
 
