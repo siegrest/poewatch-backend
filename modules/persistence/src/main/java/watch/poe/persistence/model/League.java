@@ -14,9 +14,10 @@ import java.util.Date;
 @ToString
 @Table(name = "leagues")
 public class League {
-    @Column(name = "start")
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date start;
+    @Id
+    @Column(name = "id", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
     @Column(name = "name", length = 64, nullable = false, unique = true)
     private String name;
@@ -38,12 +39,12 @@ public class League {
 
     @Column(name = "challenge", nullable = false)
     private Boolean challenge;
-    @Id
-    @Column(name = "id", updatable = false, nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
 
-    @Column(name = "end")
+    @Column(name = "start_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date start;
+
+    @Column(name = "end_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date end;
 
