@@ -22,10 +22,10 @@ public final class ItemBaseParserService {
   private final UniqueMapIdentificationService uniqueMapService;
 
   public ItemBase parse(CategoryDto categoryDto, GroupDto groupDto, ItemDto itemDto) throws ItemParseException {
+    checkFrameType(categoryDto, itemDto);
+
     var category = Category.builder().name(categoryDto.name()).build();
     var group = Group.builder().name(groupDto.name()).build();
-
-    checkFrameType(categoryDto, itemDto);
 
     var name = parseName(categoryDto, groupDto, itemDto);
     var baseType = parseBaseType(categoryDto, groupDto, itemDto);
@@ -70,7 +70,7 @@ public final class ItemBaseParserService {
     return name;
   }
 
-  private String parseBaseType(CategoryDto categoryDto, GroupDto groupDto, ItemDto itemDto) throws ItemParseException {
+  private String parseBaseType(CategoryDto categoryDto, GroupDto groupDto, ItemDto itemDto) {
     var baseType = itemDto.getTypeLine();
 
     if (baseType == null || StringUtils.isBlank(baseType)) {
@@ -78,30 +78,14 @@ public final class ItemBaseParserService {
     }
 
     if (categoryDto == CategoryDto.MAP && CategorizationUtility.hasQuality(itemDto)) {
-      baseType = replacePrefix("Superior ", baseType);
+      baseType = CategorizationUtility.replacePrefix("Superior ", baseType);
     }
 
-    if (itemDto.getFrameType() == Rarity.Rare) {
-      baseType = replacePrefix("Synthesised ", baseType);
-    } else if (itemDto.getFrameType() == Rarity.Magic) {
-      throw new ItemParseException(DiscardBasis.PARSE_COMPLEX_MAGIC);
+    if (itemDto.getSynthesised() != null && itemDto.getSynthesised()) {
+      baseType = CategorizationUtility.replacePrefix("Synthesised ", baseType);
     }
 
     return baseType;
-  }
-
-  // todo: move to utility
-  private String replacePrefix(String prefix, String name) {
-    if (name == null || StringUtils.isBlank(name)) {
-      return name;
-    }
-
-    // "Superior Ashen Wood Map" -> "Ashen Wood Map"
-    if (name.startsWith(prefix)) {
-      return name.substring(prefix.length());
-    }
-
-    return name;
   }
 
   private void checkFrameType(CategoryDto categoryDto, ItemDto itemDto) throws ItemParseException {

@@ -1,5 +1,6 @@
 package watch.poe.app.utility;
 
+import org.apache.commons.lang3.StringUtils;
 import watch.poe.app.dto.river.ItemDto;
 
 import java.util.List;
@@ -40,6 +41,19 @@ public class CategorizationUtility {
     }
 
     return itemDto.getExtended().getSubcategories();
+  }
+
+  public static String replacePrefix(String prefix, String name) {
+    if (name == null || StringUtils.isBlank(name)) {
+      return name;
+    }
+
+    // "Superior Ashen Wood Map" -> "Ashen Wood Map"
+    if (name.startsWith(prefix)) {
+      return name.substring(prefix.length());
+    }
+
+    return name;
   }
 
   public static boolean isBreachSplinter(ItemDto itemDto) {

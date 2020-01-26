@@ -22,6 +22,7 @@ public class ItemDto {
   private Integer stackSize;
   private String prophecyText;
   private Boolean abyssJewel;
+  private Boolean synthesised;
 
   @SerializedName(value = "raceReward", alternate = {"seaRaceReward", "cisRaceReward", "thRaceReward", "RaceReward"})
   private Object raceReward;
