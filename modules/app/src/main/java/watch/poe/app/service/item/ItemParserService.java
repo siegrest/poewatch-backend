@@ -159,7 +159,7 @@ public final class ItemParserService {
       }
     }
 
-    if (itemDto.getIsCorrupted() != null && !itemDto.getIsCorrupted() && (level > 20 || quality > 20)) {
+    if (itemDto.getCorrupted() != null && !itemDto.getCorrupted() && (level > 20 || quality > 20)) {
       wrapper.discard(DiscardBasis.GEM_API_BUG);
       return;
     }
@@ -191,7 +191,7 @@ public final class ItemParserService {
     var itemDto = wrapper.getItemDto();
 
     if (categoryDto == CategoryDto.GEM) {
-      item.setCorrupted(itemDto.getIsCorrupted());
+      item.setCorrupted(itemDto.getCorrupted());
       return;
     }
 
@@ -199,7 +199,7 @@ public final class ItemParserService {
 
     if (ItemUtility.isUnique(itemDto)) {
       if (corruptedItemService.isCorrupted(itemDto.getName())) {
-        item.setCorrupted(itemDto.getIsCorrupted());
+        item.setCorrupted(itemDto.getCorrupted());
       }
     }
   }

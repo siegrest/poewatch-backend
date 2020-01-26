@@ -10,14 +10,10 @@ import java.util.List;
 @Getter
 @ToString
 public class ItemDto {
-  @SerializedName("identified")
-  private boolean isIdentified;
+  private boolean identified;
   private int itemLevel;
   private Rarity frameType;
-  @SerializedName("corrupted")
-  private Boolean isCorrupted;
-  @SerializedName("synthesised")
-  private Boolean isSynthesised;
+  private Boolean corrupted;
   private String icon, league, id, name, typeLine, note;
   private Integer stackSize;
   private String prophecyText;

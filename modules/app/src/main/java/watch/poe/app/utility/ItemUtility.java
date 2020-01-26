@@ -90,7 +90,7 @@ public final class ItemUtility {
   }
 
   public static boolean isCorrupted(ItemDto itemDto) {
-    return itemDto.getIsCorrupted() != null && itemDto.getIsCorrupted();
+    return itemDto.getCorrupted() != null && itemDto.getCorrupted();
   }
 
   public static boolean isAltArt(ItemWrapper wrapper) {
