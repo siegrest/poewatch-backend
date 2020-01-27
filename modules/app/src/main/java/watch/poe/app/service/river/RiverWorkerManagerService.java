@@ -87,7 +87,7 @@ public class RiverWorkerManagerService {
         entry.setItem(item);
         itemEntryService.save(entry);
       });
-      statisticsService.clkTimer(StatType.TIME_REPLY_INDEX);
+      statisticsService.clkTimer(StatType.TIME_REPLY_INDEX, true);
     }
   }
 
