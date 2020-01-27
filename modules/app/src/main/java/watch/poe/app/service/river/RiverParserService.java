@@ -9,6 +9,7 @@ import watch.poe.app.domain.DiscardBasis;
 import watch.poe.app.domain.ParseExceptionBasis;
 import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.ItemWrapper;
+import watch.poe.app.domain.wrapper.RiverWrapper;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
@@ -18,17 +19,19 @@ import watch.poe.app.service.GsonService;
 import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
 import watch.poe.app.service.StatisticsService;
-import watch.poe.app.service.item.ItemIndexerService;
 import watch.poe.app.service.item.ItemParserService;
 import watch.poe.app.service.repository.AccountService;
 import watch.poe.app.service.repository.CharacterService;
-import watch.poe.app.service.repository.LeagueItemEntryService;
 import watch.poe.app.service.repository.StashRepositoryService;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.LeagueItemEntry;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
@@ -43,15 +46,13 @@ public class RiverParserService {
   private final CharacterService characterService;
   private final NoteParseService noteParseService;
   private final ItemParserService itemParserService;
-  private final ItemIndexerService itemIndexerService;
-  private final LeagueItemEntryService itemEntryService;
 
   @Value("${item.accept.missing.price}")
   private boolean acceptMissingPrice;
 
   @Async
 //  @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
-  public void process(StringBuilder stashStringBuilder) {
+  public Future<RiverWrapper> process(StringBuilder stashStringBuilder) {
     statisticsService.startTimer(StatType.TIME_REPLY_DESERIALIZE);
     var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
     statisticsService.clkTimer(StatType.TIME_REPLY_DESERIALIZE);
@@ -64,13 +65,16 @@ public class RiverParserService {
 
     log.info("extracted {} valid items", entries.size());
 
-    statisticsService.startTimer(StatType.TIME_REPLY_INDEX);
-    processWrappers(entries);
-    statisticsService.clkTimer(StatType.TIME_REPLY_INDEX);
+    var wrapper = RiverWrapper.builder()
+      .entries(entries)
+      .completionTime(LocalDateTime.now())
+      .build();
+
+    return CompletableFuture.completedFuture(wrapper);
   }
 
-  private List<LeagueItemEntry> processRiver(RiverDto riverDto) {
-    var entries = new ArrayList<LeagueItemEntry>();
+  private Set<LeagueItemEntry> processRiver(RiverDto riverDto) {
+    var entries = new HashSet<LeagueItemEntry>();
 
     for (StashDto stashDto : riverDto.getStashes()) {
       statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
@@ -146,12 +150,12 @@ public class RiverParserService {
     return entries;
   }
 
-  private void processWrappers(List<LeagueItemEntry> entries) {
-    for (var entry : entries) {
-      var item = itemIndexerService.index(entry.getItem());
-      entry.setItem(item);
-      itemEntryService.save(entry);
-    }
-  }
+//  private void processWrappers(List<LeagueItemEntry> entries) {
+//    for (var entry : entries) {
+//      var item = itemIndexerService.index(entry.getItem());
+//      entry.setItem(item);
+//      itemEntryService.save(entry);
+//    }
+//  }
 
 }

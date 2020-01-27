@@ -144,16 +144,18 @@ public class StatisticsService {
             .orElse(null);
 
         // If it didn't exist
-        if (statTimer == null) {
-            return;
-        }
+      if (statTimer == null) {
+        return;
+      }
 
-        // Remove the timer
-        threadTimer.getTimers().remove(statTimer);
+      // Remove the timer
+      threadTimer.getTimers().remove(statTimer);
 
-        // Get delay as MS
-        var delay = System.currentTimeMillis() - statTimer.getStartTime();
-        addValue(type, delay);
+      // Get delay as MS
+      var delay = System.currentTimeMillis() - statTimer.getStartTime();
+      addValue(type, delay);
+
+      log.info("{} completed {}ms", statTimer.getType(), delay);
     }
 
     public void addValue(StatType type, int val) {
