@@ -33,7 +33,7 @@ public class LeagueItemEntryService {
 
   private LeagueItemEntry update(LeagueItemEntry newEntry, LeagueItemEntry dbEntry) {
     dbEntry.setSeen(new Date());
-    dbEntry.setUpdates(newEntry.getUpdates() + 1);
+    dbEntry.setUpdates(dbEntry.getUpdates() + 1);
     dbEntry.setStackSize(newEntry.getStackSize());
     dbEntry.setPrice(newEntry.getPrice());
     dbEntry.setPriceItem(newEntry.getPriceItem());
