@@ -3,12 +3,14 @@ package watch.poe.app.service.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import watch.poe.app.domain.statistics.StatType;
+import watch.poe.app.domain.wrapper.RiverWrapper;
+import watch.poe.app.service.StatisticsService;
+import watch.poe.app.service.repository.LeagueItemEntryService;
 import watch.poe.app.utility.ItemUtility;
-import watch.poe.persistence.model.Category;
-import watch.poe.persistence.model.Group;
-import watch.poe.persistence.model.Item;
-import watch.poe.persistence.model.ItemBase;
+import watch.poe.persistence.model.*;
 import watch.poe.persistence.repository.CategoryRepository;
 import watch.poe.persistence.repository.GroupRepository;
 import watch.poe.persistence.repository.ItemBaseRepository;
@@ -17,16 +19,37 @@ import watch.poe.persistence.repository.ItemRepository;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public final class ItemIndexerService {
+public class ItemIndexerService {
 
   private final ItemRepository itemRepository;
   private final ItemBaseRepository itemBaseRepository;
   private final GroupRepository groupRepository;
   private final CategoryRepository categoryRepository;
+  private final StatisticsService statisticsService;
+  // todo: this should not be here
+  private final LeagueItemEntryService itemEntryService;
+
+  @Async
+  public Future<Boolean> startIndexJob(RiverWrapper wrapper) {
+    statisticsService.startTimer(StatType.TIME_REPLY_INDEX);
+
+    for (LeagueItemEntry entry : wrapper.getEntries()) {
+      var item = index(entry.getItem());
+      entry.setItem(item);
+      // todo: this should not be here
+      itemEntryService.save(entry);
+    }
+
+    statisticsService.clkTimer(StatType.TIME_REPLY_INDEX, true);
+
+    return CompletableFuture.completedFuture(true);
+  }
 
   public Item index(Item item) {
     var base = item.getBase();

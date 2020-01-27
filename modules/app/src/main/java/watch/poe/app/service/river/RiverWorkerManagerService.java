@@ -10,10 +10,10 @@ import watch.poe.app.domain.wrapper.RiverWrapper;
 import watch.poe.app.service.StatisticsService;
 import watch.poe.app.service.item.ItemIndexerService;
 import watch.poe.app.service.repository.ChangeIdRepositoryService;
-import watch.poe.app.service.repository.LeagueItemEntryService;
 import watch.poe.app.utility.ChangeIdUtility;
 
-import java.util.LinkedList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -27,82 +27,82 @@ public class RiverWorkerManagerService {
   private final ChangeIdRepositoryService changeIdRepositoryService;
   private final StatisticsService statisticsService;
   private final ItemIndexerService itemIndexerService;
-  private final LeagueItemEntryService itemEntryService;
 
   @Value("${stash.worker.count}")
   private int maxWorkerCount;
   @Value("${stash.fetch.enabled}")
   private boolean enabled;
 
-  private LinkedList<Future<RiverWrapper>> workerResultQueue = new LinkedList<>();
+  private Set<Future<RiverWrapper>> riverFutures = new HashSet<>();
+  private Future<Boolean> indexFuture;
 
   @Scheduled(fixedRateString = "${stash.worker.query.rate}")
-  private void scheduleWorker() {
+  public void scheduleWorker() throws InterruptedException, ExecutionException {
     if (!enabled) {
       return;
     }
 
-    if (workerResultQueue.isEmpty() && jobSchedulerService.isJobEmpty()) {
-      log.error("No active workers and next change id is empty");
+    checkFinishedRiverFuture();
+
+    if (riverFutures.isEmpty() && jobSchedulerService.isJobEmpty()) {
+      throw new RuntimeException("No active workers and next change id is empty");
+    }
+
+    if (riverFutures.size() >= maxWorkerCount) {
       return;
     }
 
-    if (jobSchedulerService.isJobEmpty()) {
+    var nextJob = jobSchedulerService.getJob();
+    if (nextJob.isEmpty()) {
       return;
     }
 
-    if (workerResultQueue.size() >= maxWorkerCount) {
-      log.debug("Worker limit reached");
-      return;
-    }
-
-    if (jobSchedulerService.isCooldown()) {
-      log.debug("Poll on cooldown");
-      return;
-    }
-
-    updateChangeId();
-    jobSchedulerService.bumpPollTime();
+    updateRepoJob(nextJob.get());
+    riverFutures.add(riverWorkerService.queryNext(nextJob.get()));
     statisticsService.addValue(StatType.COUNT_API_CALLS);
-    var result = riverWorkerService.queryNext();
-    workerResultQueue.push(result);
   }
 
-  @Scheduled(fixedRateString = "${stash.worker.check.rate}")
-  private void checkFinishedJobs() throws InterruptedException, ExecutionException {
-    var iterator = workerResultQueue.iterator();
+  private void checkFinishedRiverFuture() throws InterruptedException, ExecutionException {
+    if (indexFuture != null) {
+      if (indexFuture.isDone() || indexFuture.isCancelled()) {
+        indexFuture = null;
+      } else {
+        return;
+      }
+    }
 
+    var iterator = riverFutures.iterator();
     while (iterator.hasNext()) {
-      var future = iterator.next();
-      if (!future.isDone()) {
+      var riverFuture = iterator.next();
+      if (!riverFuture.isDone()) {
         continue;
       }
 
+      var wrapper = riverFuture.get();
+      log.info("Starting index job");
+      // todo: move entry saving to another service
+      // todo: save entries in batch
+      indexFuture = itemIndexerService.startIndexJob(wrapper);
       iterator.remove();
-      var wrapper = future.get();
-
-      statisticsService.startTimer(StatType.TIME_REPLY_INDEX);
-      wrapper.getEntries().forEach(entry -> {
-        var item = itemIndexerService.index(entry.getItem());
-        entry.setItem(item);
-        itemEntryService.save(entry);
-      });
-      statisticsService.clkTimer(StatType.TIME_REPLY_INDEX, true);
     }
   }
 
-  private void updateChangeId() {
-    if (jobSchedulerService.isJobEmpty()) {
-      return;
-    }
+  @Scheduled(fixedRate = 1000)
+  public void debug() {
+    var queueSize = riverFutures.size();
+    var finished = riverFutures.stream().filter(r -> r.isDone() || r.isCancelled()).count();
+    var unfinished = riverFutures.stream().filter(r -> !r.isDone() && !r.isCancelled()).count();
 
-    var jobChangeId = jobSchedulerService.peekJob();
-    var repoChangeId = changeIdRepositoryService.get(ChangeIdRepositoryService.RIVER);
+    log.info("queue size {}: finished/pending {}, in progress {}", queueSize, finished, unfinished);
+  }
 
-    if (repoChangeId.isEmpty()) {
-      changeIdRepositoryService.save(ChangeIdRepositoryService.RIVER, jobChangeId);
-    } else if (ChangeIdUtility.isNewerThan(jobChangeId, repoChangeId.get().getChangeId())) {
-      changeIdRepositoryService.update(ChangeIdRepositoryService.RIVER, jobChangeId);
+  private void updateRepoJob(String nextJob) {
+    var repoJob = changeIdRepositoryService.get(ChangeIdRepositoryService.RIVER);
+
+    if (repoJob.isEmpty()) {
+      changeIdRepositoryService.save(ChangeIdRepositoryService.RIVER, nextJob);
+    } else if (ChangeIdUtility.isNewerThan(nextJob, repoJob.get().getChangeId())) {
+      changeIdRepositoryService.update(ChangeIdRepositoryService.RIVER, nextJob);
     }
   }
 

@@ -36,17 +36,10 @@ public class RiverWorkerService {
   private int readTimeOut;
 
   @Async
-  public Future<RiverWrapper> queryNext() {
-    var nextChangeId = jobSchedulerService.getJob();
-    if (nextChangeId == null) {
-      log.error("Worker provided empty job");
-      // todo: add exceptions and messages
-      return AsyncResult.forExecutionException(new RuntimeException("worker finished prematurely"));
-    }
+  public Future<RiverWrapper> queryNext(String job) {
+    log.info("Started worker with job {}", job);
 
-    log.info("Started worker with job {}", nextChangeId);
-
-    var stashJsonString = downloadStashJson(nextChangeId);
+    var stashJsonString = downloadStashJson(job);
     if (stashJsonString == null) {
       // todo: add exceptions and messages
       return AsyncResult.forExecutionException(new RuntimeException("todo"));

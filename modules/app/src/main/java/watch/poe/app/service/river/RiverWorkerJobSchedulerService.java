@@ -5,61 +5,61 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import watch.poe.app.utility.ChangeIdUtility;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 public class RiverWorkerJobSchedulerService {
 
-    @Value("${stash.fetch.cooldown}")
-    private int fetchCooldown;
+  @Value("${stash.fetch.cooldown}")
+  private int fetchCooldown;
 
-    // todo: query job from repository
+  // todo: query job from repository
 //    private String job = "541640378-559363977-529069322-602859172-572858041";
 //    private String job = "542419420-560211954-529765688-603620935-57359360";
 //    private String job = "544998848-562898891-532480647-606437628-78043036";
-    private String job = "546007976-563951214-533531225-607571032-78793199";
-    private long lastPollTime = 0;
+  private String job = "546007976-563951214-533531225-607571032-78793199";
+  private long lastPollTime = 0;
 
-    public String peekJob() {
-        if (job == null) {
-            log.error("Empty change id returned");
-        }
+  public Optional<String> peekJob() {
+    return Optional.ofNullable(job);
+  }
 
-        return job;
+  public Optional<String> getJob() {
+    if (isCooldown()) {
+      log.info("Poll on cooldown");
+      return Optional.empty();
     }
 
-    public String getJob() {
-        if (job == null) {
-            log.error("Empty change id returned");
-        }
+    var returnJob = Optional.ofNullable(job);
+    job = null;
 
-        String returnJob = job;
-        job = null;
-        return returnJob;
+    return returnJob;
+  }
+
+  public void setJob(String newJob) {
+    if (!ChangeIdUtility.isChangeId(newJob)) {
+      log.error("Invalid change id provided: {}", newJob);
+      return;
     }
 
-    public void setJob(String newJob) {
-        if (!ChangeIdUtility.isChangeId(newJob)) {
-            log.error("Invalid change id provided: {}", newJob);
-            return;
-        }
-
-        if (job != null) {
-            log.error("Change id {} was overwritten by {}", job, newJob);
-        }
-
-        job = newJob;
+    if (job != null) {
+      log.error("Change id {} was overwritten by {}", job, newJob);
     }
 
-    public boolean isJobEmpty() {
-        return job == null;
-    }
+    job = newJob;
+  }
 
-    public void bumpPollTime() {
-        lastPollTime = System.currentTimeMillis();
-    }
+  public boolean isJobEmpty() {
+    return job == null;
+  }
 
-    public boolean isCooldown() {
-        return System.currentTimeMillis() - lastPollTime < fetchCooldown;
-    }
+  public void bumpPollTime() {
+    lastPollTime = System.currentTimeMillis();
+  }
+
+  public boolean isCooldown() {
+    return System.currentTimeMillis() - lastPollTime < fetchCooldown;
+  }
 
 }
