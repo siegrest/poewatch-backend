@@ -150,12 +150,4 @@ public class RiverParserService {
     return entries;
   }
 
-//  private void processWrappers(List<LeagueItemEntry> entries) {
-//    for (var entry : entries) {
-//      var item = itemIndexerService.index(entry.getItem());
-//      entry.setItem(item);
-//      itemEntryService.save(entry);
-//    }
-//  }
-
 }

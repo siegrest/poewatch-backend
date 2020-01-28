@@ -8,9 +8,6 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.RiverWrapper;
 import watch.poe.app.service.StatisticsService;
-import watch.poe.app.service.item.ItemIndexerService;
-import watch.poe.app.service.repository.ChangeIdRepositoryService;
-import watch.poe.app.utility.ChangeIdUtility;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,10 +20,9 @@ import java.util.concurrent.Future;
 public class RiverWorkerManagerService {
 
   private final RiverWorkerService riverWorkerService;
-  private final RiverWorkerJobSchedulerService jobSchedulerService;
-  private final ChangeIdRepositoryService changeIdRepositoryService;
   private final StatisticsService statisticsService;
-  private final ItemIndexerService itemIndexerService;
+  private final FutureHandlerService futureHandlerService;
+  private final JobService jobService;
 
   @Value("${stash.worker.count}")
   private int maxWorkerCount;
@@ -37,14 +33,12 @@ public class RiverWorkerManagerService {
   private Future<Boolean> indexFuture;
 
   @Scheduled(fixedRateString = "${stash.worker.query.rate}")
-  public void scheduleWorker() throws InterruptedException, ExecutionException {
+  public void scheduleWorker() {
     if (!enabled) {
       return;
     }
 
-    checkFinishedRiverFuture();
-
-    if (riverFutures.isEmpty() && jobSchedulerService.isJobEmpty()) {
+    if (riverFutures.isEmpty() && jobService.isJobEmpty()) {
       throw new RuntimeException("No active workers and next change id is empty");
     }
 
@@ -52,17 +46,17 @@ public class RiverWorkerManagerService {
       return;
     }
 
-    var nextJob = jobSchedulerService.getJob();
+    var nextJob = jobService.getJob();
     if (nextJob.isEmpty()) {
       return;
     }
 
-    updateRepoJob(nextJob.get());
     riverFutures.add(riverWorkerService.queryNext(nextJob.get()));
     statisticsService.addValue(StatType.COUNT_API_CALLS);
   }
 
-  private void checkFinishedRiverFuture() throws InterruptedException, ExecutionException {
+  @Scheduled(fixedRateString = "${stash.worker.check.rate}")
+  public void checkFinishedRiverFuture() throws InterruptedException, ExecutionException {
     if (indexFuture != null) {
       if (indexFuture.isDone() || indexFuture.isCancelled()) {
         indexFuture = null;
@@ -79,10 +73,7 @@ public class RiverWorkerManagerService {
       }
 
       var wrapper = riverFuture.get();
-      log.info("Starting index job");
-      // todo: move entry saving to another service
-      // todo: save entries in batch
-      indexFuture = itemIndexerService.startIndexJob(wrapper);
+      indexFuture = futureHandlerService.process(wrapper);
       iterator.remove();
     }
   }
@@ -94,16 +85,6 @@ public class RiverWorkerManagerService {
     var unfinished = riverFutures.stream().filter(r -> !r.isDone() && !r.isCancelled()).count();
 
     log.info("queue size {}: finished/pending {}, in progress {}", queueSize, finished, unfinished);
-  }
-
-  private void updateRepoJob(String nextJob) {
-    var repoJob = changeIdRepositoryService.get(ChangeIdRepositoryService.RIVER);
-
-    if (repoJob.isEmpty()) {
-      changeIdRepositoryService.save(ChangeIdRepositoryService.RIVER, nextJob);
-    } else if (ChangeIdUtility.isNewerThan(nextJob, repoJob.get().getChangeId())) {
-      changeIdRepositoryService.update(ChangeIdRepositoryService.RIVER, nextJob);
-    }
   }
 
 }

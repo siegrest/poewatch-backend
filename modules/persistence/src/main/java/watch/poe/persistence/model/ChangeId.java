@@ -13,19 +13,16 @@ import java.util.Date;
 @ToString
 @Table(name = "change_id")
 public class ChangeId {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
 
-    @Column(name = "name", length = 64, nullable = false, unique = true)
-    private String name;
+  @Id
+  @Column(name = "id", length = 64)
+  private String id;
 
-    @Column(name = "change_id", length = 64)
-    private String changeId;
+  @Column(name = "change_id", length = 64)
+  private String changeId;
 
-    @Column(name = "time")
-    @Temporal(TemporalType.TIMESTAMP)
-    public Date time;
+  @Column(name = "time")
+  @Temporal(TemporalType.TIMESTAMP)
+  public Date time;
 
 }

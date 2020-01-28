@@ -24,7 +24,7 @@ import java.util.concurrent.Future;
 @RequiredArgsConstructor
 public class RiverWorkerService {
 
-  private final RiverWorkerJobSchedulerService jobSchedulerService;
+  private final JobService jobSchedulerService;
   private final RiverParserService riverParserService;
   private final StatisticsService statisticsService;
 
