@@ -7,6 +7,7 @@ import watch.poe.app.domain.ParseExceptionBasis;
 import watch.poe.app.domain.Price;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.CurrencyAliasService;
+import watch.poe.persistence.domain.FrameType;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.repository.ItemBaseRepository;
 
@@ -106,7 +107,7 @@ public class NoteParseService {
       return null;
     }
 
-    var base = itemBaseRepository.findByFrameTypeAndBaseType(5, price.getCurrencyName());
+    var base = itemBaseRepository.findByFrameTypeAndBaseType(FrameType.CURRENCY, price.getCurrencyName());
     if (base.isEmpty()) {
       throw new ItemParseException(ParseExceptionBasis.MISSING_CURRENCY);
     }

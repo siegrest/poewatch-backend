@@ -1,6 +1,7 @@
 package watch.poe.persistence.model;
 
 import lombok.*;
+import watch.poe.persistence.domain.FrameType;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -51,7 +52,8 @@ public class ItemBase {
   @Column(name = "base_type", length = 64)
   private String baseType;
 
+  @Enumerated(EnumType.ORDINAL)
   @Column(name = "frame_type", nullable = false)
-  private Integer frameType;
+  private FrameType frameType;
 
 }
