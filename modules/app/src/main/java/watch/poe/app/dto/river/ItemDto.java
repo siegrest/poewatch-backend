@@ -3,7 +3,6 @@ package watch.poe.app.dto.river;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.ToString;
-import watch.poe.app.domain.Rarity;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
 public class ItemDto {
   private boolean identified;
   private int itemLevel;
-  private Rarity frameType;
+  private int frameType;
   private Boolean corrupted;
   private String icon, league, id, name, typeLine, note;
   private Integer stackSize;

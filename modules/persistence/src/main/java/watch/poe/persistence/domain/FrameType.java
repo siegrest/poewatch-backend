@@ -10,5 +10,13 @@ public enum FrameType {
   DIV,
   QUEST,
   PROPHECY,
-  RELIC
+  RELIC;
+
+  public static FrameType from(Integer ordinal) {
+    return FrameType.values()[ordinal];
+  }
+
+  public boolean is(Integer ordinal) {
+    return this.ordinal() == ordinal;
+  }
 }

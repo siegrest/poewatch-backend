@@ -4,13 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.*;
+import watch.poe.app.domain.CategoryDto;
+import watch.poe.app.domain.DiscardBasis;
+import watch.poe.app.domain.GroupDto;
+import watch.poe.app.domain.ParseExceptionBasis;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.UniqueMapIdentificationService;
 import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.app.utility.ItemTypeUtility;
 import watch.poe.app.utility.ItemUtility;
+import watch.poe.persistence.domain.FrameType;
 import watch.poe.persistence.model.Category;
 import watch.poe.persistence.model.Group;
 import watch.poe.persistence.model.ItemBase;
@@ -31,7 +35,7 @@ public final class ItemBaseParserService {
     var base = ItemBase.builder()
       .category(category)
       .group(group)
-      .frameType(itemDto.getFrameType().ordinal())
+      .frameType(FrameType.from(itemDto.getFrameType()))
       .name(null)
       .baseType(null)
       .build();
@@ -47,11 +51,11 @@ public final class ItemBaseParserService {
   }
 
   private void parseName(CategoryDto categoryDto, GroupDto groupDto, ItemBase base, ItemDto itemDto) throws ItemParseException {
-    if (!itemDto.isIdentified() && itemDto.getFrameType() == Rarity.Unique) {
+    if (!itemDto.isIdentified() && itemDto.getFrameType() == FrameType.UNIQUE.ordinal()) {
       throw new ItemParseException(ParseExceptionBasis.PARSE_UNID_UNIQUE_ITEM);
     }
 
-    if (itemDto.getFrameType() == Rarity.Rare || StringUtils.isBlank(itemDto.getName())) {
+    if (FrameType.RARE.is(itemDto.getFrameType()) || StringUtils.isBlank(itemDto.getName())) {
       return;
     }
 
@@ -90,19 +94,15 @@ public final class ItemBaseParserService {
   }
 
   private void checkFrameType(CategoryDto categoryDto, ItemDto itemDto) throws ItemParseException {
-    if (itemDto.getFrameType() == null) {
-      throw new ItemParseException(ParseExceptionBasis.MISSING_FRAME_TYPE);
-    }
-
-    if (itemDto.getFrameType() == Rarity.Rare) {
+    if (FrameType.RARE.is(itemDto.getFrameType())) {
       throw new ItemParseException(DiscardBasis.PARSE_COMPLEX_RARE);
     }
 
-    if (itemDto.getFrameType() == Rarity.Magic) {
+    if (FrameType.MAGIC.is(itemDto.getFrameType())) {
       throw new ItemParseException(DiscardBasis.PARSE_COMPLEX_MAGIC);
     }
 
-    if (itemDto.getFrameType() != Rarity.Unique
+    if (FrameType.UNIQUE.is(itemDto.getFrameType())
       && (categoryDto == CategoryDto.ARMOUR
       || categoryDto == CategoryDto.WEAPON
       || categoryDto == CategoryDto.ACCESSORY
@@ -118,7 +118,7 @@ public final class ItemBaseParserService {
     // todo: or maybe the other way around?
     base.setName(enchantName);
     base.setBaseType(null);
-    base.setFrameType(0);
+    base.setFrameType(FrameType.NORMAL);
   }
 
 }

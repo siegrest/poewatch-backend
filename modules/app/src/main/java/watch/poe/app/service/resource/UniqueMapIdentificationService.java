@@ -34,7 +34,7 @@ public class UniqueMapIdentificationService {
   public Optional<UniqueMap> identifyMap(ItemDto itemDto) {
     return uniqueMaps.stream()
       .filter(i -> i.getType().equals(itemDto.getTypeLine()))
-      .filter(i -> i.getRarity() == itemDto.getFrameType())
+      .filter(i -> i.getRarity().is(itemDto.getFrameType()))
       .findFirst();
   }
 

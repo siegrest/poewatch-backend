@@ -4,13 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.CategoryDto;
 import watch.poe.app.domain.ParseExceptionBasis;
-import watch.poe.app.domain.Rarity;
 import watch.poe.app.domain.wrapper.CategoryWrapper;
 import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.app.utility.ItemTypeUtility;
 import watch.poe.app.utility.ItemUtility;
+import watch.poe.persistence.domain.FrameType;
 
 import java.util.Optional;
 
@@ -104,7 +104,7 @@ public class ItemCategorizationService {
   }
 
   private Optional<CategoryDto> parseProphecyCategory(CategoryWrapper wrapper) {
-    if (wrapper.getItemDto().getFrameType() == Rarity.Prophecy) {
+    if (FrameType.PROPHECY.is(wrapper.getItemDto().getFrameType())) {
       return Optional.of(CategoryDto.PROPHECY);
     }
 

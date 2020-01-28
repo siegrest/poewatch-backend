@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.Rarity;
 import watch.poe.app.dto.resource.VariationDto;
 import watch.poe.app.dto.resource.VariationItemDto;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.utility.FileUtility;
+import watch.poe.persistence.domain.FrameType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class ItemVariantService {
 
     for (var variation : variationItem.get().getVariations()) {
       // Edge case for prophecies
-      if (itemDto.getFrameType() == Rarity.Prophecy) {
+      if (FrameType.PROPHECY.is(itemDto.getFrameType())) {
         var firstMod = variation.getMods().stream().findFirst().orElseThrow();
         if (itemDto.getProphecyText().contains(firstMod)) {
           return Optional.of(variation);

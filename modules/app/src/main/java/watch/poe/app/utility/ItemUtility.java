@@ -2,13 +2,17 @@ package watch.poe.app.utility;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import watch.poe.app.domain.*;
+import watch.poe.app.domain.CategoryDto;
+import watch.poe.app.domain.DiscardBasis;
+import watch.poe.app.domain.GroupDto;
+import watch.poe.app.domain.ParseExceptionBasis;
 import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.PropertyDto;
 import watch.poe.app.dto.river.SocketDto;
 import watch.poe.app.exception.InvalidIconException;
 import watch.poe.app.exception.ItemParseException;
+import watch.poe.persistence.domain.FrameType;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.ItemBase;
 
@@ -28,22 +32,10 @@ public final class ItemUtility {
       || influences.getWarlord() != null && influences.getWarlord());
   }
 
-  public static boolean isComplex(ItemDto itemDto, CategoryDto categoryDto) {
-    var frameType = itemDto.getFrameType();
-    return (frameType == Rarity.Magic || frameType == Rarity.Rare)
-      && (categoryDto == CategoryDto.ACCESSORY
-      || categoryDto == CategoryDto.ARMOUR
-      || categoryDto == CategoryDto.JEWEL
-      || categoryDto == CategoryDto.MAP
-      || categoryDto == CategoryDto.FLASK
-      || categoryDto == CategoryDto.CRAFTING_BASE
-      || categoryDto == CategoryDto.ALTART
-      || categoryDto == CategoryDto.WEAPON);
-  }
-
   public static boolean isCraftable(ItemDto itemDto) {
-    var frameType = itemDto.getFrameType();
-    return frameType == Rarity.Normal || frameType == Rarity.Magic || frameType == Rarity.Rare;
+    return FrameType.NORMAL.is(itemDto.getFrameType())
+      || FrameType.MAGIC.is(itemDto.getFrameType())
+      || FrameType.RARE.is(itemDto.getFrameType());
   }
 
   public static boolean isStackable(ItemDto itemDto) {
@@ -67,7 +59,7 @@ public final class ItemUtility {
   }
 
   public static boolean isUnique(ItemDto itemDto) {
-    return itemDto.getFrameType() == Rarity.Unique || itemDto.getFrameType() == Rarity.Relic;
+    return FrameType.UNIQUE.is(itemDto.getFrameType()) || FrameType.RELIC.is(itemDto.getFrameType());
   }
 
   public static boolean isCorrupted(ItemDto itemDto) {
