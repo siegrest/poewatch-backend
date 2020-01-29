@@ -9,10 +9,13 @@ import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.RiverWrapper;
 import watch.poe.app.service.StatisticsService;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -67,20 +70,24 @@ public class RiverWorkerManagerService {
       indexFuture = null;
     }
 
-    var iterator = riverFutures.iterator();
-    while (iterator.hasNext()) {
-      var riverFuture = iterator.next();
-      if (!riverFuture.isDone()) {
-        continue;
-      }
+    var completedFutures = riverFutures.stream()
+      .filter(rf -> rf.isDone() || rf.isCancelled())
+      .collect(Collectors.toList());
 
-      // todo: handle exceptions
-      var wrapper = riverFuture.get();
-
-      indexFuture = futureHandlerService.process(wrapper);
-      iterator.remove();
+    if (completedFutures.isEmpty()) {
       return;
     }
+
+    riverFutures.removeAll(completedFutures);
+
+    List<RiverWrapper> wrappers = new ArrayList<>();
+    for (Future<RiverWrapper> completedFuture : completedFutures) {
+      // todo: handle exceptions
+      var wrapper = completedFuture.get();
+      wrappers.add(wrapper);
+    }
+
+    indexFuture = futureHandlerService.process(wrappers);
   }
 
   @Scheduled(fixedRate = 1000)

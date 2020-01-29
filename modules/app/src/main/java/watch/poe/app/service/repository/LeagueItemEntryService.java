@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import watch.poe.persistence.model.LeagueItemEntry;
 import watch.poe.persistence.repository.LeagueItemEntryRepository;
 
-import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -15,30 +15,8 @@ public class LeagueItemEntryService {
 
   private final LeagueItemEntryRepository itemEntryRepository;
 
-  public LeagueItemEntry save(LeagueItemEntry newEntry) {
-    var dbEntry = itemEntryRepository.findById(newEntry.getId());
-    if (dbEntry.isEmpty()) {
-      return saveNew(newEntry);
-    }
-
-    return update(newEntry, dbEntry.get());
-  }
-
-  private LeagueItemEntry saveNew(LeagueItemEntry entry) {
-    entry.setFound(new Date());
-    entry.setSeen(new Date());
-    entry.setUpdates(0);
-    return itemEntryRepository.save(entry);
-  }
-
-  private LeagueItemEntry update(LeagueItemEntry newEntry, LeagueItemEntry dbEntry) {
-    dbEntry.setSeen(new Date());
-    dbEntry.setUpdates(dbEntry.getUpdates() + 1);
-    dbEntry.setStackSize(newEntry.getStackSize());
-    dbEntry.setPrice(newEntry.getPrice());
-    dbEntry.setPriceItem(newEntry.getPriceItem());
-    dbEntry.setStash(newEntry.getStash());
-    return itemEntryRepository.save(dbEntry);
+  public void saveAll(List<LeagueItemEntry> leagueItemEntries) {
+    itemEntryRepository.saveAll(leagueItemEntries);
   }
 
 }

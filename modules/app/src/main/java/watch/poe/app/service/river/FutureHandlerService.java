@@ -16,8 +16,11 @@ import watch.poe.app.service.repository.LeagueItemEntryService;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.LeagueItemEntry;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -34,19 +37,26 @@ public class FutureHandlerService {
 
   @Async
   @Transactional
-  public Future<Boolean> process(RiverWrapper wrapper) {
-    log.info("Starting index job");
+  public Future<Boolean> process(List<RiverWrapper> wrappers) {
+    var entries = wrappers.stream()
+      .map(RiverWrapper::getEntries)
+      .flatMap(Collection::stream)
+      .collect(Collectors.toList());
+
+    log.info("Starting index job with {} entries", entries.size());
 
     statisticsService.startTimer(StatType.TIME_REPLY_INDEX);
-    for (LeagueItemEntry entry : wrapper.getEntries()) {
+    for (LeagueItemEntry entry : entries) {
       // todo: filter out duplicates
       entry.setItem(index(entry.getItem()));
-      // todo: save entries in batch
-      itemEntryService.save(entry);
     }
     statisticsService.clkTimer(StatType.TIME_REPLY_INDEX, true);
 
-    return CompletableFuture.completedFuture(true);
+    statisticsService.startTimer(StatType.TIME_REPLY_PERSIST);
+    itemEntryService.saveAll(entries);
+    statisticsService.clkTimer(StatType.TIME_REPLY_PERSIST, true);
+
+    return CompletableFuture.completedFuture(Boolean.TRUE);
   }
 
   public Item index(Item item) {

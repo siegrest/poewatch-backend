@@ -12,6 +12,7 @@ public enum StatType {
   TIME_REPLY_PARSE(StatGroupType.AVG, TimeFrame.M_60),
   TIME_REPLY_DESERIALIZE(StatGroupType.AVG, TimeFrame.M_60),
   TIME_REPLY_INDEX(StatGroupType.AVG, TimeFrame.M_60),
+  TIME_REPLY_PERSIST(StatGroupType.AVG, TimeFrame.M_60),
 
   COUNT_API_ERRORS_READ_TIMEOUT(StatGroupType.COUNT, TimeFrame.M_60),
   COUNT_API_ERRORS_CONNECT_TIMEOUT(StatGroupType.COUNT, TimeFrame.M_60),
