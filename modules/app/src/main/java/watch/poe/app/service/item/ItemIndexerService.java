@@ -2,15 +2,12 @@ package watch.poe.app.service.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import watch.poe.app.service.cache.CategoryCacheService;
+import watch.poe.app.service.cache.GroupCacheService;
 import watch.poe.app.utility.ItemUtility;
-import watch.poe.persistence.model.Category;
-import watch.poe.persistence.model.Group;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.ItemBase;
-import watch.poe.persistence.repository.CategoryRepository;
-import watch.poe.persistence.repository.GroupRepository;
 import watch.poe.persistence.repository.ItemBaseRepository;
 import watch.poe.persistence.repository.ItemRepository;
 
@@ -23,19 +20,30 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ItemIndexerService {
 
+  private final CategoryCacheService categoryService;
+  private final GroupCacheService groupService;
+
   private final ItemRepository itemRepository;
   private final ItemBaseRepository itemBaseRepository;
-  private final GroupRepository groupRepository;
-  private final CategoryRepository categoryRepository;
 
   public Item index(Item item) {
     var base = item.getBase();
 
-    var category = getOrSaveCategory(base.getCategory());
-    base.setCategory(category);
+    var category = categoryService.get(base.getCategory().getName());
+    if (category.isEmpty()) {
+      // todo: custom exception
+      throw new RuntimeException(String.format("Expected to find category '%s'", base.getCategory().getName()));
+    } else {
+      base.setCategory(category.get());
+    }
 
-    var group = getOrSaveGroup(base.getGroup());
-    base.setGroup(group);
+    var group = groupService.get(base.getGroup().getName());
+    if (group.isEmpty()) {
+      // todo: custom exception
+      throw new RuntimeException(String.format("Expected to find group '%s'", base.getCategory().getName()));
+    } else {
+      base.setGroup(group.get());
+    }
 
     var itemBase = getOrSaveBase(base);
     item.setBase(itemBase);
@@ -85,32 +93,6 @@ public class ItemIndexerService {
     return haystack.stream()
       .filter(i -> ItemUtility.itemEquals(needle, i))
       .findFirst();
-  }
-
-  private Category getOrSaveCategory(Category category) {
-    var dbCategory = categoryRepository.getByName(category.getName());
-
-    if (dbCategory.isEmpty()) {
-      category.setDisplay(StringUtils.capitalize(category.getName()));
-      category = categoryRepository.save(category);
-      log.info("Added category to database: {}", category);
-      return category;
-    }
-
-    return dbCategory.get();
-  }
-
-  private Group getOrSaveGroup(Group group) {
-    var dbGroup = groupRepository.getByName(group.getName());
-
-    if (dbGroup.isEmpty()) {
-      group.setDisplay(StringUtils.capitalize(group.getName()));
-      group = groupRepository.save(group);
-      log.info("Added group to database: {}", group);
-      return group;
-    }
-
-    return dbGroup.get();
   }
 
 }
