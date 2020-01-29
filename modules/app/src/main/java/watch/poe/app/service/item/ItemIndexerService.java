@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import watch.poe.app.service.cache.CategoryCacheService;
 import watch.poe.app.service.cache.GroupCacheService;
+import watch.poe.app.service.cache.ItemBaseCacheService;
 import watch.poe.app.utility.ItemUtility;
 import watch.poe.persistence.model.Item;
-import watch.poe.persistence.model.ItemBase;
 import watch.poe.persistence.repository.ItemBaseRepository;
 import watch.poe.persistence.repository.ItemRepository;
 
@@ -22,6 +22,7 @@ public class ItemIndexerService {
 
   private final CategoryCacheService categoryService;
   private final GroupCacheService groupService;
+  private final ItemBaseCacheService itemBaseCacheService;
 
   private final ItemRepository itemRepository;
   private final ItemBaseRepository itemBaseRepository;
@@ -45,7 +46,7 @@ public class ItemIndexerService {
       base.setGroup(group.get());
     }
 
-    var itemBase = getOrSaveBase(base);
+    var itemBase = itemBaseCacheService.getOrSave(base);
     item.setBase(itemBase);
 
     var items = itemBase.getItems();
@@ -66,19 +67,6 @@ public class ItemIndexerService {
     return item;
   }
 
-  private ItemBase getOrSaveBase(ItemBase base) {
-    var dbBase = itemBaseRepository.findByCategoryAndGroupAndFrameTypeAndNameAndBaseType(base.getCategory(),
-      base.getGroup(), base.getFrameType(), base.getName(), base.getBaseType());
-
-    if (dbBase.isEmpty()) {
-      base.setItems(Set.of());
-      base = itemBaseRepository.save(base);
-      log.debug("Saved new item base {}", base);
-      return base;
-    }
-
-    return dbBase.get();
-  }
 
   private Item saveNewItem(Item item) {
     item.setFound(new Date());

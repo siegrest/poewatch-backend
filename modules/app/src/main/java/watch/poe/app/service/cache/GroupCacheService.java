@@ -1,6 +1,5 @@
 package watch.poe.app.service.cache;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +22,6 @@ import java.util.Optional;
 public class GroupCacheService {
 
   private final GroupRepository groupRepository;
-  @Getter
   private final List<Group> groups = new ArrayList<>();
 
   @EventListener(ApplicationStartedEvent.class)
