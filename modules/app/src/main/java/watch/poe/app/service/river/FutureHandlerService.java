@@ -13,6 +13,7 @@ import watch.poe.app.service.cache.GroupCacheService;
 import watch.poe.app.service.cache.ItemBaseCacheService;
 import watch.poe.app.service.cache.ItemCacheService;
 import watch.poe.app.service.repository.LeagueItemEntryService;
+import watch.poe.app.utility.ChangeIdUtility;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.LeagueItemEntry;
 
@@ -37,7 +38,7 @@ public class FutureHandlerService {
 
   @Async
   @Transactional
-  public Future<Boolean> process(List<RiverWrapper> wrappers) {
+  public Future<String> process(List<RiverWrapper> wrappers) {
     var entries = wrappers.stream()
       .map(RiverWrapper::getEntries)
       .flatMap(Collection::stream)
@@ -56,10 +57,15 @@ public class FutureHandlerService {
     itemEntryService.saveAll(entries);
     statisticsService.clkTimer(StatType.TIME_REPLY_PERSIST, true);
 
-    return CompletableFuture.completedFuture(Boolean.TRUE);
+    var newestJob = wrappers.stream()
+      .map(RiverWrapper::getJob)
+      .min(ChangeIdUtility::comparator)
+      .orElse(null);
+
+    return CompletableFuture.completedFuture(newestJob);
   }
 
-  public Item index(Item item) {
+  private Item index(Item item) {
     var base = item.getBase();
 
     var category = categoryCacheService.get(base.getCategory().getName());

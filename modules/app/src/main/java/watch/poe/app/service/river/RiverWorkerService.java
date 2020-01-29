@@ -38,14 +38,15 @@ public class RiverWorkerService {
   @Async
   public Future<RiverWrapper> queryNext(String job) {
     log.info("Started worker with job {}", job);
+    statisticsService.addValue(StatType.COUNT_API_CALLS);
 
-    var stashJsonString = downloadStashJson(job);
-    if (stashJsonString == null) {
+    var stashStringBuilder = downloadStashJson(job);
+    if (stashStringBuilder == null) {
       // todo: add exceptions and messages
       return AsyncResult.forExecutionException(new RuntimeException("todo"));
     }
 
-    return riverParserService.process(stashJsonString);
+    return riverParserService.process(job, stashStringBuilder);
   }
 
   private StringBuilder downloadStashJson(String changeId) {

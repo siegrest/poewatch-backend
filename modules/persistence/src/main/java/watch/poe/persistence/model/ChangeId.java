@@ -1,6 +1,8 @@
 package watch.poe.persistence.model;
 
 import lombok.*;
+import org.hibernate.annotations.UpdateTimestamp;
+import watch.poe.persistence.domain.ChangeIdId;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,15 +16,14 @@ import java.util.Date;
 @Table(name = "change_id")
 public class ChangeId {
 
-  @Id
-  @Column(name = "id", length = 64)
-  private String id;
+  @UpdateTimestamp
+  @Temporal(TemporalType.TIMESTAMP)
+  public Date updated;
 
   @Column(name = "change_id", length = 64)
   private String changeId;
-
-  @Column(name = "time")
-  @Temporal(TemporalType.TIMESTAMP)
-  public Date time;
+  @Id
+  @Enumerated(value = EnumType.STRING)
+  private ChangeIdId id;
 
 }

@@ -52,7 +52,7 @@ public class RiverParserService {
 
   @Async
 //  @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
-  public Future<RiverWrapper> process(StringBuilder stashStringBuilder) {
+  public Future<RiverWrapper> process(String job, StringBuilder stashStringBuilder) {
     statisticsService.startTimer(StatType.TIME_REPLY_DESERIALIZE);
     var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
     statisticsService.clkTimer(StatType.TIME_REPLY_DESERIALIZE);
@@ -67,6 +67,7 @@ public class RiverParserService {
 
     var wrapper = RiverWrapper.builder()
       .entries(entries)
+      .job(job)
       .completionTime(LocalDateTime.now())
       .build();
 

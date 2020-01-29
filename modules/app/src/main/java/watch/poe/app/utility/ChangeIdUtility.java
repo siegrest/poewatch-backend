@@ -10,6 +10,14 @@ public final class ChangeIdUtility {
 
     private static final Pattern changeIdPattern = Pattern.compile("\\d+(-\\d+){4}");
 
+    public static int comparator(String a, String b) {
+        if (a.equals(b)) {
+            return 0;
+        }
+
+        return isNewerThan(a, b) ? 1 : 0;
+    }
+
     public static boolean isNewerThan(String a, String b) {
         if (!isChangeId(a) || !isChangeId(b)) {
             return false;

@@ -16,4 +16,5 @@ import java.util.Set;
 public class RiverWrapper {
   private Set<LeagueItemEntry> entries;
   private LocalDateTime completionTime;
+  private String job;
 }

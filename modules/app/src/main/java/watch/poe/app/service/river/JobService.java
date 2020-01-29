@@ -3,9 +3,13 @@ package watch.poe.app.service.river;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
-import watch.poe.app.service.repository.ChangeIdService;
+import watch.poe.app.config.AppModuleConfig;
+import watch.poe.app.service.chid.ChangeIdService;
 import watch.poe.app.utility.ChangeIdUtility;
+import watch.poe.persistence.domain.ChangeIdId;
 
 import java.util.Optional;
 
@@ -15,17 +19,24 @@ import java.util.Optional;
 public class JobService {
 
   private final ChangeIdService changeIdService;
+  private final AppModuleConfig config;
 
   @Value("${stash.fetch.cooldown}")
   private int fetchCooldown;
 
-//    private String job = "541640378-559363977-529069322-602859172-572858041";
-//    private String job = "542419420-560211954-529765688-603620935-57359360";
-//    private String job = "544998848-562898891-532480647-606437628-78043036";
-
   // todo: query job from repository
-  private String job = "546007976-563951214-533531225-607571032-78793199";
-  private long lastPollTime = System.currentTimeMillis();
+  private String job;
+  private long lastPollTime;
+
+  @EventListener(ApplicationStartedEvent.class)
+  public void init() {
+    var changeIdOverride = config.getProperty("develop.change-id.override");
+    if (ChangeIdUtility.isChangeId(changeIdOverride)) {
+      job = changeIdOverride;
+    } else {
+      changeIdService.find(ChangeIdId.APP).ifPresentOrElse(id -> job = id.getChangeId(), () -> job = "0-0-0-0-0");
+    }
+  }
 
   public Optional<String> getJob() {
     if (isRequestCooldown()) {
@@ -49,7 +60,7 @@ public class JobService {
       log.error("Job {} was overwritten by {} {}", job, age, newJob);
     }
 
-    changeIdService.saveRiverIfNew(newJob);
+    changeIdService.saveIfNewer(ChangeIdId.TOP, newJob);
     job = newJob;
   }
 

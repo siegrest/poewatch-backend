@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.RiverWrapper;
-import watch.poe.app.service.StatisticsService;
+import watch.poe.app.service.chid.ChangeIdService;
+import watch.poe.persistence.domain.ChangeIdId;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 public class RiverWorkerManagerService {
 
   private final RiverWorkerService riverWorkerService;
-  private final StatisticsService statisticsService;
+  private final ChangeIdService changeIdService;
   private final FutureHandlerService futureHandlerService;
   private final JobService jobService;
 
@@ -33,9 +33,9 @@ public class RiverWorkerManagerService {
   private boolean enabled;
 
   private Set<Future<RiverWrapper>> riverFutures = new HashSet<>();
-  private Future<Boolean> indexFuture;
+  private Future<String> indexFuture;
 
-  @Scheduled(fixedRateString = "${stash.worker.query.rate}")
+  @Scheduled(fixedRateString = "${stash.worker.query.rate}", initialDelay = 2000)
   public void scheduleWorker() {
     if (!enabled) {
       return;
@@ -55,7 +55,6 @@ public class RiverWorkerManagerService {
     }
 
     riverFutures.add(riverWorkerService.queryNext(nextJob.get()));
-    statisticsService.addValue(StatType.COUNT_API_CALLS);
   }
 
   @Scheduled(fixedRateString = "${stash.worker.check.rate}")
@@ -66,7 +65,8 @@ public class RiverWorkerManagerService {
       }
 
       // todo: handle index exceptions
-      indexFuture.get();
+      var completedJob = indexFuture.get();
+      changeIdService.saveIfNewer(ChangeIdId.APP, completedJob);
       indexFuture = null;
     }
 
