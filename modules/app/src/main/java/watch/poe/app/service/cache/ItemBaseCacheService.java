@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import watch.poe.app.utility.ItemUtility;
 import watch.poe.persistence.model.ItemBase;
 import watch.poe.persistence.repository.ItemBaseRepository;
 
@@ -27,11 +28,7 @@ public class ItemBaseCacheService {
 
   public ItemBase getOrSave(ItemBase base) {
     var dbBase = itemBases.stream()
-      .filter(b -> b.getCategory().equals(base.getCategory()))
-      .filter(b -> b.getGroup().equals(base.getGroup()))
-      .filter(b -> b.getFrameType().equals(base.getFrameType()))
-      .filter(b -> b.getName().equals(base.getName()))
-      .filter(b -> b.getBaseType().equals(base.getBaseType()))
+      .filter(b -> ItemUtility.itemBaseEquals(b, base))
       .findFirst();
 
     if (dbBase.isPresent()) {

@@ -272,6 +272,10 @@ public final class ItemUtility {
       return true;
     }
 
+    if (item1 == null || item2 == null) {
+      return false;
+    }
+
     return itemBaseEquals(item1.getBase(), item2.getBase()) &&
       Objects.equals(item1.getVariation(), item2.getVariation()) &&
       Objects.equals(item1.getStackSize(), item2.getStackSize()) &&
@@ -297,7 +301,7 @@ public final class ItemUtility {
       return true;
     }
 
-    if (base1 == null && base2 != null || base1 != null && base2 == null) {
+    if (base1 == null || base2 == null) {
       return false;
     }
 
