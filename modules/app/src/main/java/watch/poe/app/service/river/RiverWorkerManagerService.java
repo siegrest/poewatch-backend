@@ -58,11 +58,13 @@ public class RiverWorkerManagerService {
   @Scheduled(fixedRateString = "${stash.worker.check.rate}")
   public void checkFinishedRiverFuture() throws InterruptedException, ExecutionException {
     if (indexFuture != null) {
-      if (indexFuture.isDone() || indexFuture.isCancelled()) {
-        indexFuture = null;
-      } else {
+      if (!indexFuture.isDone() && !indexFuture.isCancelled()) {
         return;
       }
+
+      // todo: handle index exceptions
+      indexFuture.get();
+      indexFuture = null;
     }
 
     var iterator = riverFutures.iterator();
@@ -72,9 +74,12 @@ public class RiverWorkerManagerService {
         continue;
       }
 
+      // todo: handle exceptions
       var wrapper = riverFuture.get();
+
       indexFuture = futureHandlerService.process(wrapper);
       iterator.remove();
+      return;
     }
   }
 
