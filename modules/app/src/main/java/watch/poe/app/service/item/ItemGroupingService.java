@@ -294,6 +294,10 @@ public class ItemGroupingService {
       return GroupDto.BREACH_BLESSING;
     }
 
+    if (ItemTypeUtility.isReliquaryKey(wrapper.getItemDto())) {
+      return GroupDto.MISC_FRAG;
+    }
+
     throw new GroupingException(GroupingExceptionBasis.PARSE);
   }
 
