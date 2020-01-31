@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import watch.poe.persistence.model.LeagueItemEntry;
+import watch.poe.persistence.model.Stash;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -14,7 +14,7 @@ import java.util.Set;
 @Builder
 @ToString
 public class RiverWrapper {
-  private Set<LeagueItemEntry> entries;
+  private Set<Stash> stashes;
   private LocalDateTime completionTime;
   private String job;
 }

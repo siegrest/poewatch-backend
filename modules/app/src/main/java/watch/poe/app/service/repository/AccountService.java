@@ -9,6 +9,7 @@ import watch.poe.persistence.model.Account;
 import watch.poe.persistence.repository.AccountRepository;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -16,6 +17,11 @@ import java.util.Date;
 public class AccountService {
 
   private final AccountRepository accountRepository;
+
+  public List<Account> saveAll(List<Account> accounts) {
+    // todo: this
+    return null;
+  }
 
   @Transactional
   public Account save(String accountName) {

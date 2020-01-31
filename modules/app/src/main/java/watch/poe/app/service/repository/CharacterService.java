@@ -10,6 +10,7 @@ import watch.poe.persistence.model.Character;
 import watch.poe.persistence.repository.CharacterRepository;
 
 import java.util.Date;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -17,6 +18,11 @@ import java.util.Date;
 public class CharacterService {
 
   private final CharacterRepository characterRepository;
+
+  public List<Character> saveAll(List<Character> characters) {
+    // todo: this
+    return null;
+  }
 
   @Transactional
   public Character save(Account account, String characterName) {

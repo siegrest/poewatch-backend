@@ -20,15 +20,16 @@ import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
 import watch.poe.app.service.StatisticsService;
 import watch.poe.app.service.item.ItemParserService;
-import watch.poe.app.service.repository.AccountService;
-import watch.poe.app.service.repository.CharacterService;
-import watch.poe.app.service.repository.StashRepositoryService;
+import watch.poe.persistence.model.Account;
+import watch.poe.persistence.model.Character;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.LeagueItemEntry;
+import watch.poe.persistence.model.Stash;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -41,9 +42,6 @@ public class RiverParserService {
   private final GsonService gsonService;
   private final StatisticsService statisticsService;
   private final LeagueService leagueService;
-  private final StashRepositoryService stashRepositoryService;
-  private final AccountService accountService;
-  private final CharacterService characterService;
   private final NoteParseService noteParseService;
   private final ItemParserService itemParserService;
 
@@ -60,13 +58,11 @@ public class RiverParserService {
     log.info("got {} stashes", riverDto.getStashes().size());
 
     statisticsService.startTimer(StatType.TIME_REPLY_PARSE);
-    var entries = processRiver(riverDto);
+    var stashes = processRiver(riverDto);
     statisticsService.clkTimer(StatType.TIME_REPLY_PARSE);
 
-    log.info("extracted {} valid items", entries.size());
-
     var wrapper = RiverWrapper.builder()
-      .entries(entries)
+      .stashes(stashes)
       .job(job)
       .completionTime(LocalDateTime.now())
       .build();
@@ -74,8 +70,8 @@ public class RiverParserService {
     return CompletableFuture.completedFuture(wrapper);
   }
 
-  private Set<LeagueItemEntry> processRiver(RiverDto riverDto) {
-    var entries = new HashSet<LeagueItemEntry>();
+  private Set<Stash> processRiver(RiverDto riverDto) {
+    var stashes = new HashSet<Stash>();
 
     for (StashDto stashDto : riverDto.getStashes()) {
       statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
@@ -86,20 +82,20 @@ public class RiverParserService {
         continue;
       }
 
-      var account = accountService.save(stashDto.getAccountName());
-      var character = characterService.save(account, stashDto.getLastCharacterName());
-      var stash = stashRepositoryService.save(league.get(), account, stashDto);
-
-      if (character == null || account == null || stash == null) {
-        continue;
-      }
+      var character = Character.builder()
+        .name(stashDto.getLastCharacterName())
+        .build();
+      var account = Account.builder()
+        .name(stashDto.getAccountName())
+        .characters(List.of(character))
+        .build();
+      var stash = Stash.builder()
+        .account(account)
+        .league(league.get())
+        .build();
+      var items = stash.getItems();
 
       for (ItemDto itemDto : stashDto.getItems()) {
-        if (itemDto == null) {
-          log.info("Null item");
-          continue;
-        }
-
         var price = noteParseService.parsePrice(stashDto.getStashName(), itemDto.getNote());
         if (price == null && !acceptMissingPrice) {
           continue;
@@ -144,11 +140,11 @@ public class RiverParserService {
           .stash(stash)
           .build();
 
-        entries.add(entry);
+        items.add(entry);
       }
     }
 
-    return entries;
+    return stashes;
   }
 
 }
