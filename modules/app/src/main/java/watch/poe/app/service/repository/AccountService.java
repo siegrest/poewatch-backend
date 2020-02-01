@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import watch.poe.persistence.model.Account;
 import watch.poe.persistence.repository.AccountRepository;
 
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -18,40 +17,29 @@ public class AccountService {
 
   private final AccountRepository accountRepository;
 
-  public List<Account> saveAll(List<Account> accounts) {
-    // todo: this
-    return null;
-  }
-
-  @Transactional
-  public Account save(String accountName) {
-    if (accountName == null || StringUtils.isBlank(accountName)) {
+  public Account save(String account) {
+    if (account == null || StringUtils.isBlank(account)) {
       return null;
     }
 
-    var account = accountRepository.findByName(accountName);
-    if (account == null) {
-      account = saveNewAccount(accountName);
-    } else {
-      account = updateAccountSeen(account);
+    var dbAccount = accountRepository.findByName(account);
+    if (dbAccount != null) {
+      return dbAccount;
+//      return accountRepository.save(dbAccount);
     }
 
-    return account;
-  }
-
-  private Account saveNewAccount(String accountName) {
-    var account = Account.builder()
-      .found(new Date())
-      .seen(new Date())
-      .name(accountName)
+    var newAccount = Account.builder()
+      .name(account)
       .build();
 
-    return accountRepository.save(account);
+    return accountRepository.save(newAccount);
   }
 
-  private Account updateAccountSeen(Account account) {
-    account.setSeen(new Date());
-    return accountRepository.save(account);
+  public List<Account> saveAll(List<String> accountNames) {
+    var accounts = accountNames.stream()
+      .map(account -> Account.builder().name(account).build())
+      .collect(Collectors.toList());
+    return accountRepository.saveAll(accounts);
   }
 
 }

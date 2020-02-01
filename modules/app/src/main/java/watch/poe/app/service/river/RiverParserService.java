@@ -20,17 +20,12 @@ import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
 import watch.poe.app.service.StatisticsService;
 import watch.poe.app.service.item.ItemParserService;
-import watch.poe.persistence.model.Account;
 import watch.poe.persistence.model.Character;
-import watch.poe.persistence.model.Item;
-import watch.poe.persistence.model.LeagueItemEntry;
-import watch.poe.persistence.model.Stash;
+import watch.poe.persistence.model.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
@@ -70,28 +65,24 @@ public class RiverParserService {
     return CompletableFuture.completedFuture(wrapper);
   }
 
-  private Set<Stash> processRiver(RiverDto riverDto) {
-    var stashes = new HashSet<Stash>();
+  private List<Stash> processRiver(RiverDto riverDto) {
+    var stashes = new ArrayList<Stash>();
 
     for (StashDto stashDto : riverDto.getStashes()) {
       statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
 
       var league = leagueService.getByName(stashDto.getLeague());
-      if (league.isEmpty()) {
-        statisticsService.addValue(StatType.COUNT_ITEMS_DISCARDED_INVALID_LEAGUE, stashDto.getItems().size());
-        continue;
-      }
-
       var character = Character.builder()
         .name(stashDto.getLastCharacterName())
         .build();
       var account = Account.builder()
         .name(stashDto.getAccountName())
-        .characters(List.of(character))
+        .characters(stashDto.getLastCharacterName() == null ? null : List.of(character))
         .build();
       var stash = Stash.builder()
-        .account(account)
-        .league(league.get())
+        .id(stashDto.getId())
+        .account(stashDto.getAccountName() == null ? null : account)
+        .league(league.orElse(null))
         .build();
       var items = stash.getItems();
 
@@ -142,6 +133,7 @@ public class RiverParserService {
 
         items.add(entry);
       }
+      stashes.add(stash);
     }
 
     return stashes;

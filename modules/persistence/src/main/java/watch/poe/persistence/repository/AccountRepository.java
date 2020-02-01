@@ -5,6 +5,6 @@ import watch.poe.persistence.model.Account;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    Account findByName(String name);
+  Account findByName(String name);
 
 }

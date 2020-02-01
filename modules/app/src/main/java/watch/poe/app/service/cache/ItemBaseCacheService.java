@@ -11,7 +11,6 @@ import watch.poe.persistence.repository.ItemBaseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -36,7 +35,7 @@ public class ItemBaseCacheService {
     }
 
     // todo: necessary? or move to item base builder
-    base.setItems(Set.of());
+    base.setItems(List.of());
     base.setId(null);
 
     var newBase = itemBaseRepository.save(base);

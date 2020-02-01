@@ -31,6 +31,8 @@ public class RiverWorkerManagerService {
   private int maxWorkerCount;
   @Value("${stash.fetch.enabled}")
   private boolean enabled;
+  @Value("${stash.parse.batch.size}")
+  private int batchSize;
 
   private Set<Future<RiverWrapper>> riverFutures = new HashSet<>();
   private Future<String> indexFuture;
@@ -75,6 +77,10 @@ public class RiverWorkerManagerService {
       .collect(Collectors.toList());
 
     if (completedFutures.isEmpty()) {
+      return;
+    }
+
+    if (completedFutures.size() < batchSize) {
       return;
     }
 

@@ -4,7 +4,7 @@ import lombok.*;
 import watch.poe.persistence.domain.FrameType;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -36,7 +36,7 @@ public class ItemBase {
 
   @ToString.Exclude
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "base", fetch = FetchType.EAGER)
-  private Set<Item> items;
+  private List<Item> items;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "fk_category", nullable = false)
@@ -52,7 +52,7 @@ public class ItemBase {
   @Column(name = "base_type", length = 64)
   private String baseType;
 
-  @Enumerated(EnumType.ORDINAL)
+  @Enumerated(EnumType.STRING)
   @Column(name = "frame_type", nullable = false)
   private FrameType frameType;
 

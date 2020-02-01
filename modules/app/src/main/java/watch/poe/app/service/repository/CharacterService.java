@@ -4,13 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import watch.poe.persistence.model.Account;
 import watch.poe.persistence.model.Character;
 import watch.poe.persistence.repository.CharacterRepository;
-
-import java.util.Date;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -19,41 +15,22 @@ public class CharacterService {
 
   private final CharacterRepository characterRepository;
 
-  public List<Character> saveAll(List<Character> characters) {
-    // todo: this
-    return null;
-  }
-
-  @Transactional
-  public Character save(Account account, String characterName) {
-    if (characterName == null || StringUtils.isBlank(characterName)) {
+  public Character save(Account account, String character) {
+    if (account.getId() == null || character == null || StringUtils.isBlank(character)) {
       return null;
     }
 
-    var character = characterRepository.findByName(characterName);
-    if (character == null) {
-      character = saveNewCharacter(account, characterName);
-    } else {
-      character = updateCharacterSeen(character);
+    var dbCharacter = characterRepository.findByName(character);
+    if (dbCharacter.isPresent()) {
+      return characterRepository.save(dbCharacter.get());
     }
 
-    return character;
-  }
-
-  private Character saveNewCharacter(Account account, String characterName) {
-    var character = Character.builder()
+    var newCharacter = Character.builder()
+      .name(character)
       .account(account)
-      .found(new Date())
-      .seen(new Date())
-      .name(characterName)
       .build();
 
-    return characterRepository.save(character);
-  }
-
-  private Character updateCharacterSeen(Character character) {
-    character.setSeen(new Date());
-    return characterRepository.save(character);
+    return characterRepository.save(newCharacter);
   }
 
 }

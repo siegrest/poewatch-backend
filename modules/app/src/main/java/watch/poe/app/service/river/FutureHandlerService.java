@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.RiverWrapper;
@@ -14,7 +16,6 @@ import watch.poe.app.service.cache.ItemBaseCacheService;
 import watch.poe.app.service.cache.ItemCacheService;
 import watch.poe.app.service.repository.AccountService;
 import watch.poe.app.service.repository.CharacterService;
-import watch.poe.app.service.repository.LeagueItemEntryService;
 import watch.poe.app.service.repository.StashRepositoryService;
 import watch.poe.app.utility.ChangeIdUtility;
 import watch.poe.persistence.model.Account;
@@ -33,20 +34,20 @@ import java.util.stream.Collectors;
 public class FutureHandlerService {
 
   private final StatisticsService statisticsService;
-  private final LeagueItemEntryService itemEntryService;
+  private final StashRepositoryService stashRepositoryService;
+  private final AccountService accountService;
+  private final CharacterService characterService;
 
   private final CategoryCacheService categoryCacheService;
   private final GroupCacheService groupCacheService;
   private final ItemBaseCacheService itemBaseCacheService;
   private final ItemCacheService itemCacheService;
 
-  private final StashRepositoryService stashRepositoryService;
-  private final AccountService accountService;
-  private final CharacterService characterService;
-
   @Async
-  @Transactional
+  @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
   public Future<String> process(List<RiverWrapper> wrappers) {
+    statisticsService.startTimer(StatType.TIME_PROCESS_RIVER);
+
     var stashes = wrappers.stream()
       .map(RiverWrapper::getStashes)
       .flatMap(Collection::stream)
@@ -57,28 +58,24 @@ public class FutureHandlerService {
       .flatMap(Collection::stream)
       .collect(Collectors.toList());
 
-    statisticsService.startTimer(StatType.TIME_REPLY_INDEX);
+    statisticsService.startTimer(StatType.TIME_INDEX_ITEM);
     indexItems(entries);
-    statisticsService.clkTimer(StatType.TIME_REPLY_INDEX, true);
+    statisticsService.clkTimer(StatType.TIME_INDEX_ITEM, true);
 
-    statisticsService.startTimer(StatType.TIME_REPLY_PERSIST);
-    itemEntryService.saveAll(entries);
-    statisticsService.clkTimer(StatType.TIME_REPLY_PERSIST, true);
+    statisticsService.startTimer(StatType.TIME_INDEX_ACCOUNT);
+    saveAccounts(stashes);
+    statisticsService.clkTimer(StatType.TIME_INDEX_ACCOUNT, true);
+
+    statisticsService.startTimer(StatType.TIME_INDEX_STASH);
+    saveStashes(stashes);
+    statisticsService.clkTimer(StatType.TIME_INDEX_STASH, true);
 
     var newestJob = wrappers.stream()
       .map(RiverWrapper::getJob)
       .min(ChangeIdUtility::comparator)
       .orElse(null);
 
-
-//    var account = accountService.save(stashDto.getAccountName());
-//    var character = characterService.save(account, stashDto.getLastCharacterName());
-//    var stash = stashRepositoryService.save(league.get(), account, stashDto);
-//
-//    if (character == null || account == null || stash == null) {
-//      continue;
-//    }
-
+    statisticsService.clkTimer(StatType.TIME_PROCESS_RIVER, true);
     return CompletableFuture.completedFuture(newestJob);
   }
 
@@ -109,49 +106,48 @@ public class FutureHandlerService {
       var itemBase = itemBaseCacheService.getOrSave(base);
       item.setBase(itemBase);
 
-      itemCacheService.getOrSave(item);
+      // not necessary to set. saving updates object as well
+      entry.setItem(itemCacheService.getOrSave(item));
     }
   }
 
-  private void indexStashes(List<Stash> stashes) {
-    var tmpAccounts = stashes.stream()
+  private void saveAccounts(List<Stash> stashes) {
+    var validStashes = stashes.stream()
+      .filter(stash -> stash.getAccount() != null)
+      .collect(Collectors.toList());
+
+    var accountNames = validStashes.stream()
       .map(Stash::getAccount)
-      .filter(account -> account.getName() != null)
-      .collect(Collectors.toList());
-    var tmpCharacters = tmpAccounts.stream()
-      .map(Account::getCharacters)
-      .flatMap(Collection::stream)
-      .filter(character -> character.getName() != null)
+      .map(Account::getName)
+      .distinct()
       .collect(Collectors.toList());
 
-    var accounts = tmpAccounts.stream()
-      .peek(a -> a.setCharacters(null))
-      .collect(Collectors.toList());
-    var dbAccounts = accountService.saveAll(accounts);
-
-
-//    var characters = accounts.stream()
-//      .map(Account::getCharacters)
-//      .flatMap(Collection::stream)
-//      .filter(Objects::nonNull)
-//      .collect(Collectors.toList());
-
-
-    var characters = accounts.stream()
-      .map(account -> account.getCharacters().stream()
-        .peek(character -> dbAccounts.stream()
-          .filter(a -> a.getName().equals(account.getName()))
-          .findFirst()
-          .ifPresent(character::setAccount))
-        .collect(Collectors.toList()))
-      .flatMap(Collection::stream)
-      .filter(character -> character.getAccount() != null)
+    var dbAccounts = accountNames.stream()
+      .map(accountService::save)
       .collect(Collectors.toList());
 
-    // todo: broken code
-    var dbCharacters = characterService.saveAll(characters);
-    var stash = stashRepositoryService.save(league.get(), account, stashDto);
+    validStashes.forEach(stash -> {
+      dbAccounts.stream()
+        .filter(dbAccount -> dbAccount.getName().equals(stash.getAccount().getName()))
+        .findFirst()
+        .ifPresentOrElse(stash::setAccount, () -> stash.setAccount(null));
+    });
+  }
 
+  private void saveStashes(List<Stash> stashes) {
+    var validStashes = stashes.stream()
+      .filter(stash -> stash.getLeague() != null)
+      .filter(stash -> stash.getAccount() != null)
+      .filter(stash -> stash.getItems() != null)
+      .filter(stash -> !stash.getItems().isEmpty())
+      .collect(Collectors.toList());
+
+    var invalidStashes = stashes.stream()
+      .filter(stash -> !validStashes.contains(stash))
+      .collect(Collectors.toList());
+
+    stashRepositoryService.deleteAll(invalidStashes);
+    stashRepositoryService.saveAll(validStashes);
   }
 
 }

@@ -7,14 +7,14 @@ import lombok.ToString;
 import watch.poe.persistence.model.Stash;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
 @Builder
 @ToString
 public class RiverWrapper {
-  private Set<Stash> stashes;
+  private List<Stash> stashes;
   private LocalDateTime completionTime;
   private String job;
 }

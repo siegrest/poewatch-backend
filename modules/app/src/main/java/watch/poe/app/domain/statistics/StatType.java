@@ -11,8 +11,11 @@ public enum StatType {
 
   TIME_REPLY_PARSE(StatGroupType.AVG, TimeFrame.M_60),
   TIME_REPLY_DESERIALIZE(StatGroupType.AVG, TimeFrame.M_60),
-  TIME_REPLY_INDEX(StatGroupType.AVG, TimeFrame.M_60),
-  TIME_REPLY_PERSIST(StatGroupType.AVG, TimeFrame.M_60),
+  TIME_INDEX_ITEM(StatGroupType.AVG, TimeFrame.M_60),
+  //  TIME_PERSIST_ENTRY(StatGroupType.AVG, TimeFrame.M_60),
+  TIME_PROCESS_RIVER(StatGroupType.AVG, TimeFrame.M_60),
+  TIME_INDEX_STASH(StatGroupType.AVG, TimeFrame.M_60),
+  TIME_INDEX_ACCOUNT(StatGroupType.AVG, TimeFrame.M_60),
 
   COUNT_API_ERRORS_READ_TIMEOUT(StatGroupType.COUNT, TimeFrame.M_60),
   COUNT_API_ERRORS_CONNECT_TIMEOUT(StatGroupType.COUNT, TimeFrame.M_60),
@@ -25,7 +28,7 @@ public enum StatType {
   COUNT_API_CALLS(StatGroupType.COUNT, TimeFrame.M_60),
   COUNT_TOTAL_STASHES(StatGroupType.SUM, TimeFrame.M_60),
   COUNT_TOTAL_ITEMS(StatGroupType.SUM, TimeFrame.M_60),
-  COUNT_ITEMS_DISCARDED_INVALID_LEAGUE(StatGroupType.SUM, TimeFrame.M_60),
+  //  COUNT_ITEMS_DISCARDED_INVALID_LEAGUE(StatGroupType.SUM, TimeFrame.M_60),
   COUNT_ACCEPTED_ITEMS(StatGroupType.SUM, TimeFrame.M_60),
   COUNT_ACTIVE_ACCOUNTS(StatGroupType.SUM, TimeFrame.M_60),
 
