@@ -98,8 +98,7 @@ public class StatisticsService {
     var statTimers = threadTimer.getTimers();
 
     if (statTimers.stream().anyMatch(i -> i.getType().equals(type))) {
-      log.error("Stat timer of type '{}' already exists", type);
-      throw new RuntimeException();
+      log.error("Stat timer of type '{}' already exists in thread {}", type, Thread.currentThread().getName());
     }
 
     var timer = StatTimer.builder()
