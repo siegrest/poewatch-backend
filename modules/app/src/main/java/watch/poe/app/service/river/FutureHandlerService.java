@@ -4,18 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.RiverWrapper;
 import watch.poe.app.domain.wrapper.StashWrapper;
-import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.StatisticsService;
-import watch.poe.app.service.cache.CategoryCacheService;
-import watch.poe.app.service.cache.GroupCacheService;
-import watch.poe.app.service.cache.ItemBaseCacheService;
-import watch.poe.app.service.cache.ItemCacheService;
+import watch.poe.app.service.cache.*;
 import watch.poe.app.service.repository.AccountService;
 import watch.poe.app.service.repository.StashRepositoryService;
 import watch.poe.app.utility.ChangeIdUtility;
@@ -37,7 +32,7 @@ public class FutureHandlerService {
   private final StatisticsService statisticsService;
   private final StashRepositoryService stashRepositoryService;
   private final AccountService accountService;
-  private final LeagueService leagueService;
+  private final LeagueCacheService leagueCacheService;
 
   private final CategoryCacheService categoryCacheService;
   private final GroupCacheService groupCacheService;
@@ -45,7 +40,7 @@ public class FutureHandlerService {
   private final ItemCacheService itemCacheService;
 
   @Async
-  @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   public Future<String> process(List<RiverWrapper> wrappers) {
     statisticsService.startTimer(StatType.TIME_PROCESS_RIVER);
 
@@ -134,7 +129,7 @@ public class FutureHandlerService {
       .filter(stash -> stash.getEntries() != null)
       .filter(stash -> !stash.getEntries().isEmpty())
       .map(stashWrapper -> {
-        var league = leagueService.getByName(stashWrapper.getLeague());
+        var league = leagueCacheService.get(stashWrapper.getLeague());
         var account = accounts.stream()
           .filter(a -> a.getName().equals(stashWrapper.getAccount()))
           .findFirst();
