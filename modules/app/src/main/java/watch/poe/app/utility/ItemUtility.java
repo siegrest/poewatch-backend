@@ -305,11 +305,11 @@ public final class ItemUtility {
       return false;
     }
 
-    return base1.getCategory().equals(base2.getCategory()) &&
-      base1.getGroup().equals(base2.getGroup()) &&
-      Objects.equals(base1.getName(), base2.getName()) &&
-      Objects.equals(base1.getBaseType(), base2.getBaseType()) &&
-      base1.getFrameType().equals(base2.getFrameType());
+    return StringUtils.equals(base1.getCategory().getName(), base2.getCategory().getName())
+      && StringUtils.equals(base1.getGroup().getName(), base2.getGroup().getName())
+      && StringUtils.equals(base1.getName(), base2.getName())
+      && StringUtils.equals(base1.getBaseType(), base2.getBaseType())
+      && base1.getFrameType().equals(base2.getFrameType());
   }
 
   public static String extractEnchantmentName(ItemDto itemDto) {
