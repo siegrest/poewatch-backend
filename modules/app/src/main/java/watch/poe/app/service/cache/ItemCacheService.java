@@ -2,13 +2,12 @@ package watch.poe.app.service.cache;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import watch.poe.app.utility.ItemUtility;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.repository.ItemRepository;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +20,7 @@ public class ItemCacheService {
   private final ItemRepository itemRepository;
   private final List<Item> items = new ArrayList<>();
 
-  @EventListener(ApplicationReadyEvent.class)
+  @PostConstruct
   public void init() {
     items.addAll(itemRepository.findAll());
   }

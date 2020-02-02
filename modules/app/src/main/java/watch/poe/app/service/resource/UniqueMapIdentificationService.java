@@ -2,14 +2,13 @@ package watch.poe.app.service.resource;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.UniqueMap;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.utility.FileUtility;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class UniqueMapIdentificationService {
 
   private final GsonService gsonService;
 
-  @EventListener(ApplicationReadyEvent.class)
+  @PostConstruct
   public void loadAliases() {
     var json = FileUtility.loadFile(FILE_LOCATION);
     var maps = gsonService.toList(json, UniqueMap.class);

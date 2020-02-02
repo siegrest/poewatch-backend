@@ -3,8 +3,6 @@ package watch.poe.app.service.cache;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +10,7 @@ import watch.poe.app.domain.CategoryDto;
 import watch.poe.persistence.model.Category;
 import watch.poe.persistence.repository.CategoryRepository;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class CategoryCacheService {
   private final CategoryRepository categoryRepository;
   private final List<Category> categories = new ArrayList<>();
 
-  @EventListener(ApplicationReadyEvent.class)
+  @PostConstruct
   public void init() {
     categories.addAll(categoryRepository.findAll());
     if (categories.isEmpty()) {

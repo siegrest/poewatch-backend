@@ -19,21 +19,21 @@ import javax.annotation.PreDestroy;
 @SpringBootApplication
 public class AppApplication {
 
-    @Autowired
-    private StatisticsService statisticsService;
+  @Autowired
+  private StatisticsService statisticsService;
 
-    public static void main(String[] args) {
-        SpringApplication.run(AppApplication.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(AppApplication.class, args);
+  }
 
-    @EventListener(ApplicationStartedEvent.class)
-    public void run() {
-        statisticsService.addValue(StatType.MISC_APP_STARTUP);
-    }
+  @EventListener(ApplicationStartedEvent.class)
+  public void run() {
+    statisticsService.addValue(StatType.MISC_APP_STARTUP);
+  }
 
-    @PreDestroy
-    public void onExit() {
-        statisticsService.addValue(StatType.MISC_APP_SHUTDOWN);
-    }
+  @PreDestroy
+  public void onExit() {
+    statisticsService.addValue(StatType.MISC_APP_SHUTDOWN);
+  }
 
 }

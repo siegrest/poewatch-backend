@@ -3,8 +3,6 @@ package watch.poe.app.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.league.LeagueDto;
@@ -13,6 +11,7 @@ import watch.poe.app.utility.HttpUtility;
 import watch.poe.persistence.model.League;
 import watch.poe.persistence.repository.LeagueRepository;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 import java.util.function.Predicate;
@@ -32,80 +31,80 @@ public class LeagueQueryService {
   private String endpointUrl;
 
   @Scheduled(cron = "${league.fetch.cron}")
-  @EventListener(ApplicationStartedEvent.class)
+  @PostConstruct
   public void cycle() {
     if (!enabled) {
-            return;
-        }
-
-        log.info("Begin query");
-
-        List<LeagueDto> leagues = fetchLeagues();
-        if (leagues == null) {
-            return;
-        }
-
-        leagues.removeIf(LeagueDto::isSolo);
-
-        var mappedLeagues = leagues.stream().map(LeagueMapper::map).collect(Collectors.toList());
-        updateLeagues(mappedLeagues);
-
-        log.info("End query");
+      return;
     }
 
-    private List<LeagueDto> fetchLeagues() {
-        try {
-            var leagueJson = HttpUtility.fetch(endpointUrl);
-            return gsonService.toList(leagueJson, LeagueDto.class);
-        } catch (IOException ex) {
-            log.error("An exception occurred while fetching leagues", ex);
-            return null;
-        }
+    log.info("Begin query");
+
+    List<LeagueDto> leagues = fetchLeagues();
+    if (leagues == null) {
+      return;
     }
 
-    private void updateLeagues(List<League> queryLeagues) {
-        List<League> repoLeagues = leagueRepository.findAll();
+    leagues.removeIf(LeagueDto::isSolo);
 
-        var newLeagues = saveNewLeagues(repoLeagues, queryLeagues);
-        if (!newLeagues.isEmpty()) {
-            repoLeagues = leagueRepository.findAll();
-        }
+    var mappedLeagues = leagues.stream().map(LeagueMapper::map).collect(Collectors.toList());
+    updateLeagues(mappedLeagues);
 
-        setFlags(repoLeagues, queryLeagues);
+    log.info("End query");
+  }
+
+  private List<LeagueDto> fetchLeagues() {
+    try {
+      var leagueJson = HttpUtility.fetch(endpointUrl);
+      return gsonService.toList(leagueJson, LeagueDto.class);
+    } catch (IOException ex) {
+      log.error("An exception occurred while fetching leagues", ex);
+      return null;
+    }
+  }
+
+  private void updateLeagues(List<League> queryLeagues) {
+    List<League> repoLeagues = leagueRepository.findAll();
+
+    var newLeagues = saveNewLeagues(repoLeagues, queryLeagues);
+    if (!newLeagues.isEmpty()) {
+      repoLeagues = leagueRepository.findAll();
     }
 
-    private List<League> saveNewLeagues(List<League> repoLeagues, List<League> queryLeagues) {
-        Predicate<String> filterPredicate = league -> repoLeagues.stream().noneMatch(rl -> rl.getName().equals(league));
+    setFlags(repoLeagues, queryLeagues);
+  }
 
-        var newLeagues = queryLeagues.stream()
-          .filter(queryLeague -> filterPredicate.test(queryLeague.getName()))
-          .collect(Collectors.toList());
+  private List<League> saveNewLeagues(List<League> repoLeagues, List<League> queryLeagues) {
+    Predicate<String> filterPredicate = league -> repoLeagues.stream().noneMatch(rl -> rl.getName().equals(league));
 
-        if (newLeagues.isEmpty()) {
-            log.info("No new leagues found");
-            return newLeagues;
-        }
+    var newLeagues = queryLeagues.stream()
+      .filter(queryLeague -> filterPredicate.test(queryLeague.getName()))
+      .collect(Collectors.toList());
 
-        log.info("Found new leagues: {}", newLeagues);
-        return leagueRepository.saveAll(newLeagues);
+    if (newLeagues.isEmpty()) {
+      log.info("No new leagues found");
+      return newLeagues;
     }
 
-    private void setFlags(List<League> repoLeagues, List<League> queryLeagues) {
-        Predicate<String> filterPredicate = league -> repoLeagues.stream().noneMatch(rl -> rl.getName().equals(league));
+    log.info("Found new leagues: {}", newLeagues);
+    return leagueRepository.saveAll(newLeagues);
+  }
 
-        // todo: fix first leagues set active=false
-        repoLeagues.forEach(rLeague -> {
-            var matchingLeague = queryLeagues.stream().filter(qLeague -> filterPredicate.test(qLeague.getName())).findFirst();
-            if (matchingLeague.isPresent()) {
-                rLeague.setActive(true);
-                rLeague.setUpcoming(false);
-            } else {
-                rLeague.setActive(false);
-            }
-        });
+  private void setFlags(List<League> repoLeagues, List<League> queryLeagues) {
+    Predicate<String> filterPredicate = league -> repoLeagues.stream().noneMatch(rl -> rl.getName().equals(league));
 
-        leagueRepository.saveAll(repoLeagues);
-    }
+    // todo: fix first leagues set active=false
+    repoLeagues.forEach(rLeague -> {
+      var matchingLeague = queryLeagues.stream().filter(qLeague -> filterPredicate.test(qLeague.getName())).findFirst();
+      if (matchingLeague.isPresent()) {
+        rLeague.setActive(true);
+        rLeague.setUpcoming(false);
+      } else {
+        rLeague.setActive(false);
+      }
+    });
+
+    leagueRepository.saveAll(repoLeagues);
+  }
 
 }
 
