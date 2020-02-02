@@ -3,14 +3,13 @@ package watch.poe.app.service.river;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import watch.poe.app.config.AppModuleConfig;
 import watch.poe.app.service.chid.ChangeIdService;
 import watch.poe.app.utility.ChangeIdUtility;
 import watch.poe.persistence.domain.ChangeIdId;
 
+import javax.annotation.PostConstruct;
 import java.util.Optional;
 
 @Slf4j
@@ -28,7 +27,7 @@ public class JobService {
   private String job;
   private long lastPollTime;
 
-  @EventListener(ApplicationStartedEvent.class)
+  @PostConstruct
   public void init() {
     var changeIdOverride = config.getProperty("develop.change-id.override");
     if (ChangeIdUtility.isChangeId(changeIdOverride)) {
@@ -56,8 +55,12 @@ public class JobService {
     }
 
     if (job != null) {
-      var age = ChangeIdUtility.isNewerThan(newJob, job) ? "newer" : "older";
-      log.error("Job {} was overwritten by {} {}", job, age, newJob);
+      if (ChangeIdUtility.isNewerThan(job, newJob)) {
+        log.warn("Attempted to overwrite job {} with {}", job, newJob);
+        return;
+      }
+
+      log.warn("Job {} was overwritten by {}", job, newJob);
     }
 
     changeIdService.saveIfNewer(ChangeIdId.TOP, newJob);

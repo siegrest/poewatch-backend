@@ -1,36 +1,26 @@
 package watch.poe.app.utility;
 
 import watch.poe.app.domain.statistics.StatType;
-
-import java.util.regex.Pattern;
+import watch.poe.app.exception.river.RiverDownloadBasis;
 
 public class StatsUtility {
 
-  private static final Pattern exceptionPattern5xx = Pattern.compile("^.+ 5\\d\\d .+$");
-  private static final Pattern exceptionPattern4xx = Pattern.compile("^.+ 4\\d\\d .+$");
-
-  public static StatType getErrorType(Exception ex) {
-    if (ex.getMessage().contains("Read timed out")) {
-      return StatType.COUNT_API_ERRORS_READ_TIMEOUT;
+  public static StatType getErrorType(RiverDownloadBasis basis) {
+    switch (basis) {
+      case READ_TIMEOUT:
+        return StatType.COUNT_API_ERRORS_READ_TIMEOUT;
+      case CONNECT_TIMEOUT:
+        return StatType.COUNT_API_ERRORS_CONNECT_TIMEOUT;
+      case CONNECTION_RESET:
+        return StatType.COUNT_API_ERRORS_CONN_RESET;
+      case HTTP_5XX:
+        return StatType.COUNT_API_ERRORS_5XX;
+      case HTTP_4XX:
+        return StatType.COUNT_API_ERRORS_4XX;
+      case UNKNOWN:
+      default:
+        return null;
     }
-
-    if (ex.getMessage().contains("connect timed out")) {
-      return StatType.COUNT_API_ERRORS_CONNECT_TIMEOUT;
-    }
-
-    if (ex.getMessage().contains("Connection reset")) {
-      return StatType.COUNT_API_ERRORS_CONN_RESET;
-    }
-
-    if (exceptionPattern5xx.matcher(ex.getMessage()).matches()) {
-      return StatType.COUNT_API_ERRORS_5XX;
-    }
-
-    if (exceptionPattern4xx.matcher(ex.getMessage()).matches()) {
-      return StatType.COUNT_API_ERRORS_4XX;
-    }
-
-    return null;
   }
 
 }

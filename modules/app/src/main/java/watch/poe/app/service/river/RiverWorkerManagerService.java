@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.wrapper.RiverWrapper;
+import watch.poe.app.exception.river.RiverDownloadException;
 import watch.poe.app.service.chid.ChangeIdService;
 import watch.poe.persistence.domain.ChangeIdId;
 
@@ -88,9 +89,13 @@ public class RiverWorkerManagerService {
 
     List<RiverWrapper> wrappers = new ArrayList<>();
     for (Future<RiverWrapper> completedFuture : completedFutures) {
-      // todo: handle exceptions
-      var wrapper = completedFuture.get();
-      wrappers.add(wrapper);
+      try {
+        var wrapper = completedFuture.get();
+        wrappers.add(wrapper);
+      } catch (RiverDownloadException ex) {
+        // todo: handle exceptions - redo parameterized download
+        log.error("Caught river worker exception", ex);
+      }
     }
 
     indexFuture = futureHandlerService.process(wrappers);

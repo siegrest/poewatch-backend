@@ -8,6 +8,8 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.RiverWrapper;
+import watch.poe.app.exception.river.RiverDownloadBasis;
+import watch.poe.app.exception.river.RiverDownloadException;
 import watch.poe.app.service.StatisticsService;
 import watch.poe.app.utility.ChangeIdUtility;
 import watch.poe.app.utility.StatsUtility;
@@ -36,14 +38,13 @@ public class RiverWorkerService {
   private int readTimeOut;
 
   @Async
-  public Future<RiverWrapper> queryNext(String job) {
+  public Future<RiverWrapper> queryNext(String job) throws RiverDownloadException {
     log.info("Started worker with job {}", job);
     statisticsService.addValue(StatType.COUNT_API_CALLS);
 
     var stashStringBuilder = downloadStashJson(job);
     if (stashStringBuilder == null) {
-      // todo: add exceptions and messages
-      return AsyncResult.forExecutionException(new RuntimeException("todo"));
+      return AsyncResult.forExecutionException(new RiverDownloadException(RiverDownloadBasis.UNKNOWN));
     }
 
     return riverParserService.process(job, stashStringBuilder);
@@ -72,11 +73,15 @@ public class RiverWorkerService {
 
     } catch (IOException ex) {
 
-      log.error("Caught stash api worker exception", ex);
-      var statType = StatsUtility.getErrorType(ex);
+      jobSchedulerService.setJob(changeId);
+
+      var exception = new RiverDownloadException(ex);
+      var statType = StatsUtility.getErrorType(exception.getBasis());
       if (statType != null) {
         statisticsService.addValue(statType);
       }
+
+      throw exception;
 
     } finally {
       statisticsService.clkTimer(StatType.TIME_API_REPLY_DOWNLOAD);
