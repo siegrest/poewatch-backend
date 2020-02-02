@@ -10,18 +10,18 @@ import watch.poe.app.domain.ParseExceptionBasis;
 import watch.poe.app.domain.statistics.StatType;
 import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.domain.wrapper.RiverWrapper;
+import watch.poe.app.domain.wrapper.StashWrapper;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
 import watch.poe.app.exception.GroupingException;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.GsonService;
-import watch.poe.app.service.LeagueService;
 import watch.poe.app.service.NoteParseService;
 import watch.poe.app.service.StatisticsService;
 import watch.poe.app.service.item.ItemParserService;
-import watch.poe.persistence.model.Character;
-import watch.poe.persistence.model.*;
+import watch.poe.persistence.model.Item;
+import watch.poe.persistence.model.LeagueItemEntry;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,7 +36,6 @@ public class RiverParserService {
 
   private final GsonService gsonService;
   private final StatisticsService statisticsService;
-  private final LeagueService leagueService;
   private final NoteParseService noteParseService;
   private final ItemParserService itemParserService;
 
@@ -65,26 +64,20 @@ public class RiverParserService {
     return CompletableFuture.completedFuture(wrapper);
   }
 
-  private List<Stash> processRiver(RiverDto riverDto) {
-    var stashes = new ArrayList<Stash>();
+  private List<StashWrapper> processRiver(RiverDto riverDto) {
+    var stashes = new ArrayList<StashWrapper>();
 
     for (StashDto stashDto : riverDto.getStashes()) {
       statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
 
-      var league = leagueService.getByName(stashDto.getLeague());
-      var character = Character.builder()
-        .name(stashDto.getLastCharacterName())
-        .build();
-      var account = Account.builder()
-        .name(stashDto.getAccountName())
-        .characters(stashDto.getLastCharacterName() == null ? null : List.of(character))
-        .build();
-      var stash = Stash.builder()
+      var stashWrapper = StashWrapper.builder()
         .id(stashDto.getId())
-        .account(stashDto.getAccountName() == null ? null : account)
-        .league(league.orElse(null))
+        .league(stashDto.getLeague())
+        .account(stashDto.getAccountName())
+        .character(stashDto.getLastCharacterName())
         .build();
-      var items = stash.getItems();
+
+      var entries = stashWrapper.getEntries();
 
       for (ItemDto itemDto : stashDto.getItems()) {
         var price = noteParseService.parsePrice(stashDto.getStashName(), itemDto.getNote());
@@ -92,7 +85,7 @@ public class RiverParserService {
           continue;
         }
 
-        var wrapper = ItemWrapper.builder()
+        var itemWrapper = ItemWrapper.builder()
           .itemDto(itemDto)
           .discardReasons(new ArrayList<>())
           .item(Item.builder().build())
@@ -100,7 +93,7 @@ public class RiverParserService {
 
         Item item, priceCurrencyItem;
         try {
-          item = itemParserService.parse(wrapper);
+          item = itemParserService.parse(itemWrapper);
           priceCurrencyItem = noteParseService.priceToItem(price);
         } catch (ItemParseException ex) {
           // todo: remove this
@@ -109,16 +102,16 @@ public class RiverParserService {
             && ex.getDiscardBasis() != DiscardBasis.PARSE_COMPLEX_MAGIC
             && ex.getDiscardBasis() != DiscardBasis.UNIQUE_ONLY
             && ex.getDiscardBasis() != DiscardBasis.PARSE_COMPLEX_RARE) {
-            log.info("Parse exception \"{}\" for {}", ex.getMessage(), wrapper);
+            log.info("Parse exception \"{}\" for {}", ex.getMessage(), itemWrapper);
           }
 
           continue;
         } catch (GroupingException ex) {
-          log.info("Grouping exception \"{}\" for {}", ex.getMessage(), wrapper);
+          log.info("Grouping exception \"{}\" for {}", ex.getMessage(), itemWrapper);
           continue;
         }
 
-        if (wrapper.isDiscard()) {
+        if (itemWrapper.isDiscard()) {
           continue;
         }
 
@@ -128,12 +121,12 @@ public class RiverParserService {
           .price(price == null ? null : price.getPrice())
           .priceItem(priceCurrencyItem)
           .stackSize(itemDto.getStackSize())
-          .stash(stash)
+          .stash(null)
           .build();
 
-        items.add(entry);
+        entries.add(entry);
       }
-      stashes.add(stash);
+      stashes.add(stashWrapper);
     }
 
     return stashes;
