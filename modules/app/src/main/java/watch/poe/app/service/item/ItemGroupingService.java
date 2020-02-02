@@ -183,7 +183,7 @@ public class ItemGroupingService {
       return oGrp.get();
     }
 
-    if ("jewel".equals(wrapper.getApiCategory())) {
+    if ("jewels".equals(wrapper.getApiCategory())) {
       return GroupDto.JEWEL;
     }
 
