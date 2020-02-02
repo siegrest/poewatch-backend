@@ -124,9 +124,7 @@ public class FutureHandlerService {
 
     // todo: save characters
 
-    return accountNames.stream()
-      .map(accountService::save)
-      .collect(Collectors.toList());
+    return accountService.saveAll(accountNames);
   }
 
   private void saveStashes(List<StashWrapper> stashes, List<Account> accounts) {
