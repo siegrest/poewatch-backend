@@ -35,15 +35,17 @@ public class Stash {
   @OneToMany(cascade = CascadeType.ALL, mappedBy = "stash", fetch = FetchType.LAZY)
   private List<LeagueItemEntry> items = new ArrayList<>();
 
+  @Builder.Default
   @CreationTimestamp
   @Column(name = "found", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
-  private Date found;
+  private Date found = new Date();
 
+  @Builder.Default
   @UpdateTimestamp
   @Column(name = "seen", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
-  private Date seen;
+  private Date seen = new Date();
 
   @Column(name = "updates", nullable = false)
   private int updates;
@@ -52,7 +54,6 @@ public class Stash {
 
   @PrePersist
   protected void onCreate() {
-    updates = 0;
     itemCount = items == null ? 0 : items.size();
   }
 

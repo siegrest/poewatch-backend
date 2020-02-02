@@ -28,15 +28,17 @@ public class LeagueItemEntry {
   @JoinColumn(name = "fk_item", nullable = false)
   private Item item;
 
+  @Builder.Default
   @CreationTimestamp
   @Column(name = "found", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
-  private Date found;
+  private Date found = new Date();
 
+  @Builder.Default
   @UpdateTimestamp
   @Column(name = "seen", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
-  private Date seen;
+  private Date seen = new Date();
 
   @Column(name = "updates", nullable = false)
   private int updates;
