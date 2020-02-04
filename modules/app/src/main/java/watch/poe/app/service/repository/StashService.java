@@ -11,7 +11,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class StashRepositoryService {
+public class StashService {
 
   public final StashRepository stashRepository;
 
@@ -21,6 +21,10 @@ public class StashRepositoryService {
 
   public List<Stash> saveAll(List<Stash> stashes) {
     return stashRepository.saveAll(stashes);
+  }
+
+  public void markStale(List<String> ids) {
+    stashRepository.markStale(ids);
   }
 
 }

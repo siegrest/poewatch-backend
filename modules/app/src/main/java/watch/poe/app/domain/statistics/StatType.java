@@ -15,7 +15,9 @@ public enum StatType {
   //  TIME_PERSIST_ENTRY(StatGroupType.AVG, TimeFrame.M_60),
   TIME_PROCESS_RIVER(StatGroupType.AVG, TimeFrame.M_60),
   TIME_INDEX_STASH(StatGroupType.AVG, TimeFrame.M_60),
+  TIME_PERSIST_ENTRY(StatGroupType.AVG, TimeFrame.M_60),
   TIME_INDEX_ACCOUNT(StatGroupType.AVG, TimeFrame.M_60),
+  TIME_INDEX_CHARACTER(StatGroupType.AVG, TimeFrame.M_60),
 
   COUNT_API_ERRORS_READ_TIMEOUT(StatGroupType.COUNT, TimeFrame.M_60),
   COUNT_API_ERRORS_CONNECT_TIMEOUT(StatGroupType.COUNT, TimeFrame.M_60),

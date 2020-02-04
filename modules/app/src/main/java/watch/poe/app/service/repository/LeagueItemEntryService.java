@@ -15,6 +15,10 @@ public class LeagueItemEntryService {
 
   private final LeagueItemEntryRepository itemEntryRepository;
 
+  public void markStale(List<String> ids) {
+    itemEntryRepository.markStale(ids);
+  }
+
   public void saveAll(List<LeagueItemEntry> leagueItemEntries) {
     itemEntryRepository.saveAll(leagueItemEntries);
   }

@@ -32,7 +32,7 @@ public class Stash {
 
   // todo: rename to row-something
   @Builder.Default
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "stash", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "stash", fetch = FetchType.LAZY)
   private List<LeagueItemEntry> items = new ArrayList<>();
 
   @Builder.Default
@@ -52,15 +52,20 @@ public class Stash {
   @Column(name = "item_count", nullable = false)
   private int itemCount;
 
+  @Column(name = "stale")
+  private Boolean stale;
+
   @PrePersist
   protected void onCreate() {
     itemCount = items == null ? 0 : items.size();
+    stale = false;
   }
 
   @PreUpdate
   protected void onUpdate() {
     updates++;
     itemCount = items == null ? 0 : items.size();
+    stale = itemCount > 0;
   }
 
 }
