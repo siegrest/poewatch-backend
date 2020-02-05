@@ -36,7 +36,7 @@ public class Account {
   private Date seen;
 
   @Builder.Default
-  @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
   private List<Character> characters = new ArrayList<>();
 
 }

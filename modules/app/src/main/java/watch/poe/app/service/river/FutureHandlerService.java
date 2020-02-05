@@ -22,7 +22,9 @@ import watch.poe.persistence.model.LeagueItemEntry;
 import watch.poe.persistence.model.Stash;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -131,12 +133,12 @@ public class FutureHandlerService {
   }
 
   private List<Character> saveCharacters(List<StashWrapper> stashWrappers, List<Account> accounts) {
-    var validStashes = stashWrappers.stream()
-      .filter(stash -> stash.getAccount() != null)
-      .filter(stash -> stash.getCharacter() != null)
-      .collect(Collectors.toList());
-
-    var characters = validStashes.stream()
+    Set<String> distinctCharacterNames = new HashSet<>();
+    var characters = stashWrappers.stream()
+      .filter(stashWrapper -> stashWrapper.getAccount() != null)
+      .filter(stashWrapper -> stashWrapper.getCharacter() != null)
+      .filter(stashWrapper -> !distinctCharacterNames.contains(stashWrapper.getCharacter()))
+      .peek(stashWrapper -> distinctCharacterNames.add(stashWrapper.getCharacter()))
       .map(stashWrapper -> {
         var account = accounts.stream()
           .filter(a -> a.getName().equals(stashWrapper.getAccount()))
@@ -147,8 +149,13 @@ public class FutureHandlerService {
           .name(stashWrapper.getCharacter())
           .account(account)
           .build();
-      }).filter(character -> character.getAccount() != null)
-      .collect(Collectors.toList());
+      }).filter(character -> {
+        if (character.getAccount() == null) {
+          log.error("Expected to find a persisted account for character '{}' but didn't", character.getName());
+          return false;
+        }
+        return true;
+      }).collect(Collectors.toList());
 
     return characterService.saveAll(characters);
   }
@@ -172,7 +179,9 @@ public class FutureHandlerService {
           .account(account)
           .league(league)
           .build();
-      }).collect(Collectors.toList());
+      }).filter(stash -> stash.getAccount() != null)
+      .filter(stash -> stash.getLeague() != null)
+      .collect(Collectors.toList());
 
     var staleIds = stashWrappers.stream()
       .filter(stashWrapper -> validStashes.stream().noneMatch(s -> s.getId().equals(stashWrapper.getId())))
