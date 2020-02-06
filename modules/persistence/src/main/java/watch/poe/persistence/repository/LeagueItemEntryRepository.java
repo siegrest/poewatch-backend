@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import watch.poe.persistence.model.LeagueItemEntry;
 
+import java.util.List;
+
 public interface LeagueItemEntryRepository extends JpaRepository<LeagueItemEntry, String> {
 
   @Modifying
-  @Query("update LeagueItemEntry set stash = null where id = :id")
-  void markStale(@Param("id") String id);
+  @Query("update LeagueItemEntry set stash = null where stash.id in :stashIds")
+  void markStaleByStashIds(@Param("stashIds") List<String> stashIds);
 
 }

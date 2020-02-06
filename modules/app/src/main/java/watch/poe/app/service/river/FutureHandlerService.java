@@ -65,13 +65,17 @@ public class FutureHandlerService {
     saveCharacters(stashWrappers, accounts);
     statisticsService.clkTimer(StatType.TIME_PERSIST_CHARACTER, true);
 
-    statisticsService.startTimer(StatType.TIME_PROCESS_STASHES);
-    var stashes = saveStashes(stashWrappers, accounts);
-    statisticsService.clkTimer(StatType.TIME_PROCESS_STASHES, true);
+    statisticsService.startTimer(StatType.TIME_MARK_STASHES_STALE);
+    setItemsStale(stashWrappers);
+    statisticsService.clkTimer(StatType.TIME_MARK_STASHES_STALE, true);
 
-    statisticsService.startTimer(StatType.TIME_PROCESS_STASH_ENTRIES);
+    statisticsService.startTimer(StatType.TIME_PERSIST_STASHES);
+    var stashes = saveStashes(stashWrappers, accounts);
+    statisticsService.clkTimer(StatType.TIME_PERSIST_STASHES, true);
+
+    statisticsService.startTimer(StatType.TIME_PERSIST_STASH_ENTRIES);
     saveEntries(stashWrappers, stashes);
-    statisticsService.clkTimer(StatType.TIME_PROCESS_STASH_ENTRIES, true);
+    statisticsService.clkTimer(StatType.TIME_PERSIST_STASH_ENTRIES, true);
 
     var newestJob = wrappers.stream()
       .map(RiverWrapper::getJob)
@@ -157,6 +161,13 @@ public class FutureHandlerService {
     return characterService.saveAll(characters);
   }
 
+  private void setItemsStale(List<StashWrapper> stashWrappers) {
+    var stashIds = stashWrappers.stream()
+      .map(StashWrapper::getId)
+      .collect(Collectors.toList());
+    leagueItemEntryService.markStale(stashIds);
+  }
+
   private List<Stash> saveStashes(List<StashWrapper> stashWrappers, List<Account> accounts) {
     var validStashes = stashWrappers.stream()
       .filter(stash -> stash.getLeague() != null)
@@ -164,68 +175,44 @@ public class FutureHandlerService {
       .filter(stash -> stash.getEntries() != null)
       .filter(stash -> !stash.getEntries().isEmpty())
       .map(stashWrapper -> {
-        var league = leagueCacheService.get(stashWrapper.getLeague())
-          .orElse(null);
+        var league = leagueCacheService.get(stashWrapper.getLeague());
         var account = accounts.stream()
           .filter(a -> a.getName().equals(stashWrapper.getAccount()))
-          .findFirst()
-          .orElse(null);
-
-        return Stash.builder()
+          .findFirst();
+        return league.isEmpty() || account.isEmpty()
+          ? null
+          : Stash.builder()
           .id(stashWrapper.getId())
-          .account(account)
-          .league(league)
+          .account(account.get())
+          .league(league.get())
           .build();
-      }).filter(stash -> stash.getAccount() != null)
-      .filter(stash -> stash.getLeague() != null)
+      }).filter(Objects::nonNull)
       .collect(Collectors.toList());
-
-    var staleIds = stashWrappers.stream()
-      .filter(stashWrapper -> validStashes.stream().noneMatch(s -> s.getId().equals(stashWrapper.getId())))
-      .map(StashWrapper::getId)
-      .collect(Collectors.toList());
-
-    statisticsService.startTimer(StatType.TIME_MARK_STASHES_STALE);
-    stashRepositoryService.markStale(staleIds);
-    statisticsService.clkTimer(StatType.TIME_MARK_STASHES_STALE, true);
-
-    statisticsService.startTimer(StatType.TIME_PERSIST_STASHES);
-    var stashes = stashRepositoryService.saveAll(validStashes);
-    statisticsService.clkTimer(StatType.TIME_PERSIST_STASHES, true);
-
-    return stashes;
+    return stashRepositoryService.saveAll(validStashes);
   }
 
   private void saveEntries(List<StashWrapper> stashWrappers, List<Stash> stashes) {
     // set stash for every entry
     stashWrappers.forEach(stashWrapper -> {
-      var matchingDbStash = stashes.stream().filter(stash -> stash.getId().equals(stashWrapper.getId()))
+      var matchingDbStash = stashes.stream()
+        .filter(stash -> stash.getId().equals(stashWrapper.getId()))
         .findAny();
-      matchingDbStash.ifPresent(stash -> stashWrapper.getEntries().forEach(entry -> entry.setStash(stash)));
+      if (matchingDbStash.isEmpty()) {
+        return;
+      }
+      var stash = matchingDbStash.get();
+      stashWrapper.getEntries().forEach(entry -> entry.setStash(stash));
     });
 
     var entries = stashWrappers.stream()
+      .filter(stashWrapper -> stashWrapper.getEntries() != null)
+      .filter(stashWrapper -> !stashWrapper.getEntries().isEmpty())
       .map(StashWrapper::getEntries)
       .flatMap(Collection::stream)
+      .filter(entry -> entry.getId() != null)
       .collect(Collectors.toList());
 
-    var validEntries = entries.stream()
-      .filter(e -> e.getStash() != null)
-      .collect(Collectors.toList());
-    var staleEntries = entries.stream()
-      .filter(e -> !validEntries.contains(e))
-      .map(LeagueItemEntry::getId)
-      .filter(Objects::nonNull)
-      .distinct()
-      .collect(Collectors.toList());
-
-    statisticsService.startTimer(StatType.TIME_MARK_STASH_ENTRY_STALE);
-    leagueItemEntryService.markStale(staleEntries);
-    statisticsService.clkTimer(StatType.TIME_MARK_STASH_ENTRY_STALE, true);
-
-    statisticsService.startTimer(StatType.TIME_PERSIST_STASH_ENTRIES);
     leagueItemEntryService.saveAll(entries);
-    statisticsService.clkTimer(StatType.TIME_PERSIST_STASH_ENTRIES, true);
   }
 
 }
