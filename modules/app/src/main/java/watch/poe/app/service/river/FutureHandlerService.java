@@ -57,21 +57,21 @@ public class FutureHandlerService {
     indexItems(stashWrappers);
     statisticsService.clkTimer(StatType.TIME_INDEX_ITEM, true);
 
-    statisticsService.startTimer(StatType.TIME_INDEX_ACCOUNT);
+    statisticsService.startTimer(StatType.TIME_PERSIST_ACCOUNT);
     var accounts = saveAccounts(stashWrappers);
-    statisticsService.clkTimer(StatType.TIME_INDEX_ACCOUNT, true);
+    statisticsService.clkTimer(StatType.TIME_PERSIST_ACCOUNT, true);
 
-    statisticsService.startTimer(StatType.TIME_INDEX_CHARACTER);
+    statisticsService.startTimer(StatType.TIME_PERSIST_CHARACTER);
     saveCharacters(stashWrappers, accounts);
-    statisticsService.clkTimer(StatType.TIME_INDEX_CHARACTER, true);
+    statisticsService.clkTimer(StatType.TIME_PERSIST_CHARACTER, true);
 
-    statisticsService.startTimer(StatType.TIME_INDEX_STASH);
+    statisticsService.startTimer(StatType.TIME_PROCESS_STASHES);
     var stashes = saveStashes(stashWrappers, accounts);
-    statisticsService.clkTimer(StatType.TIME_INDEX_STASH, true);
+    statisticsService.clkTimer(StatType.TIME_PROCESS_STASHES, true);
 
-    statisticsService.startTimer(StatType.TIME_PERSIST_ENTRY);
+    statisticsService.startTimer(StatType.TIME_PROCESS_STASH_ENTRIES);
     saveEntries(stashWrappers, stashes);
-    statisticsService.clkTimer(StatType.TIME_PERSIST_ENTRY, true);
+    statisticsService.clkTimer(StatType.TIME_PROCESS_STASH_ENTRIES, true);
 
     var newestJob = wrappers.stream()
       .map(RiverWrapper::getJob)
@@ -185,8 +185,15 @@ public class FutureHandlerService {
       .map(StashWrapper::getId)
       .collect(Collectors.toList());
 
+    statisticsService.startTimer(StatType.TIME_MARK_STASHES_STALE);
     stashRepositoryService.markStale(staleIds);
-    return stashRepositoryService.saveAll(validStashes);
+    statisticsService.clkTimer(StatType.TIME_MARK_STASHES_STALE, true);
+
+    statisticsService.startTimer(StatType.TIME_PERSIST_STASHES);
+    var stashes = stashRepositoryService.saveAll(validStashes);
+    statisticsService.clkTimer(StatType.TIME_PERSIST_STASHES, true);
+
+    return stashes;
   }
 
   private void saveEntries(List<StashWrapper> stashWrappers, List<Stash> stashes) {
@@ -212,8 +219,13 @@ public class FutureHandlerService {
       .distinct()
       .collect(Collectors.toList());
 
+    statisticsService.startTimer(StatType.TIME_MARK_STASH_ENTRY_STALE);
     leagueItemEntryService.markStale(staleEntries);
+    statisticsService.clkTimer(StatType.TIME_MARK_STASH_ENTRY_STALE, true);
+
+    statisticsService.startTimer(StatType.TIME_PERSIST_STASH_ENTRIES);
     leagueItemEntryService.saveAll(entries);
+    statisticsService.clkTimer(StatType.TIME_PERSIST_STASH_ENTRIES, true);
   }
 
 }
