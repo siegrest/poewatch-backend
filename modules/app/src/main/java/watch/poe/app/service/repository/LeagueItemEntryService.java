@@ -16,7 +16,7 @@ public class LeagueItemEntryService {
   private final LeagueItemEntryRepository itemEntryRepository;
 
   public void markStale(List<String> ids) {
-    itemEntryRepository.markStale(ids);
+    ids.forEach(itemEntryRepository::markStale);
   }
 
   public void saveAll(List<LeagueItemEntry> leagueItemEntries) {

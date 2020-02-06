@@ -15,10 +15,6 @@ public class StashService {
 
   public final StashRepository stashRepository;
 
-  public void deleteAll(List<String> ids) {
-    stashRepository.deleteAllByIdIn(ids);
-  }
-
   public List<Stash> saveAll(List<Stash> stashes) {
     return stashRepository.saveAll(stashes);
   }

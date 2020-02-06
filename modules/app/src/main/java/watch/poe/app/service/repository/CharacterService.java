@@ -25,6 +25,7 @@ public class CharacterService {
       .map(Character::getName)
       .distinct()
       .collect(Collectors.toList());
+
     var dbCharacters = characterRepository.findAllByNameIn(names);
 
     var newCharacters = characters.stream()
@@ -32,8 +33,8 @@ public class CharacterService {
         return dbCharacters.stream().noneMatch(dbChar -> dbChar.getName().equals(character.getName()));
       }).collect(Collectors.toList());
 
-    dbCharacters.addAll(newCharacters);
-    return characterRepository.saveAll(dbCharacters);
+    dbCharacters.addAll(characterRepository.saveAll(newCharacters));
+    return dbCharacters;
   }
 
   public Character save(Account account, String character) {

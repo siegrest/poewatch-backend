@@ -21,10 +21,7 @@ import watch.poe.persistence.model.Character;
 import watch.poe.persistence.model.LeagueItemEntry;
 import watch.poe.persistence.model.Stash;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -211,6 +208,8 @@ public class FutureHandlerService {
     var staleEntries = entries.stream()
       .filter(e -> !validEntries.contains(e))
       .map(LeagueItemEntry::getId)
+      .filter(Objects::nonNull)
+      .distinct()
       .collect(Collectors.toList());
 
     leagueItemEntryService.markStale(staleEntries);

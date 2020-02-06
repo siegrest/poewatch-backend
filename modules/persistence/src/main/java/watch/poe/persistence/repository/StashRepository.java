@@ -1,6 +1,7 @@
 package watch.poe.persistence.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import watch.poe.persistence.model.Stash;
@@ -12,9 +13,9 @@ public interface StashRepository extends JpaRepository<Stash, String> {
 
   Optional<Stash> findById(String id);
 
-  void deleteAllByIdIn(List<String> ids);
-
-  @Query(nativeQuery = true, value = "update stashes set stale = true where id in :ids")
+  @Modifying
+//  @Query(nativeQuery = true, value = "update stashes set stale = true where id in :ids")
+  @Query("update Stash set stale = true where id in :ids")
   void markStale(@Param("ids") List<String> ids);
 
 }
