@@ -21,8 +21,10 @@ public class LeagueItemEntryService {
 
   private final LeagueItemEntryRepository itemEntryRepository;
 
-  @Value("${futureHandler.entry.batchSize}")
-  private int batchSize;
+  @Value("${futureHandler.entry.batchSize.stale}")
+  private int staleBatchSize;
+  @Value("${futureHandler.entry.batchSize.save}")
+  private int saveBatchSize;
 
   @Transactional(propagation = Propagation.REQUIRED)
   public void markStale(List<Long> stashIds) {
@@ -31,12 +33,14 @@ public class LeagueItemEntryService {
       .distinct()
       .collect(Collectors.toList());
 
-    GenericsUtility.toBatches(stashIds, batchSize)
+    GenericsUtility.toBatches(stashIds, staleBatchSize)
       .forEach(itemEntryRepository::markStaleByStashIds);
   }
 
+  @Transactional(propagation = Propagation.REQUIRED)
   public void saveAll(List<LeagueItemEntry> leagueItemEntries) {
-    itemEntryRepository.saveAll(leagueItemEntries);
+    GenericsUtility.toBatches(leagueItemEntries, saveBatchSize)
+      .forEach(itemEntryRepository::saveAll);
   }
 
 }
