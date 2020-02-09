@@ -11,8 +11,6 @@ import watch.poe.persistence.model.LeagueItemEntry;
 import watch.poe.persistence.repository.LeagueItemEntryRepository;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -28,11 +26,6 @@ public class LeagueItemEntryService {
 
   @Transactional(propagation = Propagation.REQUIRED)
   public void markStale(List<Long> stashIds) {
-    stashIds = stashIds.stream()
-      .filter(Objects::nonNull)
-      .distinct()
-      .collect(Collectors.toList());
-
     GenericsUtility.toBatches(stashIds, staleBatchSize)
       .forEach(itemEntryRepository::markStaleByStashIds);
   }

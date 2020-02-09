@@ -15,7 +15,7 @@ public enum StatType {
   //  TIME_PERSIST_ENTRY(StatGroupType.AVG, TimeFrame.M_60),
   TIME_PROCESS_RIVER(StatGroupType.AVG, TimeFrame.M_60),
   TIME_PERSIST_STASHES(StatGroupType.AVG, TimeFrame.M_60),
-  TIME_MARK_STASHES_STALE(StatGroupType.AVG, TimeFrame.M_60),
+  TIME_MARK_ITEMS_STALE(StatGroupType.AVG, TimeFrame.M_60),
   TIME_PERSIST_STASH_ENTRIES(StatGroupType.AVG, TimeFrame.M_60),
   TIME_PERSIST_ACCOUNT(StatGroupType.AVG, TimeFrame.M_60),
   TIME_PERSIST_CHARACTER(StatGroupType.AVG, TimeFrame.M_60),

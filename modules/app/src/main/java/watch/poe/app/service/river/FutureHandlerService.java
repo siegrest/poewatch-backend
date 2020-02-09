@@ -64,9 +64,9 @@ public class FutureHandlerService {
     saveCharacters(stashWrappers, accounts);
     statisticsService.clkTimer(StatType.TIME_PERSIST_CHARACTER, true);
 
-    statisticsService.startTimer(StatType.TIME_MARK_STASHES_STALE);
+    statisticsService.startTimer(StatType.TIME_MARK_ITEMS_STALE);
     markItemsStale(stashWrappers);
-    statisticsService.clkTimer(StatType.TIME_MARK_STASHES_STALE, true);
+    statisticsService.clkTimer(StatType.TIME_MARK_ITEMS_STALE, true);
 
     statisticsService.startTimer(StatType.TIME_PERSIST_STASHES);
     var stashes = saveStashes(stashWrappers, accounts);
@@ -165,8 +165,17 @@ public class FutureHandlerService {
 
   @Transactional(propagation = Propagation.REQUIRED)
   protected void markItemsStale(List<StashWrapper> stashWrappers) {
+//    var stashIds = stashWrappers.stream()
+//      .collect(Collectors.toMap(StashWrapper::getId, stashWrapper -> {
+//        return stashWrapper.getEntries().stream()
+//          .mapToLong(LeagueItemEntry::getId)
+//          .boxed()
+//          .collect(Collectors.toList());
+//      }));
+
     var stashIds = stashWrappers.stream()
       .map(StashWrapper::getId)
+      .distinct()
       .collect(Collectors.toList());
     leagueItemEntryService.markStale(stashIds);
   }
