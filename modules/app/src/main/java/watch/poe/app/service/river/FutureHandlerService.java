@@ -44,7 +44,6 @@ public class FutureHandlerService {
   private final ItemCacheService itemCacheService;
 
   @Async
-  @Transactional(propagation = Propagation.REQUIRES_NEW)
   public Future<String> process(List<RiverWrapper> wrappers) {
     statisticsService.startTimer(StatType.TIME_PROCESS_RIVER);
 
@@ -86,7 +85,8 @@ public class FutureHandlerService {
     return CompletableFuture.completedFuture(newestJob);
   }
 
-  private void indexItems(List<StashWrapper> stashWrappers) {
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
+  protected void indexItems(List<StashWrapper> stashWrappers) {
     var entries = stashWrappers.stream()
       .map(StashWrapper::getEntries)
       .flatMap(Collection::stream)
@@ -120,7 +120,8 @@ public class FutureHandlerService {
     }
   }
 
-  private List<Account> saveAccounts(List<StashWrapper> stashWrappers) {
+  @Transactional(propagation = Propagation.REQUIRED)
+  protected List<Account> saveAccounts(List<StashWrapper> stashWrappers) {
     var validStashes = stashWrappers.stream()
       .filter(stash -> stash.getAccount() != null)
       .collect(Collectors.toList());
@@ -133,7 +134,8 @@ public class FutureHandlerService {
     return accountService.saveAll(accountNames);
   }
 
-  private List<Character> saveCharacters(List<StashWrapper> stashWrappers, List<Account> accounts) {
+  @Transactional(propagation = Propagation.REQUIRED)
+  protected List<Character> saveCharacters(List<StashWrapper> stashWrappers, List<Account> accounts) {
     Set<String> distinctCharacterNames = new HashSet<>();
     var characters = stashWrappers.stream()
       .filter(stashWrapper -> stashWrapper.getAccount() != null)
@@ -161,14 +163,16 @@ public class FutureHandlerService {
     return characterService.saveAll(characters);
   }
 
-  private void markItemsStale(List<StashWrapper> stashWrappers) {
+  @Transactional(propagation = Propagation.REQUIRED)
+  protected void markItemsStale(List<StashWrapper> stashWrappers) {
     var stashIds = stashWrappers.stream()
       .map(StashWrapper::getId)
       .collect(Collectors.toList());
     leagueItemEntryService.markStale(stashIds);
   }
 
-  private List<Stash> saveStashes(List<StashWrapper> stashWrappers, List<Account> accounts) {
+  @Transactional(propagation = Propagation.REQUIRED)
+  protected List<Stash> saveStashes(List<StashWrapper> stashWrappers, List<Account> accounts) {
     var validStashes = stashWrappers.stream()
       .filter(stash -> stash.getLeague() != null)
       .filter(stash -> stash.getAccount() != null)
@@ -191,7 +195,8 @@ public class FutureHandlerService {
     return stashRepositoryService.saveAll(validStashes);
   }
 
-  private void saveEntries(List<StashWrapper> stashWrappers, List<Stash> stashes) {
+  @Transactional(propagation = Propagation.REQUIRED)
+  protected void saveEntries(List<StashWrapper> stashWrappers, List<Stash> stashes) {
     // set stash for every entry
     stashWrappers.forEach(stashWrapper -> {
       var matchingDbStash = stashes.stream()

@@ -50,8 +50,6 @@ public class RiverParserService {
     var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
     statisticsService.clkTimer(StatType.TIME_REPLY_DESERIALIZE);
 
-    log.info("got {} stashes", riverDto.getStashes().size());
-
     statisticsService.startTimer(StatType.TIME_REPLY_PARSE);
     var stashes = processRiver(riverDto);
     statisticsService.clkTimer(StatType.TIME_REPLY_PARSE);
