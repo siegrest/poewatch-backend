@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import watch.poe.app.utility.GenericsUtility;
 import watch.poe.persistence.model.LeagueItemEntry;
 import watch.poe.persistence.repository.LeagueItemEntryRepository;
@@ -22,14 +24,15 @@ public class LeagueItemEntryService {
   @Value("${futureHandler.entry.batchSize}")
   private int batchSize;
 
+  @Transactional(propagation = Propagation.REQUIRED)
   public void markStale(List<String> stashIds) {
     stashIds = stashIds.stream()
       .filter(Objects::nonNull)
       .distinct()
       .collect(Collectors.toList());
 
-    var batches = GenericsUtility.toBatches(stashIds, batchSize).collect(Collectors.toList());
-    batches.forEach(itemEntryRepository::markStaleByStashIds);
+    GenericsUtility.toBatches(stashIds, batchSize)
+      .forEach(itemEntryRepository::markStaleByStashIds);
   }
 
   public void saveAll(List<LeagueItemEntry> leagueItemEntries) {
