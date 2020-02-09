@@ -17,8 +17,7 @@ import java.util.Date;
 public class LeagueItemEntry {
 
   @Id
-  @Column(name = "id", length = 64)
-  private String id;
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "fk_stash")

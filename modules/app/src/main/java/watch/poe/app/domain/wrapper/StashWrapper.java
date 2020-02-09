@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @ToString
 public class StashWrapper {
-  private String id;
+  private long id;
   private String league;
   private String account;
   private String character;

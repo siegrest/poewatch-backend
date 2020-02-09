@@ -19,8 +19,7 @@ import java.util.List;
 public class Stash {
 
   @Id
-  @Column(name = "id", length = 64)
-  private String id;
+  private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "fk_league")

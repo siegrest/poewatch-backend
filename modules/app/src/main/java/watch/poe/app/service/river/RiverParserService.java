@@ -22,6 +22,7 @@ import watch.poe.app.service.StatisticsService;
 import watch.poe.app.service.item.ItemParserService;
 import watch.poe.persistence.model.Item;
 import watch.poe.persistence.model.LeagueItemEntry;
+import watch.poe.persistence.utility.HashUtility;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class RiverParserService {
       statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
 
       var stashWrapper = StashWrapper.builder()
-        .id(stashDto.getId())
+        .id(HashUtility.hash(stashDto.getId()))
         .league(stashDto.getLeague())
         .account(stashDto.getAccountName())
         .character(stashDto.getLastCharacterName())
@@ -116,7 +117,7 @@ public class RiverParserService {
         }
 
         var entry = LeagueItemEntry.builder()
-          .id(itemDto.getId())
+          .id(HashUtility.hash(itemDto.getId()))
           .item(item)
           .price(price == null ? null : price.getPrice())
           .priceItem(priceCurrencyItem)

@@ -9,13 +9,13 @@ import watch.poe.persistence.model.Stash;
 import java.util.List;
 import java.util.Optional;
 
-public interface StashRepository extends JpaRepository<Stash, String> {
+public interface StashRepository extends JpaRepository<Stash, Long> {
 
-  Optional<Stash> findById(String id);
+  Optional<Stash> findById(Long id);
 
   @Modifying
 //  @Query(nativeQuery = true, value = "update stashes set stale = true where id in :ids")
   @Query("update Stash set stale = true where id in :ids")
-  void markStale(@Param("ids") List<String> ids);
+  void markStale(@Param("ids") List<Long> ids);
 
 }

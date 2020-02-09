@@ -19,7 +19,7 @@ public class StashService {
     return stashRepository.saveAll(stashes);
   }
 
-  public void markStale(List<String> ids) {
+  public void markStale(List<Long> ids) {
     stashRepository.markStale(ids);
   }
 

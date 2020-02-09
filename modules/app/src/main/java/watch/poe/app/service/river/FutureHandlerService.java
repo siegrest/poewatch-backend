@@ -66,7 +66,7 @@ public class FutureHandlerService {
     statisticsService.clkTimer(StatType.TIME_PERSIST_CHARACTER, true);
 
     statisticsService.startTimer(StatType.TIME_MARK_STASHES_STALE);
-    setItemsStale(stashWrappers);
+    markItemsStale(stashWrappers);
     statisticsService.clkTimer(StatType.TIME_MARK_STASHES_STALE, true);
 
     statisticsService.startTimer(StatType.TIME_PERSIST_STASHES);
@@ -161,7 +161,7 @@ public class FutureHandlerService {
     return characterService.saveAll(characters);
   }
 
-  private void setItemsStale(List<StashWrapper> stashWrappers) {
+  private void markItemsStale(List<StashWrapper> stashWrappers) {
     var stashIds = stashWrappers.stream()
       .map(StashWrapper::getId)
       .collect(Collectors.toList());

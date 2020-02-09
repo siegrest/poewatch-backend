@@ -25,7 +25,7 @@ public class LeagueItemEntryService {
   private int batchSize;
 
   @Transactional(propagation = Propagation.REQUIRED)
-  public void markStale(List<String> stashIds) {
+  public void markStale(List<Long> stashIds) {
     stashIds = stashIds.stream()
       .filter(Objects::nonNull)
       .distinct()

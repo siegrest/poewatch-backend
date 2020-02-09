@@ -7,12 +7,12 @@ import java.util.List;
 
 @Getter
 public class StashDto {
-    @SerializedName("stash")
-    private String stashName;
+  @SerializedName("stash")
+  private String stashName;
 
-    private String id, accountName, stashType, lastCharacterName, league;
-    private List<ItemDto> items;
+  private String id, accountName, stashType, lastCharacterName, league;
+  private List<ItemDto> items;
 
-    @SerializedName("public")
-    private boolean isPublic;
+  @SerializedName("public")
+  private boolean isPublic;
 }
