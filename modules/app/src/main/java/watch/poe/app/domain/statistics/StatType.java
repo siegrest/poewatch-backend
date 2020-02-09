@@ -19,6 +19,7 @@ public enum StatType {
   TIME_PERSIST_STASH_ENTRIES(StatGroupType.AVG, TimeFrame.M_60),
   TIME_PERSIST_ACCOUNT(StatGroupType.AVG, TimeFrame.M_60),
   TIME_PERSIST_CHARACTER(StatGroupType.AVG, TimeFrame.M_60),
+  TIME_WORKERS_IDLE(StatGroupType.AVG, TimeFrame.M_60),
 
   COUNT_API_ERRORS_READ_TIMEOUT(StatGroupType.COUNT, TimeFrame.M_60),
   COUNT_API_ERRORS_CONNECT_TIMEOUT(StatGroupType.COUNT, TimeFrame.M_60),

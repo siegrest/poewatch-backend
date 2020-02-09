@@ -93,18 +93,25 @@ public class StatisticsService {
   }
 
   public void startTimer(StatType type) {
-    var threadTimer = getOrCreateThreadTimer();
-    var statTimers = threadTimer.getTimers();
+    startTimer(type, true, true);
+  }
+
+  public void startTimer(StatType type, boolean overwrite, boolean verbose) {
+    var statTimers = getOrCreateThreadTimer().getTimers();
 
     if (statTimers.stream().anyMatch(i -> i.getType().equals(type))) {
-      log.error("Stat timer of type '{}' already exists in thread {}", type, Thread.currentThread().getName());
+      if (verbose) {
+        log.error("Stat timer of type '{}' already exists in thread {}", type, Thread.currentThread().getName());
+      }
+      if (!overwrite) {
+        return;
+      }
     }
 
     var timer = StatTimer.builder()
       .startTime(System.currentTimeMillis())
       .type(type)
       .build();
-
     statTimers.add(timer);
   }
 
@@ -135,7 +142,9 @@ public class StatisticsService {
   public void clkTimer(StatType type, boolean verbose) {
     var threadTimer = getCurrentThreadTimer().orElse(null);
     if (threadTimer == null) {
-      log.error("Thread doesn't exist in current context");
+      if (verbose) {
+        log.error("Thread doesn't exist in current context");
+      }
       return;
     }
 
