@@ -63,7 +63,7 @@ public class RiverWorkerManagerService {
   @Scheduled(fixedRateString = "${stash.worker.check.rate}")
   public void checkFinishedRiverFuture() throws InterruptedException, ExecutionException {
     if (indexFuture != null) {
-      if (!indexFuture.isDone() && !indexFuture.isCancelled()) {
+      if (!indexFuture.isDone()) {
         return;
       }
 
@@ -74,7 +74,7 @@ public class RiverWorkerManagerService {
     }
 
     var completedFutures = riverFutures.stream()
-      .filter(rf -> rf.isDone() || rf.isCancelled())
+      .filter(Future::isDone)
       .collect(Collectors.toList());
 
     if (completedFutures.isEmpty()) {
@@ -104,8 +104,8 @@ public class RiverWorkerManagerService {
   @Scheduled(fixedRate = 1000)
   public void debug() {
     var queueSize = riverFutures.size();
-    var finished = riverFutures.stream().filter(r -> r.isDone() || r.isCancelled()).count();
-    var unfinished = riverFutures.stream().filter(r -> !r.isDone() && !r.isCancelled()).count();
+    var finished = riverFutures.stream().filter(Future::isDone).count();
+    var unfinished = riverFutures.stream().filter(Future::isDone).count();
 
     log.info("queue size {}: finished/pending {}, in progress {}", queueSize, finished, unfinished);
   }
