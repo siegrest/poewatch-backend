@@ -1,0 +1,367 @@
+[
+  {
+    "name": "Atziri's Splendour",
+    "variations": [
+      {
+        "variation": "ar/ev/es",
+        "mods": [
+          "increased Armour, Evasion and Energy Shield"
+        ]
+      },
+      {
+        "variation": "ar/es/li",
+        "mods": [
+          "increased Armour and Energy Shield",
+          "to maximum Life"
+        ]
+      },
+      {
+        "variation": "ev/es/li",
+        "mods": [
+          "increased Evasion and Energy Shield",
+          "to maximum Life"
+        ]
+      },
+      {
+        "variation": "ar/es",
+        "mods": [
+          "increased Armour and Energy Shield",
+          "to maximum Energy Shield"
+        ]
+      },
+      {
+        "variation": "ar/ev",
+        "mods": [
+          "increased Armour and Evasion"
+        ]
+      },
+      {
+        "variation": "ev/es",
+        "mods": [
+          "increased Evasion and Energy Shield",
+          "to maximum Energy Shield"
+        ]
+      },
+      {
+        "variation": "ar",
+        "mods": [
+          "increased Armour"
+        ]
+      },
+      {
+        "variation": "ev",
+        "mods": [
+          "increased Evasion"
+        ]
+      },
+      {
+        "variation": "es",
+        "mods": [
+          "increased Energy Shield"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Vessel of Vinktar",
+    "variations": [
+      {
+        "variation": "spells",
+        "mods": [
+          "Lightning Damage to Spells"
+        ]
+      },
+      {
+        "variation": "attacks",
+        "mods": [
+          "Lightning Damage to Attacks"
+        ]
+      },
+      {
+        "variation": "conversion",
+        "mods": [
+          "Converted to Lightning"
+        ]
+      },
+      {
+        "variation": "penetration",
+        "mods": [
+          "Damage Penetrates"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Doryani's Invitation",
+    "variations": [
+      {
+        "variation": "lightning",
+        "mods": [
+          "increased Lightning Damage"
+        ]
+      },
+      {
+        "variation": "fire",
+        "mods": [
+          "increased Fire Damage"
+        ]
+      },
+      {
+        "variation": "cold",
+        "mods": [
+          "increased Cold Damage"
+        ]
+      },
+      {
+        "variation": "physical",
+        "mods": [
+          "increased Global Physical Damage"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Yriel's Fostering",
+    "variations": [
+      {
+        "variation": "snake",
+        "mods": [
+          "Bestial Snake"
+        ]
+      },
+      {
+        "variation": "ursa",
+        "mods": [
+          "Bestial Ursa"
+        ]
+      },
+      {
+        "variation": "rhoa",
+        "mods": [
+          "Bestial Rhoa"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Volkuur's Guidance",
+    "variations": [
+      {
+        "variation": "fire",
+        "mods": [
+          "Fire Damage to Spells"
+        ]
+      },
+      {
+        "variation": "cold",
+        "mods": [
+          "Cold Damage to Spells"
+        ]
+      },
+      {
+        "variation": "lightning",
+        "mods": [
+          "Lightning Damage to Spells"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Impresence",
+    "variations": [
+      {
+        "variation": "lightning",
+        "mods": [
+          "Lightning Damage"
+        ]
+      },
+      {
+        "variation": "fire",
+        "mods": [
+          "Fire Damage"
+        ]
+      },
+      {
+        "variation": "cold",
+        "mods": [
+          "Cold Damage"
+        ]
+      },
+      {
+        "variation": "physical",
+        "mods": [
+          "Physical Damage"
+        ]
+      },
+      {
+        "variation": "chaos",
+        "mods": [
+          "Chaos Damage"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Lightpoacher",
+    "variations": [
+      {
+        "variation": "1 socket",
+        "mods": [
+          "Has 1 Abyssal Socket"
+        ]
+      },
+      {
+        "variation": "2 sockets",
+        "mods": [
+          "Has 2 Abyssal Sockets"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Shroud of the Lightless",
+    "variations": [
+      {
+        "variation": "1 socket",
+        "mods": [
+          "Has 1 Abyssal Socket"
+        ]
+      },
+      {
+        "variation": "2 sockets",
+        "mods": [
+          "Has 2 Abyssal Sockets"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Bubonic Trail",
+    "variations": [
+      {
+        "variation": "1 socket",
+        "mods": [
+          "Has 1 Abyssal Socket"
+        ]
+      },
+      {
+        "variation": "2 sockets",
+        "mods": [
+          "Has 2 Abyssal Sockets"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Tombfist",
+    "variations": [
+      {
+        "variation": "1 socket",
+        "mods": [
+          "Has 1 Abyssal Socket"
+        ]
+      },
+      {
+        "variation": "2 sockets",
+        "mods": [
+          "Has 2 Abyssal Sockets"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Hale Negator",
+    "variations": [
+      {
+        "variation": "1 socket",
+        "mods": [
+          "Has 1 Abyssal Socket"
+        ]
+      },
+      {
+        "variation": "2 sockets",
+        "mods": [
+          "Has 2 Abyssal Sockets"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Command of the Pit",
+    "variations": [
+      {
+        "variation": "1 socket",
+        "mods": [
+          "Has 1 Abyssal Socket"
+        ]
+      },
+      {
+        "variation": "2 sockets",
+        "mods": [
+          "Has 2 Abyssal Sockets"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "A Master Seeks Help",
+    "variations": [
+      {
+        "variation": "zana",
+        "mods": [
+          "You will find Zana"
+        ]
+      },
+      {
+        "variation": "einhar",
+        "mods": [
+          "You will find Einhar"
+        ]
+      },
+      {
+        "variation": "jun",
+        "mods": [
+          "You will find Jun"
+        ]
+      },
+      {
+        "variation": "niko",
+        "mods": [
+          "You will find Niko"
+        ]
+      },
+      {
+        "variation": "alva",
+        "mods": [
+          "You will find Alva"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "The Dark Seer",
+    "variations": [
+      {
+        "variation": "es/li",
+        "mods": [
+          "Shield per Level",
+          "Life per Level"
+        ]
+      },
+      {
+        "variation": "es/ma",
+        "mods": [
+          "Shield per Level",
+          "Mana per Level"
+        ]
+      },
+      {
+        "variation": "ma/li",
+        "mods": [
+          "Mana per Level",
+          "Life per Level"
+        ]
+      }
+    ]
+  }
+]
