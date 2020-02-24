@@ -1,0 +1,66 @@
+apply plugin: 'distribution'
+
+configurations {
+    liquibase
+}
+
+dependencies {
+    liquibase 'org.liquibase:liquibase-core:3.8.1'
+    liquibase 'org.postgresql:postgresql:42.1.1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+distributions {
+    main {
+        baseName = 'db'
+        contents {
+            from (projectDir){
+                exclude 'build'
+                exclude '.gradle'
+            }
+            from configurations.liquibase
+            from (rootDir){
+                include 'gradlew','gradlew.bat', 'gradle/**'
+            }
+        }
+    }
+}
+
+task db(type: LiquibaseTask) {
+    classpath configurations.liquibase
+    if (project.hasProperty('l')) {
+        target = l.split(':')
+    }
+}
+
+task dbUpdate(type: LiquibaseTask) {
+    classpath configurations.liquibase
+    target = ['update']
+}
+
+
+class LiquibaseTask extends JavaExec {
+
+    public String[] target
+
+    LiquibaseTask() {
+        super()
+        this.group = "Liquibase"
+        this.description = 'Run any Liquibase command described here:\n' +
+                '     http://www.liquibase.org/documentation/command_line.html/n' +
+                '     like: gradle db -Pl=task:taskArg0:taskArg1\n' +
+                '     For example:\n' +
+                '       gradle db -Pl=update\n' +
+                '       gradle db -Pl=updateCountSQL:5'
+        this.main = "liquibase.integration.commandline.Main"
+    }
+
+    @TaskAction
+    void exec() {
+        args(target)
+        super.exec()
+    }
+}
