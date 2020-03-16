@@ -14,31 +14,34 @@ The general goal was to make a statistics website with everything in one place. 
 
 ## Getting Started
 
-### Reference Documentation
-For further reference, please consider the following sections:
+Run commands in project root
 
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/gradle-plugin/reference/html/)
-* [Spring Boot DevTools](https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/reference/htmlsingle/#using-boot-devtools)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/reference/htmlsingle/#boot-features-developing-web-applications)
-* [Spring HATEOAS](https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/reference/htmlsingle/#boot-features-spring-hateoas)
-* [Liquibase Migration](https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/reference/htmlsingle/#howto-execute-liquibase-database-migrations-on-startup)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/reference/htmlsingle/#boot-features-jpa-and-spring-data)
-* [JDBC API](https://docs.spring.io/spring-boot/docs/2.2.2.RELEASE/reference/htmlsingle/#boot-features-sql)
+1. Run db in docker
+    ```shell script
+    ./database/init/docker-build.sh
+    ./database/init/docker-run.sh
+    ```
 
-### Guides
-The following guides illustrate how to use some features concretely:
+2. Initialize database
 
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
-* [Building a Hypermedia-Driven RESTful Web Service](https://spring.io/guides/gs/rest-hateoas/)
-* [Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
-* [Accessing Relational Data using JDBC with Spring](https://spring.io/guides/gs/relational-data-access/)
-* [Managing Transactions](https://spring.io/guides/gs/managing-transactions/)
+    1. Copy 
+        ```shell script
+         cp ./database/liquibase.properties.sample ./database/liquibase.properties
+        ```
+    2. Todo: write database initialization scripts for liquibase
+    3. Run
+        ```shell script
+        ./gradlew update
+        ```
 
-### Additional Links
-These additional references should also help you:
-
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
-
+3. Run app
+    
+    1. Copy 
+        ```shell script
+        cp ./modules/app/src/main/resources/application.properties.sample ./modules/app/src/main/resources/application.properties
+        ```
+    2. Edit config
+    3. Run
+        ```shell script
+        ./gradlew bootRun
+        ```
