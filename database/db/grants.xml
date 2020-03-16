@@ -19,8 +19,6 @@
 
             GRANT USAGE ON SCHEMA pw TO pw_select;
             GRANT SELECT ON ALL TABLES IN SCHEMA pw TO pw_select;
-            GRANT USAGE ON SCHEMA process TO pw_select;
-            GRANT SELECT ON ALL TABLES IN SCHEMA process TO pw_select;
 
         </sql>
     </changeSet>
