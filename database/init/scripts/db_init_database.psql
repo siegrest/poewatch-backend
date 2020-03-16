@@ -1,0 +1,26 @@
+CREATE SCHEMA AUTHORIZATION pw;
+
+--extensions
+CREATE EXTENSION IF NOT EXISTS hstore SCHEMA mare;
+CREATE EXTENSION IF NOT EXISTS dblink SCHEMA mare;
+CREATE EXTENSION IF NOT EXISTS tablefunc SCHEMA mare;
+CREATE EXTENSION IF NOT EXISTS pgcrypto SCHEMA mare;
+CREATE EXTENSION IF NOT EXISTS pg_trgm SCHEMA mare;
+CREATE EXTENSION IF NOT EXISTS btree_gist SCHEMA mare;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp" SCHEMA mare;
+CREATE EXTENSION IF NOT EXISTS postgres_fdw SCHEMA mare;
+
+--Required CASTs for database (These make "select '1'+2;" working).
+CREATE CAST (varchar AS bigint) WITH INOUT AS IMPLICIT;
+CREATE CAST (varchar AS integer) WITH INOUT AS IMPLICIT;
+CREATE CAST (varchar AS uuid) WITH INOUT AS IMPLICIT;
+
+--User search_path to mare
+ALTER USER mare SET search_path to mare;
+ALTER USER mare_app SET search_path to mare;
+ALTER USER mare_select SET search_path to mare;
+ALTER USER mare_admin SET search_path to mare;
+
+--Remove rights from public users
+ALTER DEFAULT PRIVILEGES IN SCHEMA public REVOKE SELECT ON TABLES FROM PUBLIC;
+REVOKE ALL PRIVILEGES ON database mare FROM public;

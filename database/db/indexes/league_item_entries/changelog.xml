@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="idx_league_item_entries_fk_stash.sql"
+               author="siegrest"
+               runAlways="true"
+               runOnChange="true">
+        <sqlFile path="db/indexes/league_item_entries/idx_league_item_entries_fk_stash.sql"/>
+    </changeSet>
+
+    <changeSet id="idx_league_item_entries_fk_price_item.sql"
+               author="siegrest"
+               runAlways="true"
+               runOnChange="true">
+        <sqlFile path="db/indexes/league_item_entries/idx_league_item_entries_fk_price_item.sql"/>
+    </changeSet>
+
+</databaseChangeLog>

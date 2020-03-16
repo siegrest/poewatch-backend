@@ -1,0 +1,13 @@
+--create db
+CREATE DATABASE pw
+  WITH OWNER=pw
+  ENCODING = 'UTF8'
+  TABLESPACE = pg_default
+  CONNECTION LIMIT = -1;
+
+grant create on database pw to pw;
+grant temp on database pw to pw;
+grant temp on database pw to pw_app;
+
+grant connect on database pw to pw_app;
+

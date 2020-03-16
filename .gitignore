@@ -4,3 +4,4 @@
 !**/src/test/**
 .idea
 /logs
+/database/liquibase.properties

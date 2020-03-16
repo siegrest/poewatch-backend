@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="grants" author="siegrest" runAlways="true" runOnChange="true">
+        <sql>
+
+            GRANT USAGE ON SCHEMA pw TO pw_app;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA pw TO pw_app;
+            GRANT USAGE ON ALL SEQUENCES IN SCHEMA pw TO pw_app;
+            GRANT UPDATE ON ALL SEQUENCES IN SCHEMA pw TO pw_app;
+
+            GRANT USAGE ON SCHEMA pw TO pw_admin;
+            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA pw TO pw_admin;
+            GRANT USAGE ON ALL SEQUENCES IN SCHEMA pw TO pw_admin;
+
+            GRANT USAGE ON SCHEMA pw TO pw_select;
+            GRANT SELECT ON ALL TABLES IN SCHEMA pw TO pw_select;
+            GRANT USAGE ON SCHEMA process TO pw_select;
+            GRANT SELECT ON ALL TABLES IN SCHEMA process TO pw_select;
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

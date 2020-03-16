@@ -1,0 +1,10 @@
+driver=org.postgresql.Driver
+changeLogFile=db/changelog.xml
+defaultSchemaName=pw
+outputDefaultSchema=true
+contexts=dev,prod
+logLevel=debug
+
+url=jdbc:postgresql://localhost:5533/pw
+username=pw
+password=test
