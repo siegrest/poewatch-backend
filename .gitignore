@@ -5,3 +5,6 @@
 .idea
 /logs
 /database/liquibase.properties
+
+modules/app/src/main/resources/application.properties
+modules/api/src/main/resources/application.properties
