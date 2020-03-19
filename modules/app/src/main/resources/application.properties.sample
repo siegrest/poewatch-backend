@@ -1,6 +1,6 @@
 spring.jpa.properties.hibernate.jdbc.time_zone=UTC
 
 spring.datasource.platform=postgres
-spring.datasource.url=jdbc:postgresql://localhost:5533/pw
+spring.datasource.url=jdbc:postgresql://localhost:5533/pw?currentSchema=pw
 spring.datasource.username=pw_app
 spring.datasource.password=test

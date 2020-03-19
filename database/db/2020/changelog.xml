@@ -7,4 +7,6 @@
 
     <include file="db/2020/02/changelog.xml"/>
 
+    <include file="db/2020/03/changelog.xml"/>
+
 </databaseChangeLog>

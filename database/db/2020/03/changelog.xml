@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="2020.03.19.19.00-account.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.00-account.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.01-character.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.01-character.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.02-category.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.02-category.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.03-group.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.03-group.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.04-item_base.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.04-item_base.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.05-item.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.05-item.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.06-league.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.06-league.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.07-stash.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.07-stash.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.08-league_item.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.08-league_item.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.09-league_item_entry.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.09-league_item_entry.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.10-league_item_history.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.10-league_item_history.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.11-statistic_partial.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.11-statistic_partial.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.12-statistic_history.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.12-statistic_history.sql"/>
+    </changeSet>
+
+    <changeSet id="2020.03.19.19.13-change_id.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.13-change_id.sql"/>
+    </changeSet>
+
+</databaseChangeLog>

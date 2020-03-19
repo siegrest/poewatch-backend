@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-name="pw-pg"
+name="pwpg"
 image="pw/postgresql"
 
 docker rm -vf $name || true
