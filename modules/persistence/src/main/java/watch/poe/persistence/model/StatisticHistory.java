@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @IdClass(StatisticPk.class)
-@Table(name = "statistic_history")
+@Table(name = "statistic_history", schema = "pw")
 public class StatisticHistory {
 
     @Id

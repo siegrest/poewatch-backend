@@ -9,17 +9,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-@Table(
-  name = "league_items",
-  uniqueConstraints = {
-    @UniqueConstraint(
-      columnNames = {
-        "fk_league",
-        "fk_item"
-      }
-    )
-  }
-)
+@Table(name = "league_item", schema = "pw")
 public class LeagueItem {
   @Id
   @Column(name = "id")
@@ -27,10 +17,10 @@ public class LeagueItem {
   private Long id;
 
   @ManyToOne(optional = false)
-  @JoinColumn(name = "fk_league", nullable = false)
+  @JoinColumn(name = "league_id", nullable = false)
   private League league;
   @ManyToOne(optional = false)
-  @JoinColumn(name = "fk_item", nullable = false)
+  @JoinColumn(name = "item_id", nullable = false)
   private Item item;
 
   @Column(name = "found", nullable = false)

@@ -9,23 +9,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @Entity
-@Table(
-  name = "league_item_history",
-  uniqueConstraints = {
-    @UniqueConstraint(
-      columnNames = {
-        "fk_league",
-        "fk_item"
-      }
-    )
-  },
-  indexes = {
-    @Index(
-      name = "idx_time",
-      columnList = "time"
-    )
-  }
-)
+@Table(name = "league_item_history", schema = "pw")
 public class LeagueItemHistory {
 
     @Id
@@ -34,10 +18,10 @@ public class LeagueItemHistory {
     private Long id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "fk_league", nullable = false)
+    @JoinColumn(name = "league_id", nullable = false)
     private League league;
     @ManyToOne(optional = false)
-    @JoinColumn(name = "fk_item", nullable = false)
+    @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
     @Column(name = "time", nullable = false)

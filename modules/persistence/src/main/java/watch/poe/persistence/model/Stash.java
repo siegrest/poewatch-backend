@@ -15,18 +15,18 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "stashes")
+@Table(name = "stash", schema = "pw")
 public class Stash {
 
   @Id
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "fk_league")
+  @JoinColumn(name = "league_id")
   private League league;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "fk_account")
+  @JoinColumn(name = "account_id")
   private Account account;
 
   // todo: rename to row-something

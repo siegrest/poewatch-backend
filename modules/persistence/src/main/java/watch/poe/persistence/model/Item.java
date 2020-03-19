@@ -12,33 +12,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(
-  name = "items",
-  uniqueConstraints = {
-    @UniqueConstraint(
-      columnNames = {
-        "item_base",
-        "stack_size",
-        "item_level",
-        "links",
-        "corrupted",
-        "variation",
-        "map_tier",
-        "map_series",
-        "influence_shaper",
-        "influence_elder",
-        "influence_crusader",
-        "influence_redeemer",
-        "influence_hunter",
-        "influence_warlord",
-        "enchantment_min",
-        "enchantment_max",
-        "gem_level",
-        "gem_quality"
-      }
-    )
-  }
-)
+@Table(name = "item", schema = "pw")
 public class Item {
 
   @Id
@@ -48,7 +22,7 @@ public class Item {
 
   @ToString.Exclude
   @ManyToOne(optional = false)
-  @JoinColumn(name = "item_base", nullable = false)
+  @JoinColumn(name = "item_base_id", nullable = false)
   private ItemBase base;
 
   @Column(name = "found", nullable = false)

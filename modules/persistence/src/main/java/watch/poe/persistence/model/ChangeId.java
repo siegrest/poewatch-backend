@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "change_id")
+@Table(name = "change_id", schema = "pw")
 public class ChangeId {
 
   @Id

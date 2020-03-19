@@ -13,20 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(
-  name = "items_base",
-  uniqueConstraints = {
-    @UniqueConstraint(
-      columnNames = {
-        "name",
-        "fk_category",
-        "fk_group",
-        "base_type",
-        "frame_type"
-      }
-    )
-  }
-)
+@Table(name = "item_base", schema = "pw")
 public class ItemBase {
 
   @Id
@@ -39,11 +26,11 @@ public class ItemBase {
   private List<Item> items;
 
   @ManyToOne(optional = false)
-  @JoinColumn(name = "fk_category", nullable = false)
+  @JoinColumn(name = "category_id", nullable = false)
   private Category category;
 
   @ManyToOne(optional = false)
-  @JoinColumn(name = "fk_group", nullable = false)
+  @JoinColumn(name = "group_id", nullable = false)
   private Group group;
 
   @Column(name = "name", length = 128)

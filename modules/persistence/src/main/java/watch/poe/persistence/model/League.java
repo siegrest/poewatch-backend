@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "leagues")
+@Table(name = "league", schema = "pw")
 public class League {
     @Id
     @Column(name = "id", updatable = false, nullable = false)

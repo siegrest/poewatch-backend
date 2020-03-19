@@ -13,18 +13,18 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "league_item_entries")
+@Table(name = "league_item_entry", schema = "pw")
 public class LeagueItemEntry {
 
   @Id
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "fk_stash")
+  @JoinColumn(name = "stash_id")
   private Stash stash;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
-  @JoinColumn(name = "fk_item", nullable = false)
+  @JoinColumn(name = "item_id", nullable = false)
   private Item item;
 
   @Builder.Default
@@ -49,7 +49,7 @@ public class LeagueItemEntry {
   private Double price;
 
   @ManyToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "fk_price_item")
+  @JoinColumn(name = "price_item_id")
   private Item priceItem;
 
   @PrePersist
