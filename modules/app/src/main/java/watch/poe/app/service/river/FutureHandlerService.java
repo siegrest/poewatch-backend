@@ -180,7 +180,7 @@ public class FutureHandlerService {
     leagueItemEntryService.markStale(stashIds);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED)
+  @Transactional(propagation = Propagation.REQUIRED, timeout = 30)
   protected List<Stash> saveStashes(List<StashWrapper> stashWrappers, List<Account> accounts) {
     var validStashes = stashWrappers.stream()
       .filter(stash -> stash.getLeague() != null)
@@ -204,7 +204,7 @@ public class FutureHandlerService {
     return stashRepositoryService.saveAll(validStashes);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED)
+  @Transactional(propagation = Propagation.REQUIRED, timeout = 120)
   protected void saveEntries(List<StashWrapper> stashWrappers, List<Stash> stashes) {
     // set stash for every entry
     stashWrappers.forEach(stashWrapper -> {
