@@ -5,7 +5,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
 
-    <changeSet id="grants" author="siegrest" runAlways="true" runOnChange="true">
+    <changeSet id="grants" author="siegrest" runAlways="true" runOnChange="true" runOrder="last">
         <sql>
 
             GRANT USAGE ON SCHEMA pw TO pw_app;

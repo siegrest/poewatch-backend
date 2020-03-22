@@ -9,6 +9,7 @@
         <sql>
             CREATE SCHEMA IF NOT EXISTS pw;
             SET search_path TO pw;
+            CREATE SEQUENCE hibernate_sequence START 1;
         </sql>
         <rollback>
             DROP SCHEMA IF EXISTS pw CASCADE;
