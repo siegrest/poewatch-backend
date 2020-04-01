@@ -14,13 +14,12 @@ import javax.persistence.*;
 @Table(name = "group", schema = "pw")
 public class Group {
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Integer id;
 
-    @Column(name = "name", length = 32, nullable = false, unique = true)
+    @Column(length = 32, nullable = false, unique = true)
     private String name;
 
-    @Column(name = "display", length = 32, nullable = false)
+    @Column(length = 32, nullable = false)
     private String display;
 }

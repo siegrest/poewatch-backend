@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+
+    <changeSet id="account-triggers"
+               author="siegrest"
+               runAlways="true"
+               runOnChange="true">
+        <sqlFile path="db/triggers/account.sql"/>
+    </changeSet>
+
+    <changeSet id="change_id-triggers"
+               author="siegrest"
+               runAlways="true"
+               runOnChange="true">
+        <sqlFile path="db/triggers/change_id.sql"/>
+    </changeSet>
+
+    <changeSet id="character-triggers"
+               author="siegrest"
+               runAlways="true"
+               runOnChange="true">
+        <sqlFile path="db/triggers/character.sql"/>
+    </changeSet>
+
+    <changeSet id="league_item-triggers"
+               author="siegrest"
+               runAlways="true"
+               runOnChange="true">
+        <sqlFile path="db/triggers/league_item.sql"/>
+    </changeSet>
+
+    <changeSet id="league_item_entry-triggers"
+               author="siegrest"
+               runAlways="true"
+               runOnChange="true">
+        <sqlFile path="db/triggers/league_item_entry.sql"/>
+    </changeSet>
+
+</databaseChangeLog>

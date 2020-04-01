@@ -1,8 +1,6 @@
 package watch.poe.persistence.model;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,25 +16,21 @@ import java.util.List;
 @Table(name = "account", schema = "pw")
 public class Account {
   @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue
   private Long id;
 
-  @Column(name = "name", length = 32, nullable = false, unique = true)
+  @Column(length = 32, nullable = false, unique = true)
   private String name;
 
-  @CreationTimestamp
-  @Column(name = "found", nullable = false)
+  @Column
   @Temporal(TemporalType.TIMESTAMP)
   private Date found;
 
-  @UpdateTimestamp
-  @Column(name = "seen", nullable = false)
+  @Column
   @Temporal(TemporalType.TIMESTAMP)
   private Date seen;
 
   @Builder.Default
   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
   private List<Character> characters = new ArrayList<>();
-
 }

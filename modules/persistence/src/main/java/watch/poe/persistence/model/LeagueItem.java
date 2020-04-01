@@ -12,22 +12,22 @@ import java.util.Date;
 @Table(name = "league_item", schema = "pw")
 public class LeagueItem {
   @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue
   private Long id;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "league_id", nullable = false)
   private League league;
+
   @ManyToOne(optional = false)
   @JoinColumn(name = "item_id", nullable = false)
   private Item item;
 
-  @Column(name = "found", nullable = false)
+  @Column
   @Temporal(TemporalType.TIMESTAMP)
   private Date found;
 
-  @Column(name = "seen", nullable = false)
+  @Column
   @Temporal(TemporalType.TIMESTAMP)
   private Date seen;
 

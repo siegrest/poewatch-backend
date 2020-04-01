@@ -18,6 +18,8 @@
 
     <include file="db/2020/changelog.xml"/>
 
+    <include file="db/functions/changelog.xml"/>
+    <include file="db/triggers/changelog.xml"/>
     <include file="db/indexes/changelog.xml"/>
     <include file="db/grants.xml"/>
 

@@ -14,10 +14,8 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "item", schema = "pw")
 public class Item {
-
   @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue
   private Integer id;
 
   @ToString.Exclude
@@ -25,14 +23,13 @@ public class Item {
   @JoinColumn(name = "item_base_id", nullable = false)
   private ItemBase base;
 
-  @Column(name = "found", nullable = false)
   @Temporal(TemporalType.TIMESTAMP)
   private Date found;
 
-  @Column(name = "variation", length = 32)
+  @Column(length = 32)
   private String variation;
 
-  @Column(name = "icon", nullable = false)
+  @Column(nullable = false)
   private String icon;
 
   @Column(name = "stack_size")
@@ -54,6 +51,7 @@ public class Item {
   @Column(name = "gem_quality")
   private Integer gemQuality;
 
+  // todo: create new table for these
   @Column(name = "influence_shaper")
   private Boolean influenceShaper;
   @Column(name = "influence_elder")

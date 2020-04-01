@@ -1,6 +1,6 @@
 package watch.poe.persistence.domain;
 
-public enum ChangeIdId {
+public enum ChangeIdType {
   APP,
   TOP
 }

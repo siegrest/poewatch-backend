@@ -3,7 +3,7 @@ package watch.poe.app.service.chid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import watch.poe.app.utility.ChangeIdUtility;
-import watch.poe.persistence.domain.ChangeIdId;
+import watch.poe.persistence.domain.ChangeIdType;
 import watch.poe.persistence.model.ChangeId;
 import watch.poe.persistence.repository.ChangeIdRepository;
 
@@ -15,22 +15,22 @@ public class ChangeIdService {
 
   private final ChangeIdRepository changeIdRepository;
 
-  public void saveIfNewer(ChangeIdId id, String changeId) {
+  public void saveIfNewer(ChangeIdType id, String changeId) {
     var job = changeIdRepository.findById(id);
-    if (job.isEmpty() || ChangeIdUtility.isNewerThan(changeId, job.get().getChangeId())) {
+    if (job.isEmpty() || ChangeIdUtility.isNewerThan(changeId, job.get().getValue())) {
       save(id, changeId);
     }
   }
 
-  public ChangeId save(ChangeIdId id, String changeIdString) {
+  public ChangeId save(ChangeIdType id, String changeIdString) {
     var changeId = ChangeId.builder()
-      .id(id)
-      .changeId(changeIdString)
+      .type(id)
+      .value(changeIdString)
       .build();
     return changeIdRepository.save(changeId);
   }
 
-  public Optional<ChangeId> find(ChangeIdId id) {
+  public Optional<ChangeId> find(ChangeIdType id) {
     return changeIdRepository.findById(id);
   }
 

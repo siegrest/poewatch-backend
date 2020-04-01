@@ -17,8 +17,7 @@ import java.util.List;
 public class ItemBase {
 
   @Id
-  @Column(name = "id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue
   private Integer id;
 
   @ToString.Exclude

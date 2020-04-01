@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.config.AppModuleConfig;
 import watch.poe.app.service.chid.ChangeIdService;
 import watch.poe.app.utility.ChangeIdUtility;
-import watch.poe.persistence.domain.ChangeIdId;
+import watch.poe.persistence.domain.ChangeIdType;
 
 import javax.annotation.PostConstruct;
 import java.util.Optional;
@@ -33,7 +33,7 @@ public class JobService {
     if (ChangeIdUtility.isChangeId(changeIdOverride)) {
       job = changeIdOverride;
     } else {
-      changeIdService.find(ChangeIdId.APP).ifPresentOrElse(id -> job = id.getChangeId(), () -> job = "0-0-0-0-0");
+      changeIdService.find(ChangeIdType.APP).ifPresentOrElse(id -> job = id.getValue(), () -> job = "0-0-0-0-0");
     }
   }
 
@@ -63,7 +63,7 @@ public class JobService {
       log.warn("Job {} was overwritten by {}", job, newJob);
     }
 
-    changeIdService.saveIfNewer(ChangeIdId.TOP, newJob);
+    changeIdService.saveIfNewer(ChangeIdType.TOP, newJob);
     job = newJob;
   }
 

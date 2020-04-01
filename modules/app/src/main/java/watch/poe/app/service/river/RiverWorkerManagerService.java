@@ -10,7 +10,7 @@ import watch.poe.app.domain.wrapper.RiverWrapper;
 import watch.poe.app.exception.river.RiverDownloadException;
 import watch.poe.app.service.StatisticsService;
 import watch.poe.app.service.chid.ChangeIdService;
-import watch.poe.persistence.domain.ChangeIdId;
+import watch.poe.persistence.domain.ChangeIdType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -75,7 +75,7 @@ public class RiverWorkerManagerService {
 
       // todo: handle index exceptions
       var completedJob = indexFuture.get();
-      changeIdService.saveIfNewer(ChangeIdId.APP, completedJob);
+      changeIdService.saveIfNewer(ChangeIdType.APP, completedJob);
       indexFuture = null;
     }
 

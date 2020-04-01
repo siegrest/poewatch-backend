@@ -1,8 +1,6 @@
 package watch.poe.persistence.model;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,6 +17,7 @@ import java.util.List;
 public class Stash {
 
   @Id
+  @GeneratedValue
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -34,37 +33,18 @@ public class Stash {
   @OneToMany(mappedBy = "stash", fetch = FetchType.LAZY)
   private List<LeagueItemEntry> items = new ArrayList<>();
 
-  @Builder.Default
-  @CreationTimestamp
-  @Column(name = "found", nullable = false)
+  @Column
   @Temporal(TemporalType.TIMESTAMP)
-  private Date found = new Date();
+  private Date found;
 
-  @Builder.Default
-  @UpdateTimestamp
-  @Column(name = "seen", nullable = false)
+  @Column
   @Temporal(TemporalType.TIMESTAMP)
-  private Date seen = new Date();
+  private Date seen;
 
-  @Column(name = "updates", nullable = false)
-  private int updates;
-  @Column(name = "item_count", nullable = false)
-  private int itemCount;
+  @Column
+  private Integer updates;
 
   @Column(name = "stale")
   private Boolean stale;
-
-  @PrePersist
-  protected void onCreate() {
-    itemCount = items == null ? 0 : items.size();
-    stale = false;
-  }
-
-  @PreUpdate
-  protected void onUpdate() {
-    updates++;
-    itemCount = items == null ? 0 : items.size();
-    stale = itemCount > 0;
-  }
 
 }

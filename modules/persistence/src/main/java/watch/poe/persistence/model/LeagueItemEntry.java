@@ -1,8 +1,6 @@
 package watch.poe.persistence.model;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -17,6 +15,7 @@ import java.util.Date;
 public class LeagueItemEntry {
 
   @Id
+  @GeneratedValue
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
@@ -27,20 +26,16 @@ public class LeagueItemEntry {
   @JoinColumn(name = "item_id", nullable = false)
   private Item item;
 
-  @Builder.Default
-  @CreationTimestamp
-  @Column(name = "found", nullable = false)
+  @Column
   @Temporal(TemporalType.TIMESTAMP)
-  private Date found = new Date();
+  private Date found;
 
-  @Builder.Default
-  @UpdateTimestamp
-  @Column(name = "seen", nullable = false)
+  @Column
   @Temporal(TemporalType.TIMESTAMP)
-  private Date seen = new Date();
+  private Date seen;
 
   @Column(name = "updates", nullable = false)
-  private int updates;
+  private Integer updates;
 
   @Column(name = "stack_size")
   private Integer stackSize;
@@ -51,15 +46,5 @@ public class LeagueItemEntry {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "price_item_id")
   private Item priceItem;
-
-  @PrePersist
-  protected void onCreate() {
-    updates = 0;
-  }
-
-  @PreUpdate
-  protected void onUpdate() {
-    updates++;
-  }
 
 }

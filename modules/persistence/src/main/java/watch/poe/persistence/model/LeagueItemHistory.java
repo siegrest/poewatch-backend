@@ -13,8 +13,7 @@ import java.sql.Timestamp;
 public class LeagueItemHistory {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue
     private Long id;
 
     @ManyToOne(optional = false)
