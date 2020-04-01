@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS item
 (
-    id                 INTEGER      NOT NULL,
+    id                 SERIAL       NOT NULL,
     corrupted          BOOLEAN,
     enchantment_max    DOUBLE PRECISION,
     enchantment_min    DOUBLE PRECISION,

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS category
 (
-    id      INTEGER     NOT NULL,
+    id      SERIAL      NOT NULL,
     display VARCHAR(32) NOT NULL,
     name    VARCHAR(32) NOT NULL
 );

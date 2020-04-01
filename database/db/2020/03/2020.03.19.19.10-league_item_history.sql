@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS league_item_history
 (
-    id        BIGINT           NOT NULL,
+    id        BIGSERIAL        NOT NULL,
     accepted  INTEGER          NOT NULL,
     current   INTEGER          NOT NULL,
     daily     INTEGER          NOT NULL,

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS account
 (
-    id    BIGINT      NOT NULL,
+    id    BIGSERIAL   NOT NULL,
     found TIMESTAMP   NOT NULL,
     name  VARCHAR(32) NOT NULL,
     seen  TIMESTAMP   NOT NULL

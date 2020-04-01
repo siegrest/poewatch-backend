@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS item_base
 (
-    id          INTEGER      NOT NULL,
+    id          SERIAL       NOT NULL,
     base_type   VARCHAR(64),
     frame_type  VARCHAR(255) NOT NULL,
     name        VARCHAR(128),

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS league
 (
-    id         INTEGER     NOT NULL,
+    id         SERIAL      NOT NULL,
     active     BOOLEAN     NOT NULL,
     challenge  BOOLEAN     NOT NULL,
     display    VARCHAR(64),

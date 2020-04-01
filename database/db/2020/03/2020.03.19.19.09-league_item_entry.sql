@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS league_item_entry
 (
-    id            BIGINT    NOT NULL,
+    id            BIGSERIAL NOT NULL,
     found         TIMESTAMP NOT NULL,
     price         DOUBLE PRECISION,
     seen          TIMESTAMP NOT NULL,

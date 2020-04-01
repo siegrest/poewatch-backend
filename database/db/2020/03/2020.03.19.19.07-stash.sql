@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS stash
 (
-    id         BIGINT    NOT NULL,
+    id         BIGSERIAL NOT NULL,
     found      TIMESTAMP NOT NULL,
     item_count INTEGER   NOT NULL,
     seen       TIMESTAMP NOT NULL,
