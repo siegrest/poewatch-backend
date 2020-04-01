@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet id="update_league_item_entry_seen.sql"
+               author="siegrest"
+               runAlways="true"
+               runOnChange="true">
+        <sqlFile path="db/triggers/league_item_entry/update_league_item_entry_seen.sql"/>
+    </changeSet>
+
+    <changeSet id="update_league_item_entry_updates.sql"
+               author="siegrest"
+               runAlways="true"
+               runOnChange="true">
+        <sqlFile path="db/triggers/league_item_entry/update_league_item_entry_updates.sql"/>
+    </changeSet>
+
+</databaseChangeLog>
