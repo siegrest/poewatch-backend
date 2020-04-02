@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import watch.poe.persistence.model.code.DiscardErrorCode;
-import watch.poe.persistence.model.code.ParseErrorCode;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.ItemParseException;
+import watch.poe.persistence.model.code.DiscardErrorCode;
+import watch.poe.persistence.model.code.ParseErrorCode;
 
 import java.util.Base64;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class MapIconService {
 
   private Map<String, String> extractParams(String base64) {
     var paramJson = base64.substring(base64.indexOf('{'), base64.indexOf('}') + 1);
-    return gsonService.fromType(paramJson);
+    return gsonService.toObject(paramJson);
   }
 
   private Integer parseMapSeries(Map<String, String> params) throws ItemParseException {

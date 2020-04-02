@@ -18,11 +18,13 @@ public class GsonService {
     return gson.fromJson(json, typeClass);
   }
 
+  public <T> T toObject(String json) {
+    return gson.fromJson(json, new TypeToken<T>() {
+    }.getType());
+  }
+
   public <T> List<T> toList(String json, Class<T> typeClass) {
     return gson.fromJson(json, new ListOfJson<T>(typeClass));
   }
 
-  public <T> T fromType(String json) {
-    return gson.fromJson(json, new TypeToken<T>(){}.getType());
-  }
 }
