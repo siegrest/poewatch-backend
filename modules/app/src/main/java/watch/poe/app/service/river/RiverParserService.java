@@ -101,7 +101,7 @@ public class RiverParserService {
             && ex.getDiscardBasis() != DiscardBasis.PARSE_COMPLEX_MAGIC
             && ex.getDiscardBasis() != DiscardBasis.UNIQUE_ONLY
             && ex.getDiscardBasis() != DiscardBasis.PARSE_COMPLEX_RARE) {
-            log.info("Parse exception \"{}\" for {}", ex.getMessage(), itemWrapper);
+            log.error("Parse exception for {}", itemWrapper, ex);
           }
 
           continue;

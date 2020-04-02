@@ -9,6 +9,7 @@ import watch.poe.app.domain.GroupDto;
 import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.exception.GroupingException;
 import watch.poe.app.exception.ItemParseException;
+import watch.poe.app.service.MapIconService;
 import watch.poe.app.service.resource.CorruptedItemService;
 import watch.poe.app.service.resource.ItemVariantService;
 import watch.poe.app.utility.ItemTypeUtility;
@@ -28,6 +29,7 @@ public final class ItemParserService {
   private final ItemCategorizationService categorizationService;
   private final ItemGroupingService groupingService;
   private final ItemBaseParserService itemBaseParserService;
+  private final MapIconService mapIconService;
 
   public Item parse(ItemWrapper wrapper) throws ItemParseException, GroupingException {
     var itemDto = wrapper.getItemDto();
@@ -102,7 +104,7 @@ public final class ItemParserService {
       var tier = ItemUtility.extractMapTier(itemDto);
       item.setMapTier(tier);
 
-      var series = ItemUtility.extractMapSeries(itemDto);
+      var series = mapIconService.parseSeries(itemDto);
       item.setMapSeries(series);
     }
 

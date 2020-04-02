@@ -10,6 +10,10 @@ public enum ParseExceptionBasis {
 
   DEV("Development"),
 
+  PARSE_MAP_ICON("Could not parse a map's icon"),
+  PARSE_MAP_ICON_PARAM_F("Could not find param 'f' (icon path) in the map's icon"),
+  PARSE_MAP_ICON_PARAM_MN("Could not find param 'mn' (series) in the map's icon"),
+
   PARSE_UNID_UNIQUE_ITEM("Cannot parse unidentified unique items"),
   PARSE_UNID_UNIQUE_MAP("Unimplemented unidentified unique map encountered"),
   PARSE_CATEGORY("Could not determine category"),

@@ -139,46 +139,6 @@ public final class ItemUtility {
     throw new ItemParseException(DiscardBasis.MAP_TIER_MISSING);
   }
 
-  public static Integer extractMapSeries(ItemDto itemDto) throws ItemParseException {
-    /* Currently the series are as such:
-     http://web.poecdn.com/image/Art/2DItems/Maps/Map45.png?scale=1&w=1&h=1
-     http://web.poecdn.com/image/Art/2DItems/Maps/act4maps/Map76.png?scale=1&w=1&h=1
-     http://web.poecdn.com/image/Art/2DItems/Maps/AtlasMaps/Chimera.png?scale=1&scaleIndex=0&w=1&h=1
-     http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/VaalTempleBase.png?scale=1&w=1&h=1&mn=1&mt=0
-     http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/VaalTempleBase.png?scale=1&w=1&h=1&mn=2&mt=0
-     http://web.poecdn.com/image/Art/2DItems/Maps/Atlas2Maps/New/VaalTempleBase.png?scale=1&w=1&h=1&mn=3&mt=0
-    */
-
-    var iconCategory = CategorizationUtility.findIconCategory(itemDto);
-    var seriesNumber = 0;
-
-    // Attempt to find series number for newer maps
-    try {
-      var iconParams = itemDto.getIcon().split("\\?", 2)[1].split("&");
-      for (var param : iconParams) {
-        var splitParam = param.split("=");
-        if (splitParam[0].equals("mn")) {
-          seriesNumber = Integer.parseInt(splitParam[1]);
-          break;
-        }
-      }
-    } catch (Exception ex) {
-      throw new ItemParseException(DiscardBasis.PARSE_MAP_SERIES_FAILED);
-    }
-
-    if (iconCategory.equalsIgnoreCase("Maps")) {
-      return 0;
-    } else if (iconCategory.equalsIgnoreCase("act4maps")) {
-      return 1;
-    } else if (iconCategory.equalsIgnoreCase("AtlasMaps")) {
-      return 2;
-    } else if (iconCategory.equalsIgnoreCase("New") && seriesNumber > 0) {
-      return seriesNumber + 2;
-    } else {
-      throw new ItemParseException(DiscardBasis.INVALID_MAP_SERIES);
-    }
-  }
-
   public static Integer extractLinks(ItemDto itemDto) throws ItemParseException {
     if (itemDto.getSockets() == null) {
       throw new ItemParseException(DiscardBasis.NO_SOCKETS);
