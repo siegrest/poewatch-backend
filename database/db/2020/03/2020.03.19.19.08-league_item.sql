@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS league_item
     mode      DOUBLE PRECISION NOT NULL,
     min       DOUBLE PRECISION NOT NULL,
     max       DOUBLE PRECISION NOT NULL,
-    found     TIMESTAMP        NOT NULL,
-    seen      TIMESTAMP        NOT NULL
+    found     TIMESTAMP        DEFAULT now(),
+    seen      TIMESTAMP        DEFAULT now()
 );
 
 ALTER TABLE league_item

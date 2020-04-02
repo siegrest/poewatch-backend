@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS item_base
     frame_type  VARCHAR(255) NOT NULL,
     base_type   VARCHAR(64),
     name        VARCHAR(128),
-    found       TIMESTAMP
+    found       TIMESTAMP DEFAULT now()
 );
 
 ALTER TABLE item_base

@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS item
     links              INTEGER,
     stack_size         INTEGER,
     variation          VARCHAR(32),
-    corrupted          BOOLEAN,
+    corrupted          BOOLEAN DEFAULT FALSE,
     enchantment_max    DOUBLE PRECISION,
     enchantment_min    DOUBLE PRECISION,
     gem_level          INTEGER,
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS item
     map_series         INTEGER,
     map_tier           INTEGER,
     icon               VARCHAR(255) NOT NULL,
-    found              TIMESTAMP
+    found              TIMESTAMP DEFAULT now()
 );
 
 

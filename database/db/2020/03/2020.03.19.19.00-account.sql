@@ -2,8 +2,8 @@ CREATE TABLE IF NOT EXISTS account
 (
     id    BIGSERIAL   NOT NULL,
     name  VARCHAR(32) NOT NULL,
-    found TIMESTAMP,
-    seen  TIMESTAMP
+    found TIMESTAMP DEFAULT now(),
+    seen  TIMESTAMP DEFAULT now()
 );
 
 ALTER TABLE account

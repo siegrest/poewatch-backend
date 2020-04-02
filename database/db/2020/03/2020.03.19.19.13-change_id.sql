@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS change_id
 (
     type  VARCHAR(255) NOT NULL,
     value VARCHAR(64),
-    time  TIMESTAMP
+    time  TIMESTAMP DEFAULT now()
 );
 
 ALTER TABLE change_id

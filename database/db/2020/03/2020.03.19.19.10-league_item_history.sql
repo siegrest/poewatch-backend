@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS league_item_history
     mode      DOUBLE PRECISION NOT NULL,
     min       DOUBLE PRECISION NOT NULL,
     max       DOUBLE PRECISION NOT NULL,
-    time      TIMESTAMP        NOT NULL
+    time      TIMESTAMP        DEFAULT now()
 );
 
 ALTER TABLE league_item_history

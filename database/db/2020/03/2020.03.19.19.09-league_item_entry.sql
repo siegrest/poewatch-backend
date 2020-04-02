@@ -6,9 +6,9 @@ CREATE TABLE IF NOT EXISTS league_item_entry
     stack_size    INTEGER,
     price         DOUBLE PRECISION,
     price_item_id INTEGER,
-    updates       INTEGER   NOT NULL,
-    found         TIMESTAMP NOT NULL,
-    seen          TIMESTAMP NOT NULL
+    updates       INTEGER   NOT NULL DEFAULT 0,
+    found         TIMESTAMP DEFAULT now(),
+    seen          TIMESTAMP DEFAULT now()
 );
 
 ALTER TABLE league_item_entry
