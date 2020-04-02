@@ -19,11 +19,11 @@
         <createProcedure path="db/functions/update_found_timestamp.sql"/>
     </changeSet>
 
-    <changeSet id="update_updated_timestamp.sql"
+    <changeSet id="update_time_timestamp.sql"
                author="siegrest"
                runAlways="true"
                runOnChange="true">
-        <createProcedure path="db/functions/update_updated_timestamp.sql"/>
+        <createProcedure path="db/functions/update_time_timestamp.sql"/>
     </changeSet>
 
     <changeSet id="increment_updates_counter.sql"

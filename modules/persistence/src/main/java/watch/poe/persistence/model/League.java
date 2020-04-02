@@ -3,7 +3,7 @@ package watch.poe.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -40,11 +40,9 @@ public class League {
     private Boolean challenge;
 
     @Column(name = "start_time")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date start;
+    private LocalDateTime start;
 
     @Column(name = "end_time")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date end;
+    private LocalDateTime end;
 
 }

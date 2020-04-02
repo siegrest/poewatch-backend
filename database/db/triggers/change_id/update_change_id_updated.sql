@@ -4,4 +4,4 @@ CREATE TRIGGER update_change_id_updated
     BEFORE INSERT
     ON change_id
     FOR EACH ROW
-EXECUTE PROCEDURE update_updated_timestamp();
+EXECUTE PROCEDURE update_time_timestamp();

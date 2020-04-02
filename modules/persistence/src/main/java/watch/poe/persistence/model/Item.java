@@ -3,7 +3,7 @@ package watch.poe.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,8 +23,8 @@ public class Item {
   @JoinColumn(name = "item_base_id", nullable = false)
   private ItemBase base;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date found;
+  @Column
+  private LocalDateTime found;
 
   @Column(length = 32)
   private String variation;

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,8 +23,8 @@ public class LeagueItemHistory {
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
-    @Column(name = "time", nullable = false)
-    private Timestamp time;
+    @Column
+    private LocalDateTime time;
 
     @Column(name = "mean", nullable = false)
     private Double mean;

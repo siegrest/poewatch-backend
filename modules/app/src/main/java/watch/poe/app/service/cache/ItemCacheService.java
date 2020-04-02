@@ -8,8 +8,8 @@ import watch.poe.persistence.model.Item;
 import watch.poe.persistence.repository.ItemRepository;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -36,7 +36,7 @@ public class ItemCacheService {
 
     // todo: necessary? or move to item base builder
     item.setId(null);
-    item.setFound(new Date());
+    item.setFound(LocalDateTime.now());
 
     var newItem = itemRepository.save(item);
     items.add(newItem);

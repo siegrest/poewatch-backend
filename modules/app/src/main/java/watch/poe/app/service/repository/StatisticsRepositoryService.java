@@ -7,7 +7,7 @@ import watch.poe.persistence.model.StatisticPartial;
 import watch.poe.persistence.repository.StatisticHistoryRepository;
 import watch.poe.persistence.repository.StatisticPartialRepository;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -25,7 +25,7 @@ public class StatisticsRepositoryService {
     statisticPartialRepository.deleteByTypeEquals(type);
   }
 
-  public void saveToHistory(String type, Date time, Long value) {
+  public void saveToHistory(String type, LocalDateTime time, Long value) {
         var s = StatisticHistory.builder()
                 .time(time)
                 .type(type)
@@ -35,7 +35,7 @@ public class StatisticsRepositoryService {
         statisticHistoryRepository.save(s);
     }
 
-    public void saveToPartial(String type, Date time, Long sum, Long count) {
+    public void saveToPartial(String type, LocalDateTime time, Long sum, Long count) {
         var partialBuilder = StatisticPartial.builder()
                 .time(time)
                 .type(type)

@@ -2,92 +2,96 @@ package watch.poe.app.domain.statistics;
 
 import lombok.Getter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Getter
 public class StatCollector {
-    private final StatType type;
-    private Date creationTime;
-    private Date insertTime;
-    private boolean isValueNull;
-    private long count;
-    private long sum;
 
-    public StatCollector(StatType statType) {
-        this.type = statType;
-        reset();
+  private final StatType type;
+  private LocalDateTime creationTime;
+  private LocalDateTime insertTime;
+  private boolean isValueNull;
+  private long count;
+  private long sum;
+
+  public StatCollector(StatType statType) {
+    this.type = statType;
+    reset();
+  }
+
+  public boolean isRecorded() {
+    return type.getTimeFrame() != null;
+  }
+
+  public boolean hasValues() {
+    return count > 0;
+  }
+
+  public boolean isExpired() {
+    var ms = creationTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    return System.currentTimeMillis() - ms >= type.getTimeFrame().asMilli();
+  }
+
+  public void addValue(Long val) {
+    if (val == null) {
+      isValueNull = true;
+    } else {
+      sum += val;
     }
 
-    public boolean isRecorded() {
-        return type.getTimeFrame() != null;
+    count++;
+  }
+
+  public Long getValue() {
+    if (type.getStatGroupType().equals(StatGroupType.COUNT)) {
+      return count;
     }
 
-    public boolean hasValues() {
-        return count > 0;
+    if (isValueNull) {
+      return null;
     }
 
-    public boolean isExpired() {
-        return System.currentTimeMillis() - creationTime.getTime() >= type.getTimeFrame().asMilli();
+    if (type.getStatGroupType().equals(StatGroupType.SUM)) {
+      return sum;
     }
 
-    public void addValue(Long val) {
-        if (val == null) {
-            isValueNull = true;
-        } else {
-            sum += val;
-        }
-
-        count++;
+    if (type.getStatGroupType().equals(StatGroupType.AVG)) {
+      return sum / count;
     }
 
-    public Long getValue() {
-        if (type.getStatGroupType().equals(StatGroupType.COUNT)) {
-            return count;
-        }
+    return sum;
+  }
 
-        if (isValueNull) {
-            return null;
-        }
-
-        if (type.getStatGroupType().equals(StatGroupType.SUM)) {
-            return sum;
-        }
-
-        if (type.getStatGroupType().equals(StatGroupType.AVG)) {
-            return sum / count;
-        }
-
-        return sum;
+  public void reset() {
+    if (type.getTimeFrame() == null) {
+      creationTime = TimeFrame.M_1.getCurrent();
+      insertTime = TimeFrame.M_1.getNext();
+    } else {
+      creationTime = type.getTimeFrame().getCurrent();
+      insertTime = type.getTimeFrame().getNext();
     }
 
-    public void reset() {
-        if (type.getTimeFrame() == null) {
-            creationTime = new Date(TimeFrame.M_1.getCurrent());
-            insertTime = new Date(TimeFrame.M_1.getNext());
-        } else {
-            creationTime = new Date(type.getTimeFrame().getCurrent());
-            insertTime = new Date(type.getTimeFrame().getNext());
-        }
+    isValueNull = false;
+    count = 0;
+    sum = 0;
+  }
 
-        isValueNull = false;
-        count = 0;
-        sum = 0;
+  public void setSum(Long sum) {
+    if (sum == null) {
+      isValueNull = true;
+    } else {
+      this.sum = sum;
     }
+  }
 
-    public void setSum(Long sum) {
-        if (sum == null) {
-            isValueNull = true;
-        } else {
-            this.sum = sum;
-        }
-    }
+  public void setCreationTime(LocalDateTime creationTime) {
+    this.creationTime = creationTime;
+    insertTime = creationTime.plusNanos(type.getTimeFrame().asMilli() * 1000000);
+  }
 
-    public void setCreationTime(Date creationTime) {
-        this.creationTime = creationTime;
-        insertTime = new Date(creationTime.getTime() + type.getTimeFrame().asMilli());
-    }
+  public void setCount(long count) {
+    this.count = count;
+  }
 
-    public void setCount(long count) {
-        this.count = count;
-    }
 }

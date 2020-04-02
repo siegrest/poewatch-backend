@@ -4,7 +4,7 @@ import lombok.*;
 import watch.poe.persistence.domain.ChangeIdType;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -18,9 +18,9 @@ public class ChangeId {
   @Enumerated(value = EnumType.STRING)
   private ChangeIdType type;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date updated;
-
   @Column(length = 64)
   private String value;
+
+  @Column
+  private LocalDateTime time;
 }

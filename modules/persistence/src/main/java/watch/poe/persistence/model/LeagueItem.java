@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,12 +24,9 @@ public class LeagueItem {
   private Item item;
 
   @Column
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date found;
-
+  private LocalDateTime found;
   @Column
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date seen;
+  private LocalDateTime seen;
 
   @Column(name = "mean", nullable = false)
   private Double mean;

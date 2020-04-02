@@ -3,7 +3,7 @@ package watch.poe.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -16,18 +16,17 @@ import java.util.Date;
 public class StatisticPartial {
 
     @Id
-    @Column(name = "type", length = 32, nullable = false)
+    @Column(name = "type", length = 32)
     private String type;
 
     @Id
-    @Column(name = "time", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date time;
+    @Column
+    private LocalDateTime time;
 
-    @Column(name = "sum", nullable = false)
+    @Column
     private Long sum;
 
-    @Column(name = "count", nullable = false)
+    @Column
     private Long count;
 
 }

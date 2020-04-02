@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS item
     map_series         INTEGER,
     map_tier           INTEGER,
     icon               VARCHAR(255) NOT NULL,
-    found              TIMESTAMP    NOT NULL,
+    found              TIMESTAMP
 );
 
 

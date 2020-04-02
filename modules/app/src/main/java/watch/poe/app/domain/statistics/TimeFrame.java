@@ -2,6 +2,10 @@ package watch.poe.app.domain.statistics;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 @Slf4j
 public enum TimeFrame {
     M_1, M_10, M_30, M_60, H_6, H_12, H_24;
@@ -50,14 +54,16 @@ public enum TimeFrame {
     /**
      * Gets milliseconds from the start until the TimeFrame
      */
-    public long getCurrent() {
-        return (System.currentTimeMillis() / asMilli()) * asMilli();
+    public LocalDateTime getCurrent() {
+        var ms = (System.currentTimeMillis() / asMilli()) * asMilli();
+        return Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     /**
      * Gets milliseconds from the start until the next TimeFrame
      */
-    public long getNext() {
-        return (System.currentTimeMillis() / asMilli() + 1) * asMilli();
+    public LocalDateTime getNext() {
+        var ms = (System.currentTimeMillis() / asMilli() + 1) * asMilli();
+        return Instant.ofEpochMilli(ms).atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 }

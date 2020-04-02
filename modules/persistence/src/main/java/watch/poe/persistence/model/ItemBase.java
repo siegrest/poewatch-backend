@@ -4,6 +4,7 @@ import lombok.*;
 import watch.poe.persistence.domain.FrameType;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -41,5 +42,8 @@ public class ItemBase {
   @Enumerated(EnumType.STRING)
   @Column(name = "frame_type", nullable = false)
   private FrameType frameType;
+
+  @Column
+  private LocalDateTime found;
 
 }

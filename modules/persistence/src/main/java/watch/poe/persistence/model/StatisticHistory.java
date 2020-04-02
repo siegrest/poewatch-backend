@@ -3,7 +3,7 @@ package watch.poe.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -20,11 +20,10 @@ public class StatisticHistory {
     private String type;
 
     @Id
-    @Column(name = "time", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date time;
+    @Column
+    private LocalDateTime time;
 
-    @Column(name = "value", nullable = false)
+    @Column
     private Long value;
 
 }
