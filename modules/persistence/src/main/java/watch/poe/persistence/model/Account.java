@@ -16,7 +16,7 @@ import java.util.List;
 @Table(name = "account", schema = "pw")
 public class Account {
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(length = 32, nullable = false, unique = true)

@@ -15,7 +15,7 @@ import java.util.Date;
 @Table(name = "item", schema = "pw")
 public class Item {
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
   @ToString.Exclude

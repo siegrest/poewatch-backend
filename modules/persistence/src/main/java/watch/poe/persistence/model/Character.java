@@ -14,7 +14,7 @@ import java.util.Date;
 @Table(name = "character", schema = "pw")
 public class Character {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(optional = false)

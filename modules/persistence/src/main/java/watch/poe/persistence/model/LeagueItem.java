@@ -12,7 +12,7 @@ import java.util.Date;
 @Table(name = "league_item", schema = "pw")
 public class LeagueItem {
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne(optional = false)

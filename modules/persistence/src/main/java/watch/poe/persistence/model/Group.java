@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Table(name = "group", schema = "pw")
 public class Group {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(length = 32, nullable = false, unique = true)

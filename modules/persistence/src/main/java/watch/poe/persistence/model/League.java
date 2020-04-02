@@ -15,7 +15,7 @@ import java.util.Date;
 @Table(name = "league", schema = "pw")
 public class League {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "name", length = 64, nullable = false, unique = true)

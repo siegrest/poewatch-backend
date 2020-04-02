@@ -15,7 +15,7 @@ import java.util.Date;
 public class LeagueItemEntry {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @ManyToOne(fetch = FetchType.LAZY)
