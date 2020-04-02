@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.config.AppModuleConfig;
 import watch.poe.app.service.ChangeIdService;
 import watch.poe.app.utility.ChangeIdUtility;
-import watch.poe.persistence.domain.ChangeIdType;
+import watch.poe.persistence.model.changeId.ChangeIdType;
 
 import javax.annotation.PostConstruct;
 import java.util.Optional;

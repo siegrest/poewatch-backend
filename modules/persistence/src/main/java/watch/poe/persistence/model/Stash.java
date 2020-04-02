@@ -1,6 +1,7 @@
 package watch.poe.persistence.model;
 
 import lombok.*;
+import watch.poe.persistence.model.leagueItem.LeagueItemEntry;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

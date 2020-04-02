@@ -1,7 +1,8 @@
-package watch.poe.persistence.model;
+package watch.poe.persistence.model.item;
 
 import lombok.*;
-import watch.poe.persistence.domain.FrameType;
+import watch.poe.persistence.model.Category;
+import watch.poe.persistence.model.Group;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

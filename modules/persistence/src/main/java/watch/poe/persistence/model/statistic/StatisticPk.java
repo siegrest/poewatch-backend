@@ -1,4 +1,4 @@
-package watch.poe.persistence.model;
+package watch.poe.persistence.model.statistic;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

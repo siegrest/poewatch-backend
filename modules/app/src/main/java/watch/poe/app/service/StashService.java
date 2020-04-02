@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import watch.poe.app.utility.GenericsUtility;
 import watch.poe.persistence.model.Stash;
-import watch.poe.persistence.repository.StashRepository;
+import watch.poe.persistence.repository.statistic.StashRepository;
 
 import java.util.Collection;
 import java.util.List;

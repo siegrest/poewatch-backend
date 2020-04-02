@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import watch.poe.app.utility.ItemUtility;
-import watch.poe.persistence.model.ItemBase;
-import watch.poe.persistence.repository.ItemBaseRepository;
+import watch.poe.persistence.model.item.ItemBase;
+import watch.poe.persistence.repository.item.ItemBaseRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;

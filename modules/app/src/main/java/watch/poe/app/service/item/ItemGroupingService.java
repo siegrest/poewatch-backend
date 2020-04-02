@@ -3,7 +3,7 @@ package watch.poe.app.service.item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.GroupDto;
-import watch.poe.app.dto.GroupingExceptionBasis;
+import watch.poe.persistence.model.code.GroupingErrorCode;
 import watch.poe.app.dto.wrapper.CategoryWrapper;
 import watch.poe.app.dto.wrapper.ItemWrapper;
 import watch.poe.app.exception.GroupingException;
@@ -57,9 +57,9 @@ public class ItemGroupingService {
       case ARMOUR:
       case WEAPON:
       case ENCHANTMENT:
-        return parseCommonGroups(wrapper).orElseThrow(() -> new GroupingException(GroupingExceptionBasis.PARSE));
+        return parseCommonGroups(wrapper).orElseThrow(() -> new GroupingException(GroupingErrorCode.PARSE));
       default:
-        throw new GroupingException(GroupingExceptionBasis.UNHANDLED_CATEGORY);
+        throw new GroupingException(GroupingErrorCode.UNHANDLED_CATEGORY);
     }
   }
 
@@ -138,7 +138,7 @@ public class ItemGroupingService {
       case "influence exalts":
         return GroupDto.INFLUENCE_EXALT;
       case "breach":
-        throw new GroupingException(GroupingExceptionBasis.DEPRECATED);
+        throw new GroupingException(GroupingErrorCode.DEPRECATED);
     }
 
     if (wrapper.getApiGroup() != null) {
@@ -162,7 +162,7 @@ public class ItemGroupingService {
       return GroupDto.NET;
     }
 
-    throw new GroupingException(GroupingExceptionBasis.PARSE);
+    throw new GroupingException(GroupingErrorCode.PARSE);
   }
 
   private GroupDto parseGemGroups(CategoryWrapper wrapper) throws GroupingException {
@@ -174,7 +174,7 @@ public class ItemGroupingService {
       return GroupDto.SUPPORT_GEM;
     }
 
-    throw new GroupingException(GroupingExceptionBasis.PARSE);
+    throw new GroupingException(GroupingErrorCode.PARSE);
   }
 
   private GroupDto parseAltArtGroups(CategoryWrapper wrapper) throws GroupingException {
@@ -187,7 +187,7 @@ public class ItemGroupingService {
       return GroupDto.JEWEL;
     }
 
-    throw new GroupingException(GroupingExceptionBasis.PARSE);
+    throw new GroupingException(GroupingErrorCode.PARSE);
   }
 
   private GroupDto parseMapGroups(CategoryWrapper wrapper) throws GroupingException {
@@ -207,7 +207,7 @@ public class ItemGroupingService {
       return GroupDto.REGULAR_MAP;
     }
 
-    throw new GroupingException(GroupingExceptionBasis.PARSE);
+    throw new GroupingException(GroupingErrorCode.PARSE);
   }
 
   private GroupDto parseBeastGroups(CategoryWrapper wrapper) throws GroupingException {
@@ -217,7 +217,7 @@ public class ItemGroupingService {
       return GroupDto.BEAST;
     }
 
-    throw new GroupingException(GroupingExceptionBasis.PARSE);
+    throw new GroupingException(GroupingErrorCode.PARSE);
   }
 
   private GroupDto parseCraftingBaseGroups(CategoryWrapper wrapper) throws GroupingException {
@@ -230,7 +230,7 @@ public class ItemGroupingService {
       return GroupDto.ABYSSAL_JEWEL;
     }
 
-    throw new GroupingException(GroupingExceptionBasis.PARSE);
+    throw new GroupingException(GroupingErrorCode.PARSE);
   }
 
   private GroupDto parseFragmentGroups(CategoryWrapper wrapper) throws GroupingException {
@@ -298,7 +298,7 @@ public class ItemGroupingService {
       return GroupDto.MISC_FRAG;
     }
 
-    throw new GroupingException(GroupingExceptionBasis.PARSE);
+    throw new GroupingException(GroupingErrorCode.PARSE);
   }
 
 }

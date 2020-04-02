@@ -3,18 +3,18 @@ package watch.poe.app.utility;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import watch.poe.app.dto.CategoryDto;
-import watch.poe.app.dto.DiscardBasis;
+import watch.poe.persistence.model.code.DiscardErrorCode;
 import watch.poe.app.dto.GroupDto;
-import watch.poe.app.dto.ParseExceptionBasis;
+import watch.poe.persistence.model.code.ParseErrorCode;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.PropertyDto;
 import watch.poe.app.dto.river.SocketDto;
 import watch.poe.app.dto.wrapper.ItemWrapper;
 import watch.poe.app.exception.InvalidIconException;
 import watch.poe.app.exception.ItemParseException;
-import watch.poe.persistence.domain.FrameType;
-import watch.poe.persistence.model.Item;
-import watch.poe.persistence.model.ItemBase;
+import watch.poe.persistence.model.item.FrameType;
+import watch.poe.persistence.model.item.Item;
+import watch.poe.persistence.model.item.ItemBase;
 
 import java.util.Objects;
 
@@ -136,12 +136,12 @@ public final class ItemUtility {
       }
     }
 
-    throw new ItemParseException(DiscardBasis.MAP_TIER_MISSING);
+    throw new ItemParseException(DiscardErrorCode.MAP_TIER_MISSING);
   }
 
   public static Integer extractLinks(ItemDto itemDto) throws ItemParseException {
     if (itemDto.getSockets() == null) {
-      throw new ItemParseException(DiscardBasis.NO_SOCKETS);
+      throw new ItemParseException(DiscardErrorCode.NO_SOCKETS);
     }
 
     // Group links together
@@ -182,12 +182,12 @@ public final class ItemUtility {
       .findFirst();
     if (oProperty.isEmpty()) {
       // todo: might be unintended
-      throw new ItemParseException(DiscardBasis.STACK_SIZE_MISSING);
+      throw new ItemParseException(DiscardErrorCode.STACK_SIZE_MISSING);
     }
 
     var property = oProperty.get();
     if (property.getValues().isEmpty() || property.getValues().get(0).isEmpty()) {
-      throw new ItemParseException(DiscardBasis.STACK_SIZE_MISSING);
+      throw new ItemParseException(DiscardErrorCode.STACK_SIZE_MISSING);
     }
 
     var stackSizeString = property.getValues().get(0).get(0);
@@ -195,13 +195,13 @@ public final class ItemUtility {
 
     // Must contain the slash eg "42/1000"
     if (index < 0) {
-      throw new ItemParseException(DiscardBasis.STACK_SIZE_SLASH_MISSING);
+      throw new ItemParseException(DiscardErrorCode.STACK_SIZE_SLASH_MISSING);
     }
 
     try {
       return Integer.parseInt(stackSizeString.substring(index + 1));
     } catch (NumberFormatException ex) {
-      throw new ItemParseException(DiscardBasis.PARSE_STACK_SIZE);
+      throw new ItemParseException(DiscardErrorCode.PARSE_STACK_SIZE);
     }
   }
 
@@ -306,7 +306,7 @@ public final class ItemUtility {
       };
     }
 
-    throw new ItemParseException(ParseExceptionBasis.INVALID_ENCHANTMENT_ROLLS);
+    throw new ItemParseException(ParseErrorCode.INVALID_ENCHANTMENT_ROLLS);
   }
 
   public static String extractIconName(String icon) {

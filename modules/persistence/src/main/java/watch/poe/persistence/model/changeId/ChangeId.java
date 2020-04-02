@@ -1,7 +1,6 @@
-package watch.poe.persistence.model;
+package watch.poe.persistence.model.changeId;
 
 import lombok.*;
-import watch.poe.persistence.domain.ChangeIdType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

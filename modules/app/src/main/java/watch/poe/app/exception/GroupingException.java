@@ -1,13 +1,13 @@
 package watch.poe.app.exception;
 
 import lombok.Getter;
-import watch.poe.app.dto.GroupingExceptionBasis;
+import watch.poe.persistence.model.code.GroupingErrorCode;
 
 @Getter
 public class GroupingException extends Exception {
-  private GroupingExceptionBasis basis;
+  private GroupingErrorCode basis;
 
-  public GroupingException(GroupingExceptionBasis basis) {
+  public GroupingException(GroupingErrorCode basis) {
     super(basis.getDescription());
     this.basis = basis;
   }

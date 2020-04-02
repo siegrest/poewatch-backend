@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import watch.poe.app.dto.DiscardBasis;
-import watch.poe.app.dto.ParseExceptionBasis;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
@@ -17,11 +15,13 @@ import watch.poe.app.dto.wrapper.StashWrapper;
 import watch.poe.app.exception.GroupingException;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.GsonService;
-import watch.poe.app.service.StatisticsService;
 import watch.poe.app.service.item.ItemParserService;
 import watch.poe.app.service.item.NoteParseService;
-import watch.poe.persistence.model.Item;
-import watch.poe.persistence.model.LeagueItemEntry;
+import watch.poe.app.service.statistic.StatisticsService;
+import watch.poe.persistence.model.code.DiscardErrorCode;
+import watch.poe.persistence.model.code.ParseErrorCode;
+import watch.poe.persistence.model.item.Item;
+import watch.poe.persistence.model.leagueItem.LeagueItemEntry;
 import watch.poe.persistence.utility.HashUtility;
 
 import java.time.LocalDateTime;
@@ -96,11 +96,11 @@ public class RiverParserService {
           priceCurrencyItem = noteParseService.priceToItem(price);
         } catch (ItemParseException ex) {
           // todo: remove this
-          if (ex.getParseExceptionBasis() != ParseExceptionBasis.MISSING_CURRENCY
-            && ex.getParseExceptionBasis() != ParseExceptionBasis.PARSE_UNID_UNIQUE_ITEM
-            && ex.getDiscardBasis() != DiscardBasis.PARSE_COMPLEX_MAGIC
-            && ex.getDiscardBasis() != DiscardBasis.UNIQUE_ONLY
-            && ex.getDiscardBasis() != DiscardBasis.PARSE_COMPLEX_RARE) {
+          if (ex.getParseErrorCode() != ParseErrorCode.MISSING_CURRENCY
+            && ex.getParseErrorCode() != ParseErrorCode.PARSE_UNID_UNIQUE_ITEM
+            && ex.getDiscardErrorCode() != DiscardErrorCode.PARSE_COMPLEX_MAGIC
+            && ex.getDiscardErrorCode() != DiscardErrorCode.UNIQUE_ONLY
+            && ex.getDiscardErrorCode() != DiscardErrorCode.PARSE_COMPLEX_RARE) {
             log.error("Parse exception for {}", itemWrapper, ex);
           }
 

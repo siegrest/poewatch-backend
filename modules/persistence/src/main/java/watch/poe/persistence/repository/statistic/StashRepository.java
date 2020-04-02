@@ -1,4 +1,4 @@
-package watch.poe.persistence.repository;
+package watch.poe.persistence.repository.statistic;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

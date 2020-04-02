@@ -1,9 +1,9 @@
-package watch.poe.app.dto;
+package watch.poe.persistence.model.code;
 
 import lombok.Getter;
 
 @Getter
-public enum ParseExceptionBasis {
+public enum ParseErrorCode {
   MISSING_ITEM("Missing item"),
   MISSING_CATEGORY("Missing category"),
   INVALID_ENCHANTMENT_ROLLS("Invalid enchantment rolls"),
@@ -24,7 +24,7 @@ public enum ParseExceptionBasis {
 
   private String description;
 
-  ParseExceptionBasis(String description) {
+  ParseErrorCode(String description) {
     this.description = description;
   }
 }

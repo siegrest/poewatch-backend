@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import watch.poe.app.utility.GenericsUtility;
-import watch.poe.persistence.model.LeagueItemEntry;
+import watch.poe.persistence.model.leagueItem.LeagueItemEntry;
 import watch.poe.persistence.repository.LeagueItemEntryRepository;
 
 import java.util.List;

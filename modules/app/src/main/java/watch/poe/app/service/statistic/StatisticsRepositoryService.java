@@ -1,11 +1,11 @@
-package watch.poe.app.service;
+package watch.poe.app.service.statistic;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import watch.poe.persistence.model.StatisticHistory;
-import watch.poe.persistence.model.StatisticPartial;
-import watch.poe.persistence.repository.StatisticHistoryRepository;
-import watch.poe.persistence.repository.StatisticPartialRepository;
+import watch.poe.persistence.model.statistic.StatisticHistory;
+import watch.poe.persistence.model.statistic.StatisticPartial;
+import watch.poe.persistence.repository.statistic.StatisticHistoryRepository;
+import watch.poe.persistence.repository.statistic.StatisticPartialRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -5,19 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.CategoryDto;
-import watch.poe.app.dto.DiscardBasis;
+import watch.poe.persistence.model.code.DiscardErrorCode;
 import watch.poe.app.dto.GroupDto;
-import watch.poe.app.dto.ParseExceptionBasis;
+import watch.poe.persistence.model.code.ParseErrorCode;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.UniqueMapIdentificationService;
 import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.app.utility.ItemTypeUtility;
 import watch.poe.app.utility.ItemUtility;
-import watch.poe.persistence.domain.FrameType;
+import watch.poe.persistence.model.item.FrameType;
 import watch.poe.persistence.model.Category;
 import watch.poe.persistence.model.Group;
-import watch.poe.persistence.model.ItemBase;
+import watch.poe.persistence.model.item.ItemBase;
 
 @Slf4j
 @Service
@@ -52,7 +52,7 @@ public final class ItemBaseParserService {
 
   private void parseName(CategoryDto categoryDto, GroupDto groupDto, ItemBase base, ItemDto itemDto) throws ItemParseException {
     if (!itemDto.isIdentified() && itemDto.getFrameType() == FrameType.UNIQUE.ordinal()) {
-      throw new ItemParseException(ParseExceptionBasis.PARSE_UNID_UNIQUE_ITEM);
+      throw new ItemParseException(ParseErrorCode.PARSE_UNID_UNIQUE_ITEM);
     }
 
     if (FrameType.RARE.is(itemDto.getFrameType()) || StringUtils.isBlank(itemDto.getName())) {
@@ -66,7 +66,7 @@ public final class ItemBaseParserService {
 
       var mapMatch = uniqueMapService.identifyMap(itemDto);
       if (mapMatch.isEmpty()) {
-        throw new ItemParseException(ParseExceptionBasis.PARSE_UNID_UNIQUE_MAP);
+        throw new ItemParseException(ParseErrorCode.PARSE_UNID_UNIQUE_MAP);
       }
 
       name = mapMatch.get().getName();
@@ -95,11 +95,11 @@ public final class ItemBaseParserService {
 
   private void checkFrameType(CategoryDto categoryDto, ItemDto itemDto) throws ItemParseException {
     if (FrameType.RARE.is(itemDto.getFrameType())) {
-      throw new ItemParseException(DiscardBasis.PARSE_COMPLEX_RARE);
+      throw new ItemParseException(DiscardErrorCode.PARSE_COMPLEX_RARE);
     }
 
     if (FrameType.MAGIC.is(itemDto.getFrameType())) {
-      throw new ItemParseException(DiscardBasis.PARSE_COMPLEX_MAGIC);
+      throw new ItemParseException(DiscardErrorCode.PARSE_COMPLEX_MAGIC);
     }
 
     if (FrameType.UNIQUE.is(itemDto.getFrameType())
@@ -108,7 +108,7 @@ public final class ItemBaseParserService {
       || categoryDto == CategoryDto.ACCESSORY
       || categoryDto == CategoryDto.FLASK
       || categoryDto == CategoryDto.JEWEL)) {
-      throw new ItemParseException(DiscardBasis.UNIQUE_ONLY);
+      throw new ItemParseException(DiscardErrorCode.UNIQUE_ONLY);
     }
 
   }

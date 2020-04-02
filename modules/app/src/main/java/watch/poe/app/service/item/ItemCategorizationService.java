@@ -3,14 +3,14 @@ package watch.poe.app.service.item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.CategoryDto;
-import watch.poe.app.dto.ParseExceptionBasis;
+import watch.poe.persistence.model.code.ParseErrorCode;
 import watch.poe.app.dto.wrapper.CategoryWrapper;
 import watch.poe.app.dto.wrapper.ItemWrapper;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.app.utility.ItemTypeUtility;
 import watch.poe.app.utility.ItemUtility;
-import watch.poe.persistence.domain.FrameType;
+import watch.poe.persistence.model.item.FrameType;
 
 import java.util.Optional;
 
@@ -62,7 +62,7 @@ public class ItemCategorizationService {
       return oCat.get();
     }
 
-    throw new ItemParseException(ParseExceptionBasis.PARSE_CATEGORY);
+    throw new ItemParseException(ParseErrorCode.PARSE_CATEGORY);
   }
 
   private Optional<CategoryDto> parseAltArtCategory(CategoryWrapper wrapper) {

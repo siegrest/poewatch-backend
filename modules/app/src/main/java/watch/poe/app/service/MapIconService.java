@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import watch.poe.app.dto.DiscardBasis;
-import watch.poe.app.dto.ParseExceptionBasis;
+import watch.poe.persistence.model.code.DiscardErrorCode;
+import watch.poe.persistence.model.code.ParseErrorCode;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.ItemParseException;
 
@@ -31,7 +31,7 @@ public class MapIconService {
       var json = extractBase64(itemDto.getIcon());
       params = extractParams(json);
     } catch (Exception ex) {
-      throw new ItemParseException(ex, ParseExceptionBasis.PARSE_MAP_ICON);
+      throw new ItemParseException(ex, ParseErrorCode.PARSE_MAP_ICON);
     }
 
     return parseMapSeries(params);
@@ -73,13 +73,13 @@ public class MapIconService {
     } else if (iconCategory.equalsIgnoreCase("New") && seriesNumber.isPresent()) {
       return seriesNumber.get() + 2;
     } else {
-      throw new ItemParseException(DiscardBasis.INVALID_MAP_SERIES);
+      throw new ItemParseException(DiscardErrorCode.INVALID_MAP_SERIES);
     }
   }
 
   private String parseIconCategory(Map<String, String> paramMap) throws ItemParseException {
     if (paramMap == null || !paramMap.containsKey("f")) {
-      throw new ItemParseException(ParseExceptionBasis.PARSE_MAP_ICON_PARAM_F);
+      throw new ItemParseException(ParseErrorCode.PARSE_MAP_ICON_PARAM_F);
     }
 
     var split = paramMap.get("f").split("/");
@@ -96,7 +96,7 @@ public class MapIconService {
       var series = Integer.parseInt(paramMap.get("mn"));
       return Optional.of(series);
     } catch (Exception ex) {
-      throw new ItemParseException(ex, ParseExceptionBasis.PARSE_MAP_ICON_PARAM_MN);
+      throw new ItemParseException(ex, ParseErrorCode.PARSE_MAP_ICON_PARAM_MN);
     }
   }
 

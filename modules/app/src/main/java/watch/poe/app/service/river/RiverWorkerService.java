@@ -10,7 +10,7 @@ import watch.poe.app.dto.statistics.StatType;
 import watch.poe.app.dto.wrapper.RiverWrapper;
 import watch.poe.app.exception.river.RiverDownloadBasis;
 import watch.poe.app.exception.river.RiverDownloadException;
-import watch.poe.app.service.StatisticsService;
+import watch.poe.app.service.statistic.StatisticsService;
 import watch.poe.app.utility.ChangeIdUtility;
 import watch.poe.app.utility.StatsUtility;
 

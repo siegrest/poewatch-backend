@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import watch.poe.app.dto.CategoryDto;
-import watch.poe.app.dto.DiscardBasis;
+import watch.poe.persistence.model.code.DiscardErrorCode;
 import watch.poe.app.dto.GroupDto;
 import watch.poe.app.dto.river.ItemDto;
-import watch.poe.persistence.model.Item;
+import watch.poe.persistence.model.item.Item;
 
 import java.util.List;
 
@@ -22,10 +22,10 @@ public class ItemWrapper {
   private CategoryDto categoryDto;
   private GroupDto groupDto;
 
-  private List<DiscardBasis> discardReasons;
+  private List<DiscardErrorCode> discardReasons;
   private boolean discard;
 
-  public void discard(DiscardBasis reason) {
+  public void discard(DiscardErrorCode reason) {
     discardReasons.add(reason);
     discard = true;
   }

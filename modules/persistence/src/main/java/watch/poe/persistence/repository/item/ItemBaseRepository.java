@@ -1,10 +1,10 @@
-package watch.poe.persistence.repository;
+package watch.poe.persistence.repository.item;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import watch.poe.persistence.domain.FrameType;
+import watch.poe.persistence.model.item.FrameType;
 import watch.poe.persistence.model.Category;
 import watch.poe.persistence.model.Group;
-import watch.poe.persistence.model.ItemBase;
+import watch.poe.persistence.model.item.ItemBase;
 
 import java.util.Optional;
 

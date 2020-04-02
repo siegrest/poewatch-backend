@@ -1,9 +1,9 @@
-package watch.poe.app.dto;
+package watch.poe.persistence.model.code;
 
 import lombok.Getter;
 
 @Getter
-public enum DiscardBasis {
+public enum DiscardErrorCode {
   PARSE_COMPLEX_RARE("Cannot parse rare items"),
   PARSE_COMPLEX_MAGIC("Cannot parse magic items"),
 
@@ -33,7 +33,7 @@ public enum DiscardBasis {
 
   private String description;
 
-  DiscardBasis(String description) {
+  DiscardErrorCode(String description) {
     this.description = description;
   }
 }

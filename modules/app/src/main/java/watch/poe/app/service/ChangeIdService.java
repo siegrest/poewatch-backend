@@ -3,8 +3,8 @@ package watch.poe.app.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import watch.poe.app.utility.ChangeIdUtility;
-import watch.poe.persistence.domain.ChangeIdType;
-import watch.poe.persistence.model.ChangeId;
+import watch.poe.persistence.model.changeId.ChangeIdType;
+import watch.poe.persistence.model.changeId.ChangeId;
 import watch.poe.persistence.repository.ChangeIdRepository;
 
 import java.util.Optional;

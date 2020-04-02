@@ -9,8 +9,8 @@ import watch.poe.app.dto.statistics.StatType;
 import watch.poe.app.dto.wrapper.RiverWrapper;
 import watch.poe.app.exception.river.RiverDownloadException;
 import watch.poe.app.service.ChangeIdService;
-import watch.poe.app.service.StatisticsService;
-import watch.poe.persistence.domain.ChangeIdType;
+import watch.poe.app.service.statistic.StatisticsService;
+import watch.poe.persistence.model.changeId.ChangeIdType;
 
 import java.util.ArrayList;
 import java.util.HashSet;

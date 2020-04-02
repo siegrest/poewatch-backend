@@ -3,13 +3,13 @@ package watch.poe.app.service.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import watch.poe.app.dto.ParseExceptionBasis;
-import watch.poe.app.dto.Price;
+import watch.poe.app.dto.PriceDto;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.CurrencyAliasService;
-import watch.poe.persistence.domain.FrameType;
-import watch.poe.persistence.model.Item;
-import watch.poe.persistence.repository.ItemBaseRepository;
+import watch.poe.persistence.model.code.ParseErrorCode;
+import watch.poe.persistence.model.item.FrameType;
+import watch.poe.persistence.model.item.Item;
+import watch.poe.persistence.repository.item.ItemBaseRepository;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class NoteParseService {
   private final CurrencyAliasService currencyAliasService;
   private final ItemBaseRepository itemBaseRepository;
 
-  public Price parsePrice(String stashNote, String itemNote) {
+  public PriceDto parsePrice(String stashNote, String itemNote) {
     var price = parseBuyoutNote(itemNote);
     if (price != null) {
       return price;
@@ -32,7 +32,7 @@ public class NoteParseService {
     return parseBuyoutNote(stashNote);
   }
 
-  private Price parseBuyoutNote(String note) {
+  private PriceDto parseBuyoutNote(String note) {
     if (note == null || "".equals(note)) {
       return null;
     }
@@ -52,7 +52,7 @@ public class NoteParseService {
       return null;
     }
 
-    return Price.builder()
+    return PriceDto.builder()
       .price(price)
       .currencyName(currencyName.get().getName())
       .build();
@@ -102,19 +102,19 @@ public class NoteParseService {
     return price;
   }
 
-  public Item priceToItem(Price price) throws ItemParseException {
-    if (price == null) {
+  public Item priceToItem(PriceDto priceDto) throws ItemParseException {
+    if (priceDto == null) {
       return null;
     }
 
-    var base = itemBaseRepository.findByFrameTypeAndBaseType(FrameType.CURRENCY, price.getCurrencyName());
+    var base = itemBaseRepository.findByFrameTypeAndBaseType(FrameType.CURRENCY, priceDto.getCurrencyName());
     if (base.isEmpty()) {
-      throw new ItemParseException(ParseExceptionBasis.MISSING_CURRENCY);
+      throw new ItemParseException(ParseErrorCode.MISSING_CURRENCY);
     }
 
     var items = base.get().getItems();
     if (items.size() != 1) {
-      throw new ItemParseException(ParseExceptionBasis.DUPLICATE_CURRENCY_ITEM);
+      throw new ItemParseException(ParseErrorCode.DUPLICATE_CURRENCY_ITEM);
     }
 
     return items.stream().findFirst().get();

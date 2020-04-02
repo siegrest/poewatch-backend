@@ -1,27 +1,27 @@
 package watch.poe.app.exception;
 
 import lombok.Getter;
-import watch.poe.app.dto.DiscardBasis;
-import watch.poe.app.dto.ParseExceptionBasis;
+import watch.poe.persistence.model.code.DiscardErrorCode;
+import watch.poe.persistence.model.code.ParseErrorCode;
 
 @Getter
 public class ItemParseException extends Exception {
-  private ParseExceptionBasis parseExceptionBasis;
-  private DiscardBasis discardBasis;
+  private ParseErrorCode parseErrorCode;
+  private DiscardErrorCode discardErrorCode;
 
-  public ItemParseException(Exception ex, ParseExceptionBasis parseExceptionBasis) {
+  public ItemParseException(Exception ex, ParseErrorCode parseErrorCode) {
     super(ex);
-    this.parseExceptionBasis = parseExceptionBasis;
+    this.parseErrorCode = parseErrorCode;
   }
 
-  public ItemParseException(ParseExceptionBasis parseExceptionBasis) {
-    super(parseExceptionBasis.name());
-    this.parseExceptionBasis = parseExceptionBasis;
+  public ItemParseException(ParseErrorCode parseErrorCode) {
+    super(parseErrorCode.name());
+    this.parseErrorCode = parseErrorCode;
   }
 
-  public ItemParseException(DiscardBasis discardBasis) {
-    super(discardBasis.name());
-    this.discardBasis = discardBasis;
+  public ItemParseException(DiscardErrorCode discardErrorCode) {
+    super(discardErrorCode.name());
+    this.discardErrorCode = discardErrorCode;
   }
 
   public ItemParseException(String msg) {

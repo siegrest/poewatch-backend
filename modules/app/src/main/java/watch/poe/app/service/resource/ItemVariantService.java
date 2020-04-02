@@ -8,7 +8,7 @@ import watch.poe.app.dto.resource.VariationItemDto;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.utility.FileUtility;
-import watch.poe.persistence.domain.FrameType;
+import watch.poe.persistence.model.item.FrameType;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;

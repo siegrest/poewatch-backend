@@ -1,4 +1,4 @@
-package watch.poe.persistence.domain;
+package watch.poe.persistence.model.item;
 
 public enum FrameType {
   NORMAL,
