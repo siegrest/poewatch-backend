@@ -13,13 +13,13 @@ import watch.poe.app.service.CharacterService;
 import watch.poe.app.service.LeagueItemEntryService;
 import watch.poe.app.service.StashService;
 import watch.poe.app.service.cache.*;
-import watch.poe.app.service.statistic.StatisticsService;
 import watch.poe.app.utility.ChangeIdUtility;
 import watch.poe.persistence.model.Account;
 import watch.poe.persistence.model.Character;
 import watch.poe.persistence.model.Stash;
 import watch.poe.persistence.model.leagueItem.LeagueItemEntry;
-import watch.poe.persistence.model.statistic.StatType;
+import watch.poe.stats.model.code.StatType;
+import watch.poe.stats.service.StatisticsService;
 
 import java.time.LocalDateTime;
 import java.util.*;

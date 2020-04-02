@@ -7,12 +7,12 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.wrapper.RiverWrapper;
-import watch.poe.app.exception.river.RiverDownloadBasis;
-import watch.poe.app.exception.river.RiverDownloadException;
-import watch.poe.app.service.statistic.StatisticsService;
+import watch.poe.app.exception.RiverDownloadException;
 import watch.poe.app.utility.ChangeIdUtility;
-import watch.poe.app.utility.StatsUtility;
-import watch.poe.persistence.model.statistic.StatType;
+import watch.poe.stats.model.code.RiverDownloadBasis;
+import watch.poe.stats.model.code.StatType;
+import watch.poe.stats.service.StatisticsService;
+import watch.poe.stats.utility.StatsUtility;
 
 import java.io.IOException;
 import java.io.InputStream;

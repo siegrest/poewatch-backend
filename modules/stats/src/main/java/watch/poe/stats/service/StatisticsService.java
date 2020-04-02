@@ -1,13 +1,13 @@
-package watch.poe.app.service.statistic;
+package watch.poe.stats.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import watch.poe.app.dto.statistics.StatCollector;
-import watch.poe.app.dto.statistics.StatTimer;
-import watch.poe.app.dto.statistics.ThreadTimer;
-import watch.poe.persistence.model.statistic.StatType;
+import watch.poe.stats.dto.StatCollector;
+import watch.poe.stats.dto.StatTimer;
+import watch.poe.stats.dto.ThreadTimer;
+import watch.poe.stats.model.code.StatType;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;

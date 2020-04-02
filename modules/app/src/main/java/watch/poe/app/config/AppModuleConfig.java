@@ -6,9 +6,10 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import watch.poe.persistence.config.PersistenceModuleConfig;
+import watch.poe.stats.config.StatisticsModuleConfig;
 
 @Configuration
-@Import(PersistenceModuleConfig.class)
+@Import({PersistenceModuleConfig.class, StatisticsModuleConfig.class})
 @PropertySource({"classpath:poe-watch.properties"})
 @RequiredArgsConstructor
 public class AppModuleConfig {

@@ -3,8 +3,10 @@ rootProject.name = 'poewatch'
 include ':api'
 include ':app'
 include ':persistence'
+include ':stats'
 include 'database'
 
 project(":api").projectDir = new File("modules/api")
 project(":app").projectDir = new File("modules/app")
 project(":persistence").projectDir = new File("modules/persistence")
+project(":stats").projectDir = new File("modules/stats")

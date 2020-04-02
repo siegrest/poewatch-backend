@@ -16,13 +16,13 @@ import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.service.item.ItemParserService;
 import watch.poe.app.service.item.NoteParseService;
-import watch.poe.app.service.statistic.StatisticsService;
 import watch.poe.persistence.model.code.DiscardErrorCode;
 import watch.poe.persistence.model.code.ParseErrorCode;
 import watch.poe.persistence.model.item.Item;
 import watch.poe.persistence.model.leagueItem.LeagueItemEntry;
-import watch.poe.persistence.model.statistic.StatType;
 import watch.poe.persistence.utility.HashUtility;
+import watch.poe.stats.model.code.StatType;
+import watch.poe.stats.service.StatisticsService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

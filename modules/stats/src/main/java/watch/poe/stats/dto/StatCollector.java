@@ -1,9 +1,9 @@
-package watch.poe.app.dto.statistics;
+package watch.poe.stats.dto;
 
 import lombok.Getter;
-import watch.poe.persistence.model.statistic.StatGroupType;
-import watch.poe.persistence.model.statistic.StatType;
-import watch.poe.persistence.model.statistic.TimeFrame;
+import watch.poe.stats.model.code.StatGroupType;
+import watch.poe.stats.model.code.StatType;
+import watch.poe.stats.model.code.TimeFrame;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

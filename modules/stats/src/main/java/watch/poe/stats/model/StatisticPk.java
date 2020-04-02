@@ -1,4 +1,4 @@
-package watch.poe.persistence.model.statistic;
+package watch.poe.stats.model;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -11,6 +11,8 @@ import java.util.Date;
 @EqualsAndHashCode
 @Getter
 public class StatisticPk implements Serializable {
-    private String type;
-    private Date time;
+
+  private String type;
+  private Date time;
+
 }

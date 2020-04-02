@@ -1,4 +1,4 @@
-package watch.poe.persistence.model.statistic;
+package watch.poe.stats.model.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

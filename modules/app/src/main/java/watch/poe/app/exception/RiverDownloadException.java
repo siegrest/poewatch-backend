@@ -1,6 +1,7 @@
-package watch.poe.app.exception.river;
+package watch.poe.app.exception;
 
 import lombok.Getter;
+import watch.poe.stats.model.code.RiverDownloadBasis;
 
 import java.util.regex.Pattern;
 

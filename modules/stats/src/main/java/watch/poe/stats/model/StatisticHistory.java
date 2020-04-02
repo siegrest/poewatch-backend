@@ -1,4 +1,4 @@
-package watch.poe.persistence.model.statistic;
+package watch.poe.stats.model;
 
 import lombok.*;
 
@@ -15,15 +15,15 @@ import java.time.LocalDateTime;
 @Table(name = "statistic_history", schema = "pw")
 public class StatisticHistory {
 
-    @Id
-    @Column(name = "type", length = 64, nullable = false)
-    private String type;
+  @Id
+  @Column(name = "type", length = 64, nullable = false)
+  private String type;
 
-    @Id
-    @Column
-    private LocalDateTime time;
+  @Id
+  @Column
+  private LocalDateTime time;
 
-    @Column
-    private Long value;
+  @Column
+  private Long value;
 
 }

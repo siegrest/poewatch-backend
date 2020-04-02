@@ -1,4 +1,4 @@
-package watch.poe.app.exception.river;
+package watch.poe.stats.model.code;
 
 import lombok.Getter;
 
