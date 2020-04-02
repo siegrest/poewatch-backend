@@ -1,7 +1,7 @@
 package watch.poe.app.mapper;
 
 import watch.poe.app.dto.league.LeagueDto;
-import watch.poe.app.utility.DateUtility;
+import watch.poe.app.utility.DateTimeUtility;
 import watch.poe.persistence.model.League;
 
 public final class LeagueMapper {
@@ -15,8 +15,8 @@ public final class LeagueMapper {
                 .event(leagueDto.isEvent())
                 .hardcore(leagueDto.isHardcore())
                 .challenge(leagueDto.isChallenge())
-                .start(DateUtility.parseIso(leagueDto.getStartAt()))
-                .end(DateUtility.parseIso(leagueDto.getEndAt()))
+                .start(DateTimeUtility.parseIsoUtc(leagueDto.getStartAt()))
+                .end(DateTimeUtility.parseIsoUtc(leagueDto.getEndAt()))
                 .build();
     }
 
