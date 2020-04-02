@@ -25,5 +25,5 @@ ALTER TABLE item_base
 
 ALTER TABLE item_base
     ADD CONSTRAINT fk_group
-        FOREIGN KEY (group_id) REFERENCES pw.category (id) ON DELETE CASCADE
+        FOREIGN KEY (group_id) REFERENCES pw.group (id) ON DELETE CASCADE
 ;
