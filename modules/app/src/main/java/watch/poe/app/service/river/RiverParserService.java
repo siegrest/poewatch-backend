@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
-import watch.poe.app.dto.statistics.StatType;
 import watch.poe.app.dto.wrapper.ItemWrapper;
 import watch.poe.app.dto.wrapper.RiverWrapper;
 import watch.poe.app.dto.wrapper.StashWrapper;
@@ -22,6 +21,7 @@ import watch.poe.persistence.model.code.DiscardErrorCode;
 import watch.poe.persistence.model.code.ParseErrorCode;
 import watch.poe.persistence.model.item.Item;
 import watch.poe.persistence.model.leagueItem.LeagueItemEntry;
+import watch.poe.persistence.model.statistic.StatType;
 import watch.poe.persistence.utility.HashUtility;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,9 @@
 package watch.poe.app.dto.statistics;
 
 import lombok.Getter;
+import watch.poe.persistence.model.statistic.StatGroupType;
+import watch.poe.persistence.model.statistic.StatType;
+import watch.poe.persistence.model.statistic.TimeFrame;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -30,7 +33,7 @@ public class StatCollector {
 
   public boolean isExpired() {
     var ms = creationTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-    return System.currentTimeMillis() - ms >= type.getTimeFrame().asMilli();
+    return System.currentTimeMillis() - ms >= type.getTimeFrame().getMs();
   }
 
   public void addValue(Long val) {
@@ -65,8 +68,8 @@ public class StatCollector {
 
   public void reset() {
     if (type.getTimeFrame() == null) {
-      creationTime = TimeFrame.M_1.getCurrent();
-      insertTime = TimeFrame.M_1.getNext();
+      creationTime = TimeFrame.S_60.getCurrent();
+      insertTime = TimeFrame.S_60.getNext();
     } else {
       creationTime = type.getTimeFrame().getCurrent();
       insertTime = type.getTimeFrame().getNext();
@@ -87,7 +90,7 @@ public class StatCollector {
 
   public void setCreationTime(LocalDateTime creationTime) {
     this.creationTime = creationTime;
-    insertTime = creationTime.plusNanos(type.getTimeFrame().asMilli() * 1000000);
+    insertTime = creationTime.plusNanos(type.getTimeFrame().getMs() * 1000000);
   }
 
   public void setCount(long count) {

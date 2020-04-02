@@ -3,7 +3,7 @@ package watch.poe.app.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import watch.poe.app.dto.statistics.StatCollector;
-import watch.poe.app.dto.statistics.StatType;
+import watch.poe.persistence.model.statistic.StatType;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -6,13 +6,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
-import watch.poe.app.dto.statistics.StatType;
 import watch.poe.app.dto.wrapper.RiverWrapper;
 import watch.poe.app.exception.river.RiverDownloadBasis;
 import watch.poe.app.exception.river.RiverDownloadException;
 import watch.poe.app.service.statistic.StatisticsService;
 import watch.poe.app.utility.ChangeIdUtility;
 import watch.poe.app.utility.StatsUtility;
+import watch.poe.persistence.model.statistic.StatType;
 
 import java.io.IOException;
 import java.io.InputStream;

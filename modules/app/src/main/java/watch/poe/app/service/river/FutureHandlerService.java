@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import watch.poe.app.dto.statistics.StatType;
 import watch.poe.app.dto.wrapper.RiverWrapper;
 import watch.poe.app.dto.wrapper.StashWrapper;
 import watch.poe.app.service.AccountService;
@@ -20,6 +19,7 @@ import watch.poe.persistence.model.Account;
 import watch.poe.persistence.model.Character;
 import watch.poe.persistence.model.Stash;
 import watch.poe.persistence.model.leagueItem.LeagueItemEntry;
+import watch.poe.persistence.model.statistic.StatType;
 
 import java.time.LocalDateTime;
 import java.util.*;

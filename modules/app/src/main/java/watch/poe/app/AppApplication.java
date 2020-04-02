@@ -8,8 +8,8 @@ import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import watch.poe.app.dto.statistics.StatType;
 import watch.poe.app.service.statistic.StatisticsService;
+import watch.poe.persistence.model.statistic.StatType;
 
 import javax.annotation.PreDestroy;
 

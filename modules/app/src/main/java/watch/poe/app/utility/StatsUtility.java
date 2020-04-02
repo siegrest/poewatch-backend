@@ -1,7 +1,7 @@
 package watch.poe.app.utility;
 
-import watch.poe.app.dto.statistics.StatType;
 import watch.poe.app.exception.river.RiverDownloadBasis;
+import watch.poe.persistence.model.statistic.StatType;
 
 public class StatsUtility {
 

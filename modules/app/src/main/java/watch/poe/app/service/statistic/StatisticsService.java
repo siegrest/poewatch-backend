@@ -6,8 +6,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.statistics.StatCollector;
 import watch.poe.app.dto.statistics.StatTimer;
-import watch.poe.app.dto.statistics.StatType;
 import watch.poe.app.dto.statistics.ThreadTimer;
+import watch.poe.persistence.model.statistic.StatType;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;
