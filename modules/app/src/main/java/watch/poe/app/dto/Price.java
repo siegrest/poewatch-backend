@@ -1,4 +1,4 @@
-package watch.poe.app.domain;
+package watch.poe.app.dto;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package watch.poe.app.exception;
 
 import lombok.Getter;
-import watch.poe.app.domain.DiscardBasis;
-import watch.poe.app.domain.ParseExceptionBasis;
+import watch.poe.app.dto.DiscardBasis;
+import watch.poe.app.dto.ParseExceptionBasis;
 
 @Getter
 public class ItemParseException extends Exception {

@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import watch.poe.app.domain.CategoryDto;
+import watch.poe.app.dto.CategoryDto;
 import watch.poe.persistence.model.Category;
 import watch.poe.persistence.repository.CategoryRepository;
 

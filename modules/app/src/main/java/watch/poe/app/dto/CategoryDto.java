@@ -1,4 +1,4 @@
-package watch.poe.app.domain;
+package watch.poe.app.dto;
 
 public enum CategoryDto {
   ACCESSORY,

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.DiscardBasis;
-import watch.poe.app.domain.ParseExceptionBasis;
+import watch.poe.app.dto.DiscardBasis;
+import watch.poe.app.dto.ParseExceptionBasis;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.exception.ItemParseException;
 

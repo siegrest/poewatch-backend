@@ -1,12 +1,12 @@
-package watch.poe.app.domain.wrapper;
+package watch.poe.app.dto.wrapper;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import watch.poe.app.domain.CategoryDto;
-import watch.poe.app.domain.DiscardBasis;
-import watch.poe.app.domain.GroupDto;
+import watch.poe.app.dto.CategoryDto;
+import watch.poe.app.dto.DiscardBasis;
+import watch.poe.app.dto.GroupDto;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.persistence.model.Item;
 

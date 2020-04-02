@@ -1,4 +1,4 @@
-package watch.poe.app.service.repository;
+package watch.poe.app.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

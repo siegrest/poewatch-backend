@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.statistics.StatCollector;
-import watch.poe.app.domain.statistics.StatTimer;
-import watch.poe.app.domain.statistics.StatType;
-import watch.poe.app.domain.statistics.ThreadTimer;
-import watch.poe.app.service.repository.StatisticsRepositoryService;
+import watch.poe.app.dto.statistics.StatCollector;
+import watch.poe.app.dto.statistics.StatTimer;
+import watch.poe.app.dto.statistics.StatType;
+import watch.poe.app.dto.statistics.ThreadTimer;
 
 import javax.annotation.PostConstruct;
 import java.util.Collections;

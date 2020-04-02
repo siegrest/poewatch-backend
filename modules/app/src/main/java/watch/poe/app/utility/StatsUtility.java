@@ -1,6 +1,6 @@
 package watch.poe.app.utility;
 
-import watch.poe.app.domain.statistics.StatType;
+import watch.poe.app.dto.statistics.StatType;
 import watch.poe.app.exception.river.RiverDownloadBasis;
 
 public class StatsUtility {

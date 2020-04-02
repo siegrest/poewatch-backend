@@ -1,4 +1,4 @@
-package watch.poe.app.domain.statistics;
+package watch.poe.app.dto.statistics;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,4 +1,4 @@
-package watch.poe.app.service.repository;
+package watch.poe.app.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package watch.poe.app.exception;
 
 import lombok.Getter;
-import watch.poe.app.domain.GroupingExceptionBasis;
+import watch.poe.app.dto.GroupingExceptionBasis;
 
 @Getter
 public class GroupingException extends Exception {

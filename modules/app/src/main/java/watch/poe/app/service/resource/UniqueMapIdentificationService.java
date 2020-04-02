@@ -3,7 +3,7 @@ package watch.poe.app.service.resource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.UniqueMap;
+import watch.poe.app.dto.UniqueMap;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.service.GsonService;
 import watch.poe.app.utility.FileUtility;

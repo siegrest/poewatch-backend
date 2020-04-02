@@ -1,4 +1,4 @@
-package watch.poe.app.domain.statistics;
+package watch.poe.app.dto.statistics;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.statistics.StatType;
-import watch.poe.app.domain.wrapper.RiverWrapper;
+import watch.poe.app.dto.statistics.StatType;
+import watch.poe.app.dto.wrapper.RiverWrapper;
 import watch.poe.app.exception.river.RiverDownloadException;
+import watch.poe.app.service.ChangeIdService;
 import watch.poe.app.service.StatisticsService;
-import watch.poe.app.service.chid.ChangeIdService;
 import watch.poe.persistence.domain.ChangeIdType;
 
 import java.util.ArrayList;

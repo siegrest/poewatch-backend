@@ -1,10 +1,10 @@
-package watch.poe.app.domain.wrapper;
+package watch.poe.app.dto.wrapper;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import watch.poe.app.domain.CategoryDto;
+import watch.poe.app.dto.CategoryDto;
 import watch.poe.app.dto.river.ItemDto;
 
 @Getter

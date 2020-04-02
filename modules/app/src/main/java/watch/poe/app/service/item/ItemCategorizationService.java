@@ -2,10 +2,10 @@ package watch.poe.app.service.item;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import watch.poe.app.domain.CategoryDto;
-import watch.poe.app.domain.ParseExceptionBasis;
-import watch.poe.app.domain.wrapper.CategoryWrapper;
-import watch.poe.app.domain.wrapper.ItemWrapper;
+import watch.poe.app.dto.CategoryDto;
+import watch.poe.app.dto.ParseExceptionBasis;
+import watch.poe.app.dto.wrapper.CategoryWrapper;
+import watch.poe.app.dto.wrapper.ItemWrapper;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.utility.CategorizationUtility;
 import watch.poe.app.utility.ItemTypeUtility;

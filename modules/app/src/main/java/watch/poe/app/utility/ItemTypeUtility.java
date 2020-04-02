@@ -1,7 +1,7 @@
 package watch.poe.app.utility;
 
-import watch.poe.app.domain.wrapper.ItemWrapper;
 import watch.poe.app.dto.river.ItemDto;
+import watch.poe.app.dto.wrapper.ItemWrapper;
 
 public class ItemTypeUtility {
   public static boolean isBreachSplinter(ItemDto itemDto) {
