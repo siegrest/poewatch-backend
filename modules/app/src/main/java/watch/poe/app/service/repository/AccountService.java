@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import watch.poe.persistence.model.Account;
 import watch.poe.persistence.repository.AccountRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -32,8 +33,13 @@ public class AccountService {
       .filter(account -> dbAccounts.stream().noneMatch(dbAccount -> dbAccount.getName().equals(account)))
       .collect(Collectors.toList());
     var newAccounts = newAccountNames.stream()
-      .map(account -> Account.builder().name(account).build())
-      .collect(Collectors.toList());
+      .map(account -> {
+        return Account.builder()
+          .name(account)
+          .found(LocalDateTime.now())
+          .seen(LocalDateTime.now())
+          .build();
+      }).collect(Collectors.toList());
 
     dbAccounts.addAll(accountRepository.saveAll(newAccounts));
     return dbAccounts;
@@ -47,7 +53,6 @@ public class AccountService {
     var dbAccount = accountRepository.findByName(account);
     if (dbAccount != null) {
       return dbAccount;
-//      return accountRepository.save(dbAccount);
     }
 
     var newAccount = Account.builder()

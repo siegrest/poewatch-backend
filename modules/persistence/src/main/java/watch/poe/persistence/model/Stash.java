@@ -3,8 +3,8 @@ package watch.poe.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -34,12 +34,10 @@ public class Stash {
   private List<LeagueItemEntry> items = new ArrayList<>();
 
   @Column
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date found;
+  private LocalDateTime found;
 
   @Column
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date seen;
+  private LocalDateTime seen;
 
   @Column
   private Integer updates;

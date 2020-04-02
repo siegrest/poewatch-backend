@@ -3,8 +3,8 @@ package watch.poe.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -23,12 +23,10 @@ public class Account {
   private String name;
 
   @Column
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date found;
+  private LocalDateTime found;
 
   @Column
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date seen;
+  private LocalDateTime seen;
 
   @Builder.Default
   @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)

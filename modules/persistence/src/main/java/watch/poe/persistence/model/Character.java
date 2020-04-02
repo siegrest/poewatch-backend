@@ -3,7 +3,7 @@ package watch.poe.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -24,9 +24,9 @@ public class Character {
     @Column(length = 32, nullable = false, unique = true)
     private String name;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date found;
+    @Column
+    private LocalDateTime found;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date seen;
+    @Column
+    private LocalDateTime seen;
 }

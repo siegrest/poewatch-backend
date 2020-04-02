@@ -3,7 +3,7 @@ package watch.poe.persistence.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -27,12 +27,10 @@ public class LeagueItemEntry {
   private Item item;
 
   @Column
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date found;
+  private LocalDateTime found;
 
   @Column
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date seen;
+  private LocalDateTime seen;
 
   @Column(name = "updates", nullable = false)
   private Integer updates;

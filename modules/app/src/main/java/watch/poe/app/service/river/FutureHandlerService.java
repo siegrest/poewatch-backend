@@ -21,6 +21,7 @@ import watch.poe.persistence.model.Character;
 import watch.poe.persistence.model.LeagueItemEntry;
 import watch.poe.persistence.model.Stash;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -151,6 +152,8 @@ public class FutureHandlerService {
         return Character.builder()
           .name(stashWrapper.getCharacter())
           .account(account)
+          .found(LocalDateTime.now())
+          .seen(LocalDateTime.now())
           .build();
       }).filter(character -> {
         if (character.getAccount() == null) {
@@ -198,6 +201,10 @@ public class FutureHandlerService {
           .id(stashWrapper.getId())
           .account(account.get())
           .league(league.get())
+          .found(LocalDateTime.now())
+          .seen(LocalDateTime.now())
+          .updates(0)
+          .stale(false)
           .build();
       }).filter(Objects::nonNull)
       .collect(Collectors.toList());

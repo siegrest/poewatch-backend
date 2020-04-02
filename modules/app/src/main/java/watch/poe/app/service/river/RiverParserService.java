@@ -76,7 +76,7 @@ public class RiverParserService {
         .character(stashDto.getLastCharacterName())
         .build();
 
-      var entries = stashWrapper.getEntries();
+      ArrayList<LeagueItemEntry> entries = new ArrayList<>();
 
       for (ItemDto itemDto : stashDto.getItems()) {
         var price = noteParseService.parsePrice(stashDto.getStashName(), itemDto.getNote());
@@ -121,10 +121,15 @@ public class RiverParserService {
           .priceItem(priceCurrencyItem)
           .stackSize(itemDto.getStackSize())
           .stash(null)
+          .found(LocalDateTime.now())
+          .seen(LocalDateTime.now())
+          .updates(0)
           .build();
 
         entries.add(entry);
       }
+
+      stashWrapper.setEntries(entries);
       stashes.add(stashWrapper);
     }
 
