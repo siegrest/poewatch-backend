@@ -1,14 +1,14 @@
 CREATE TABLE IF NOT EXISTS league_item_entry
 (
     id            BIGSERIAL NOT NULL,
-    found         TIMESTAMP NOT NULL,
-    price         DOUBLE PRECISION,
-    seen          TIMESTAMP NOT NULL,
-    stack_size    INTEGER,
-    updates       INTEGER   NOT NULL,
     item_id       INTEGER   NOT NULL,
+    stash_id      BIGINT,
+    stack_size    INTEGER,
+    price         DOUBLE PRECISION,
     price_item_id INTEGER,
-    stash_id      BIGINT
+    updates       INTEGER   NOT NULL,
+    found         TIMESTAMP NOT NULL,
+    seen          TIMESTAMP NOT NULL
 );
 
 ALTER TABLE league_item_entry

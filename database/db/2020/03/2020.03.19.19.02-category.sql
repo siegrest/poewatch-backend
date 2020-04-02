@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS category
 (
     id      SERIAL      NOT NULL,
-    display VARCHAR(32) NOT NULL,
-    name    VARCHAR(32) NOT NULL
+    name    VARCHAR(32) NOT NULL,
+    display VARCHAR(32)
 );
 
 ALTER TABLE category

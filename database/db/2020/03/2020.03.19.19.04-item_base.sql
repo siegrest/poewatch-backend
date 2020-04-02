@@ -1,11 +1,11 @@
 CREATE TABLE IF NOT EXISTS item_base
 (
     id          SERIAL       NOT NULL,
-    base_type   VARCHAR(64),
-    frame_type  VARCHAR(255) NOT NULL,
-    name        VARCHAR(128),
     category_id INTEGER      NOT NULL,
-    group_id    INTEGER      NOT NULL
+    group_id    INTEGER      NOT NULL,
+    frame_type  VARCHAR(255) NOT NULL,
+    base_type   VARCHAR(64),
+    name        VARCHAR(128)
 );
 
 ALTER TABLE item_base

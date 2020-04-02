@@ -1,26 +1,26 @@
 CREATE TABLE IF NOT EXISTS item
 (
     id                 SERIAL       NOT NULL,
+    item_base_id       INTEGER      NOT NULL,
+    item_level         INTEGER,
+    links              INTEGER,
+    stack_size         INTEGER,
+    variation          VARCHAR(32),
     corrupted          BOOLEAN,
     enchantment_max    DOUBLE PRECISION,
     enchantment_min    DOUBLE PRECISION,
-    found              TIMESTAMP    NOT NULL,
     gem_level          INTEGER,
     gem_quality        INTEGER,
-    icon               VARCHAR(255) NOT NULL,
     influence_crusader BOOLEAN,
     influence_elder    BOOLEAN,
     influence_hunter   BOOLEAN,
     influence_redeemer BOOLEAN,
     influence_shaper   BOOLEAN,
     influence_warlord  BOOLEAN,
-    item_level         INTEGER,
-    links              INTEGER,
     map_series         INTEGER,
     map_tier           INTEGER,
-    stack_size         INTEGER,
-    variation          VARCHAR(32),
-    item_base_id       INTEGER      NOT NULL
+    icon               VARCHAR(255) NOT NULL,
+    found              TIMESTAMP    NOT NULL,
 );
 
 

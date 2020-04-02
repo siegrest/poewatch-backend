@@ -1,12 +1,12 @@
 CREATE TABLE IF NOT EXISTS stash
 (
     id         BIGSERIAL NOT NULL,
-    found      TIMESTAMP NOT NULL,
-    seen       TIMESTAMP NOT NULL,
-    stale      BOOLEAN,
-    updates    INTEGER   NOT NULL,
+    league_id  INTEGER,
     account_id BIGINT,
-    league_id  INTEGER
+    updates    INTEGER   NOT NULL,
+    stale      BOOLEAN,
+    found      TIMESTAMP NOT NULL,
+    seen       TIMESTAMP NOT NULL
 );
 
 ALTER TABLE stash

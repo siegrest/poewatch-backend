@@ -1,19 +1,19 @@
 CREATE TABLE IF NOT EXISTS league_item
 (
     id        BIGSERIAL        NOT NULL,
-    accepted  INTEGER          NOT NULL,
+    league_id INTEGER          NOT NULL,
+    item_id   INTEGER          NOT NULL,
     current   INTEGER          NOT NULL,
+    accepted  INTEGER          NOT NULL,
     daily     INTEGER          NOT NULL,
-    found     TIMESTAMP        NOT NULL,
-    max       DOUBLE PRECISION NOT NULL,
+    total     INTEGER          NOT NULL,
     mean      DOUBLE PRECISION NOT NULL,
     median    DOUBLE PRECISION NOT NULL,
-    min       DOUBLE PRECISION NOT NULL,
     mode      DOUBLE PRECISION NOT NULL,
-    seen      TIMESTAMP        NOT NULL,
-    total     INTEGER          NOT NULL,
-    item_id   INTEGER          NOT NULL,
-    league_id INTEGER          NOT NULL
+    min       DOUBLE PRECISION NOT NULL,
+    max       DOUBLE PRECISION NOT NULL,
+    found     TIMESTAMP        NOT NULL,
+    seen      TIMESTAMP        NOT NULL
 );
 
 ALTER TABLE league_item

@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS character
 (
     id         BIGSERIAL   NOT NULL,
-    found      TIMESTAMP   NOT NULL,
     name       VARCHAR(32) NOT NULL,
-    seen       TIMESTAMP   NOT NULL,
-    account_id BIGINT      NOT NULL
+    account_id BIGINT      NOT NULL,
+    found      TIMESTAMP,
+    seen       TIMESTAMP
 );
 
 ALTER TABLE character
