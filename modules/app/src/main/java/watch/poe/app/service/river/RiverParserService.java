@@ -70,7 +70,7 @@ public class RiverParserService {
       statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
 
       var stashWrapper = StashWrapper.builder()
-        .id(HashUtility.hash(stashDto.getId()))
+        .id(stashDto.getId())
         .league(stashDto.getLeague())
         .account(stashDto.getAccountName())
         .character(stashDto.getLastCharacterName())

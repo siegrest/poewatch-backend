@@ -20,6 +20,9 @@ public class Stash {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(name = "poe_id")
+  private String poeId;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "league_id")
   private League league;
@@ -42,7 +45,7 @@ public class Stash {
   @Column
   private Integer updates;
 
-  @Column(name = "stale")
+  @Column
   private Boolean stale;
 
 }

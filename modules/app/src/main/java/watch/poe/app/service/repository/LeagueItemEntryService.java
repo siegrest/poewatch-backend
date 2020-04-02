@@ -25,9 +25,10 @@ public class LeagueItemEntryService {
   private int saveBatchSize;
 
   @Transactional(propagation = Propagation.REQUIRED)
-  public void markStale(List<Long> stashIds) {
-    GenericsUtility.toBatches(stashIds, staleBatchSize)
-      .forEach(itemEntryRepository::markStaleByStashIds);
+  public void markStale(List<String> stashIds) {
+    // todo: fixme
+//    GenericsUtility.toBatches(stashIds, staleBatchSize)
+//      .forEach(itemEntryRepository::markStaleByStashIds);
   }
 
   @Transactional(propagation = Propagation.REQUIRED)

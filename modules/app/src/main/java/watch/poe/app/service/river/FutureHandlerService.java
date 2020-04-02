@@ -198,7 +198,7 @@ public class FutureHandlerService {
         return league.isEmpty() || account.isEmpty()
           ? null
           : Stash.builder()
-          .id(stashWrapper.getId())
+          .poeId(stashWrapper.getId())
           .account(account.get())
           .league(league.get())
           .found(LocalDateTime.now())
