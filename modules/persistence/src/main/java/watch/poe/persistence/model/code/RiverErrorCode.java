@@ -1,9 +1,9 @@
-package watch.poe.stats.model.code;
+package watch.poe.persistence.model.code;
 
 import lombok.Getter;
 
 @Getter
-public enum RiverDownloadBasis {
+public enum RiverErrorCode {
   READ_TIMEOUT,
   CONNECT_TIMEOUT,
   CONNECTION_RESET,

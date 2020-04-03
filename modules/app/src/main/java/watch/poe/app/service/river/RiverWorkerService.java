@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.dto.wrapper.RiverWrapper;
 import watch.poe.app.exception.RiverDownloadException;
 import watch.poe.app.utility.ChangeIdUtility;
-import watch.poe.stats.model.code.RiverDownloadBasis;
+import watch.poe.persistence.model.code.RiverErrorCode;
 import watch.poe.stats.model.code.StatType;
 import watch.poe.stats.service.StatisticsService;
 import watch.poe.stats.utility.StatsUtility;
@@ -44,7 +44,7 @@ public class RiverWorkerService {
 
     var stashStringBuilder = downloadStashJson(job);
     if (stashStringBuilder == null) {
-      return AsyncResult.forExecutionException(new RiverDownloadException(RiverDownloadBasis.UNKNOWN));
+      return AsyncResult.forExecutionException(new RiverDownloadException(RiverErrorCode.UNKNOWN));
     }
 
     return riverParserService.process(job, stashStringBuilder);

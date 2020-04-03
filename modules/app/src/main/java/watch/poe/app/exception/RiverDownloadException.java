@@ -1,7 +1,7 @@
 package watch.poe.app.exception;
 
 import lombok.Getter;
-import watch.poe.stats.model.code.RiverDownloadBasis;
+import watch.poe.persistence.model.code.RiverErrorCode;
 
 import java.util.regex.Pattern;
 
@@ -11,9 +11,9 @@ public class RiverDownloadException extends RuntimeException {
   private static final Pattern exceptionPattern4xx = Pattern.compile("^.+ 4\\d\\d .+$");
 
   @Getter
-  private RiverDownloadBasis basis;
+  private RiverErrorCode basis;
 
-  public RiverDownloadException(RiverDownloadBasis basis) {
+  public RiverDownloadException(RiverErrorCode basis) {
     super(basis.name());
     this.basis = basis;
   }
@@ -23,28 +23,28 @@ public class RiverDownloadException extends RuntimeException {
     this.basis = getErrorType(ex);
   }
 
-  private RiverDownloadBasis getErrorType(Exception ex) {
+  private RiverErrorCode getErrorType(Exception ex) {
     if (ex.getMessage().contains("Read timed out")) {
-      return RiverDownloadBasis.READ_TIMEOUT;
+      return RiverErrorCode.READ_TIMEOUT;
     }
 
     if (ex.getMessage().contains("connect timed out")) {
-      return RiverDownloadBasis.CONNECT_TIMEOUT;
+      return RiverErrorCode.CONNECT_TIMEOUT;
     }
 
     if (ex.getMessage().contains("Connection reset")) {
-      return RiverDownloadBasis.CONNECTION_RESET;
+      return RiverErrorCode.CONNECTION_RESET;
     }
 
     if (exceptionPattern5xx.matcher(ex.getMessage()).matches()) {
-      return RiverDownloadBasis.HTTP_5XX;
+      return RiverErrorCode.HTTP_5XX;
     }
 
     if (exceptionPattern4xx.matcher(ex.getMessage()).matches()) {
-      return RiverDownloadBasis.HTTP_4XX;
+      return RiverErrorCode.HTTP_4XX;
     }
 
-    return RiverDownloadBasis.UNKNOWN;
+    return RiverErrorCode.UNKNOWN;
   }
 
 }

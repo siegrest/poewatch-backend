@@ -1,12 +1,12 @@
 package watch.poe.stats.utility;
 
 
-import watch.poe.stats.model.code.RiverDownloadBasis;
+import watch.poe.persistence.model.code.RiverErrorCode;
 import watch.poe.stats.model.code.StatType;
 
 public class StatsUtility {
 
-  public static StatType getErrorType(RiverDownloadBasis basis) {
+  public static StatType getErrorType(RiverErrorCode basis) {
     switch (basis) {
       case READ_TIMEOUT:
         return StatType.COUNT_API_ERRORS_READ_TIMEOUT;
