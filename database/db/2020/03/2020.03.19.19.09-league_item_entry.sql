@@ -18,12 +18,12 @@ ALTER TABLE league_item_entry
 
 ALTER TABLE league_item_entry
     ADD CONSTRAINT fk_item
-        FOREIGN KEY (item_id) REFERENCES pw.item (id) ON DELETE CASCADE
+        FOREIGN KEY (item_id) REFERENCES pw.item_detail (id) ON DELETE CASCADE
 ;
 
 ALTER TABLE league_item_entry
     ADD CONSTRAINT fk_price_item
-        FOREIGN KEY (item_id) REFERENCES pw.item (id) ON DELETE CASCADE
+        FOREIGN KEY (item_id) REFERENCES pw.item_detail (id) ON DELETE CASCADE
 ;
 
 ALTER TABLE league_item_entry

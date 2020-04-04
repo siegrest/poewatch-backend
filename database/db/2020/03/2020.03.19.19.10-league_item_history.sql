@@ -26,7 +26,7 @@ ALTER TABLE league_item_history
 
 ALTER TABLE league_item_history
     ADD CONSTRAINT fk_item
-        FOREIGN KEY (item_id) REFERENCES pw.item (id) ON DELETE CASCADE
+        FOREIGN KEY (item_id) REFERENCES pw.item_detail (id) ON DELETE CASCADE
 ;
 
 ALTER TABLE league_item_history
