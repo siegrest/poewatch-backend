@@ -17,9 +17,8 @@ import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,8 +32,9 @@ public class StatCollectorService {
   @PostConstruct
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void onReady() {
+    log.info("Loading statistics collectors");
     collectors.addAll(statCollectorRepository.findAll());
-    log.info("Loaded statistics collectors");
+    validateCollectors();
     sync();
   }
 
@@ -77,6 +77,16 @@ public class StatCollectorService {
       c.setCount(c.getCount() + 1);
       c.setSum(c.getSum() + val);
     }, () -> log.error("Stat collector of type '{}' doesn't exists", type));
+  }
+
+  private void validateCollectors() {
+    List<StatType> missingTypes = Arrays.stream(StatType.values()).filter(type -> {
+      return collectors.stream().anyMatch(c -> c.getType() == type);
+    }).collect(Collectors.toList());
+
+    if (!missingTypes.isEmpty()) {
+      throw new RuntimeException("Collectors missing for the database: " + missingTypes);
+    }
   }
 
 }
