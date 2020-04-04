@@ -12,8 +12,9 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "item", schema = "pw")
-public class Item {
+@Table(name = "item_detail", schema = "pw")
+public class ItemDetail {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;

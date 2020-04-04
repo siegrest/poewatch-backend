@@ -24,7 +24,7 @@ public class ItemBase {
 
   @ToString.Exclude
   @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "base", fetch = FetchType.EAGER)
-  private List<Item> items;
+  private List<ItemDetail> itemDetails;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "category_id", nullable = false)

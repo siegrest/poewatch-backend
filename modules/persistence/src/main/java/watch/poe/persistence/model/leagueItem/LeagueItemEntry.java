@@ -2,7 +2,7 @@ package watch.poe.persistence.model.leagueItem;
 
 import lombok.*;
 import watch.poe.persistence.model.Stash;
-import watch.poe.persistence.model.item.Item;
+import watch.poe.persistence.model.item.ItemDetail;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ public class LeagueItemEntry {
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "item_id", nullable = false)
-  private Item item;
+  private ItemDetail itemDetail;
 
   @Column
   private LocalDateTime found;
@@ -45,6 +45,6 @@ public class LeagueItemEntry {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "price_item_id")
-  private Item priceItem;
+  private ItemDetail priceItem;
 
 }

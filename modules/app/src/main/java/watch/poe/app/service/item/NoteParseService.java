@@ -8,7 +8,7 @@ import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.resource.CurrencyAliasService;
 import watch.poe.persistence.model.code.ParseErrorCode;
 import watch.poe.persistence.model.item.FrameType;
-import watch.poe.persistence.model.item.Item;
+import watch.poe.persistence.model.item.ItemDetail;
 import watch.poe.persistence.repository.item.ItemBaseRepository;
 
 import java.util.List;
@@ -102,7 +102,7 @@ public class NoteParseService {
     return price;
   }
 
-  public Item priceToItem(PriceDto priceDto) throws ItemParseException {
+  public ItemDetail priceToItem(PriceDto priceDto) throws ItemParseException {
     if (priceDto == null) {
       return null;
     }
@@ -112,7 +112,7 @@ public class NoteParseService {
       throw new ItemParseException(ParseErrorCode.MISSING_CURRENCY);
     }
 
-    var items = base.get().getItems();
+    var items = base.get().getItemDetails();
     if (items.size() != 1) {
       throw new ItemParseException(ParseErrorCode.DUPLICATE_CURRENCY_ITEM);
     }

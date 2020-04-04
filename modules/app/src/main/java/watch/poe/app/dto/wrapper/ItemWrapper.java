@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import watch.poe.app.dto.CategoryDto;
-import watch.poe.persistence.model.code.DiscardErrorCode;
 import watch.poe.app.dto.GroupDto;
 import watch.poe.app.dto.river.ItemDto;
-import watch.poe.persistence.model.item.Item;
+import watch.poe.persistence.model.code.DiscardErrorCode;
+import watch.poe.persistence.model.item.ItemDetail;
 
 import java.util.List;
 
@@ -17,7 +17,8 @@ import java.util.List;
 @Builder
 @ToString
 public class ItemWrapper {
-  private Item item;
+
+  private ItemDetail itemDetail;
   private ItemDto itemDto;
   private CategoryDto categoryDto;
   private GroupDto groupDto;

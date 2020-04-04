@@ -34,7 +34,7 @@ public class ItemBaseCacheService {
     }
 
     // todo: necessary? or move to item base builder
-    base.setItems(List.of());
+    base.setItemDetails(List.of());
     base.setId(null);
 
     var newBase = itemBaseRepository.save(base);

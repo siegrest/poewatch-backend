@@ -25,8 +25,8 @@
         <sqlFile path="db/2020/03/2020.03.19.19.04-item_base.sql"/>
     </changeSet>
 
-    <changeSet id="2020.03.19.19.05-item.sql" author="siegrest">
-        <sqlFile path="db/2020/03/2020.03.19.19.05-item.sql"/>
+    <changeSet id="2020.03.19.19.05-item_detail.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.05-item_detail.sql"/>
     </changeSet>
 
     <changeSet id="2020.03.19.19.06-league.sql" author="siegrest">

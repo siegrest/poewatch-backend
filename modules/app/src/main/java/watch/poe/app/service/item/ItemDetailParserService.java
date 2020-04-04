@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.CategoryDto;
-import watch.poe.persistence.model.code.DiscardErrorCode;
 import watch.poe.app.dto.GroupDto;
 import watch.poe.app.dto.wrapper.ItemWrapper;
 import watch.poe.app.exception.GroupingException;
@@ -14,13 +13,14 @@ import watch.poe.app.service.resource.CorruptedItemService;
 import watch.poe.app.service.resource.ItemVariantService;
 import watch.poe.app.utility.ItemTypeUtility;
 import watch.poe.app.utility.ItemUtility;
+import watch.poe.persistence.model.code.DiscardErrorCode;
 import watch.poe.persistence.model.item.FrameType;
-import watch.poe.persistence.model.item.Item;
+import watch.poe.persistence.model.item.ItemDetail;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public final class ItemParserService {
+public final class ItemDetailParserService {
 
   private static final String ENCHANTMENT_ICON = "http://web.poecdn.com/image/Art/2DItems/Currency/Enchantment.png?scale=1&w=1&h=1";
 
@@ -31,7 +31,7 @@ public final class ItemParserService {
   private final ItemBaseParserService itemBaseParserService;
   private final MapIconService mapIconService;
 
-  public Item parse(ItemWrapper wrapper) throws ItemParseException, GroupingException {
+  public ItemDetail parse(ItemWrapper wrapper) throws ItemParseException, GroupingException {
     var itemDto = wrapper.getItemDto();
 
     var categoryDto = categorizationService.parseCategoryDto(wrapper);
@@ -41,7 +41,7 @@ public final class ItemParserService {
     wrapper.setGroupDto(groupDto);
 
     var base = itemBaseParserService.parse(categoryDto, groupDto, itemDto);
-    wrapper.getItem().setBase(base);
+    wrapper.getItemDetail().setBase(base);
 
     parseIcon(wrapper);
     parseCorrupted(wrapper);
@@ -74,18 +74,18 @@ public final class ItemParserService {
       parseAltArt(wrapper);
     }
 
-    return wrapper.getItem();
+    return wrapper.getItemDetail();
   }
 
   public void parseIcon(ItemWrapper wrapper) throws ItemParseException {
     var icon = wrapper.getItemDto().getIcon();
     var newIcon = ItemUtility.formatIcon(icon);
-    wrapper.getItem().setIcon(newIcon);
+    wrapper.getItemDetail().setIcon(newIcon);
   }
 
   public void parseMap(ItemWrapper wrapper) throws ItemParseException {
-    var base = wrapper.getItem().getBase();
-    var item = wrapper.getItem();
+    var base = wrapper.getItemDetail().getBase();
+    var item = wrapper.getItemDetail();
     var itemDto = wrapper.getItemDto();
 
     if (wrapper.getCategoryDto() == CategoryDto.MAP && FrameType.MAGIC.is(itemDto.getFrameType())) {
@@ -114,7 +114,7 @@ public final class ItemParserService {
   }
 
   public void parseGem(ItemWrapper wrapper) {
-    var item = wrapper.getItem();
+    var item = wrapper.getItemDetail();
     var itemDto = wrapper.getItemDto();
 
     var level = ItemUtility.extractGemLevel(itemDto);
@@ -173,11 +173,11 @@ public final class ItemParserService {
 
   public void parseStackSize(ItemWrapper wrapper) throws ItemParseException {
     var stackSize = ItemUtility.extractMaxStackSize(wrapper.getItemDto());
-    wrapper.getItem().setStackSize(stackSize);
+    wrapper.getItemDetail().setStackSize(stackSize);
   }
 
   public void parseVariant(ItemWrapper wrapper) {
-    var item = wrapper.getItem();
+    var item = wrapper.getItemDetail();
     var itemDto = wrapper.getItemDto();
 
     var variant = itemVariantService.getVariation(itemDto);
@@ -190,7 +190,7 @@ public final class ItemParserService {
 
   public void parseCorrupted(ItemWrapper wrapper) {
     var categoryDto = wrapper.getCategoryDto();
-    var item = wrapper.getItem();
+    var item = wrapper.getItemDetail();
     var itemDto = wrapper.getItemDto();
 
     if (categoryDto == CategoryDto.GEM) {
@@ -209,7 +209,7 @@ public final class ItemParserService {
 
   public void parseEnchantment(ItemWrapper wrapper) throws ItemParseException {
     var itemDto = wrapper.getItemDto();
-    var item = wrapper.getItem();
+    var item = wrapper.getItemDetail();
 
     var enchantName = ItemUtility.extractEnchantmentName(itemDto);
     var rolls = ItemUtility.extractEnchantmentRolls(itemDto);
@@ -244,10 +244,10 @@ public final class ItemParserService {
 
   private void parseAltArt(ItemWrapper wrapper) {
     var itemDto = wrapper.getItemDto();
-    var base = wrapper.getItem().getBase();
+    var base = wrapper.getItemDetail().getBase();
 
     var iconName = ItemUtility.extractIconName(wrapper.getItemDto().getIcon());
-    wrapper.getItem().setVariation(iconName);
+    wrapper.getItemDetail().setVariation(iconName);
 
     if (FrameType.MAGIC.is(itemDto.getFrameType()) || FrameType.RARE.is(itemDto.getFrameType())) {
       base.setFrameType(FrameType.NORMAL);
@@ -256,7 +256,7 @@ public final class ItemParserService {
 
   private void parseLinks(ItemWrapper wrapper) throws ItemParseException {
     var links = ItemUtility.extractLinks(wrapper.getItemDto());
-    wrapper.getItem().setLinks(links);
+    wrapper.getItemDetail().setLinks(links);
   }
 
 }

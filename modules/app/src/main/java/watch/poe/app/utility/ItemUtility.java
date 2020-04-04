@@ -3,18 +3,18 @@ package watch.poe.app.utility;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import watch.poe.app.dto.CategoryDto;
-import watch.poe.persistence.model.code.DiscardErrorCode;
 import watch.poe.app.dto.GroupDto;
-import watch.poe.persistence.model.code.ParseErrorCode;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.PropertyDto;
 import watch.poe.app.dto.river.SocketDto;
 import watch.poe.app.dto.wrapper.ItemWrapper;
 import watch.poe.app.exception.InvalidIconException;
 import watch.poe.app.exception.ItemParseException;
+import watch.poe.persistence.model.code.DiscardErrorCode;
+import watch.poe.persistence.model.code.ParseErrorCode;
 import watch.poe.persistence.model.item.FrameType;
-import watch.poe.persistence.model.item.Item;
 import watch.poe.persistence.model.item.ItemBase;
+import watch.poe.persistence.model.item.ItemDetail;
 
 import java.util.Objects;
 
@@ -227,33 +227,33 @@ public final class ItemUtility {
     return null;
   }
 
-  public static boolean itemEquals(Item item1, Item item2) {
-    if (item1 == item2) {
+  public static boolean itemEquals(ItemDetail itemDetail1, ItemDetail itemDetail2) {
+    if (itemDetail1 == itemDetail2) {
       return true;
     }
 
-    if (item1 == null || item2 == null) {
+    if (itemDetail1 == null || itemDetail2 == null) {
       return false;
     }
 
-    return itemBaseEquals(item1.getBase(), item2.getBase()) &&
-      Objects.equals(item1.getVariation(), item2.getVariation()) &&
-      Objects.equals(item1.getStackSize(), item2.getStackSize()) &&
-      Objects.equals(item1.getItemLevel(), item2.getItemLevel()) &&
-      Objects.equals(item1.getLinks(), item2.getLinks()) &&
-      Objects.equals(item1.getMapTier(), item2.getMapTier()) &&
-      Objects.equals(item1.getMapSeries(), item2.getMapSeries()) &&
-      Objects.equals(item1.getGemLevel(), item2.getGemLevel()) &&
-      Objects.equals(item1.getGemQuality(), item2.getGemQuality()) &&
-      Objects.equals(item1.getCorrupted(), item2.getCorrupted()) &&
-      Objects.equals(item1.getInfluenceShaper(), item2.getInfluenceShaper()) &&
-      Objects.equals(item1.getInfluenceElder(), item2.getInfluenceElder()) &&
-      Objects.equals(item1.getInfluenceCrusader(), item2.getInfluenceCrusader()) &&
-      Objects.equals(item1.getInfluenceRedeemer(), item2.getInfluenceRedeemer()) &&
-      Objects.equals(item1.getInfluenceHunter(), item2.getInfluenceHunter()) &&
-      Objects.equals(item1.getInfluenceWarlord(), item2.getInfluenceWarlord()) &&
-      Objects.equals(item1.getEnchantMin(), item2.getEnchantMin()) &&
-      Objects.equals(item1.getEnchantMax(), item2.getEnchantMax());
+    return itemBaseEquals(itemDetail1.getBase(), itemDetail2.getBase()) &&
+      Objects.equals(itemDetail1.getVariation(), itemDetail2.getVariation()) &&
+      Objects.equals(itemDetail1.getStackSize(), itemDetail2.getStackSize()) &&
+      Objects.equals(itemDetail1.getItemLevel(), itemDetail2.getItemLevel()) &&
+      Objects.equals(itemDetail1.getLinks(), itemDetail2.getLinks()) &&
+      Objects.equals(itemDetail1.getMapTier(), itemDetail2.getMapTier()) &&
+      Objects.equals(itemDetail1.getMapSeries(), itemDetail2.getMapSeries()) &&
+      Objects.equals(itemDetail1.getGemLevel(), itemDetail2.getGemLevel()) &&
+      Objects.equals(itemDetail1.getGemQuality(), itemDetail2.getGemQuality()) &&
+      Objects.equals(itemDetail1.getCorrupted(), itemDetail2.getCorrupted()) &&
+      Objects.equals(itemDetail1.getInfluenceShaper(), itemDetail2.getInfluenceShaper()) &&
+      Objects.equals(itemDetail1.getInfluenceElder(), itemDetail2.getInfluenceElder()) &&
+      Objects.equals(itemDetail1.getInfluenceCrusader(), itemDetail2.getInfluenceCrusader()) &&
+      Objects.equals(itemDetail1.getInfluenceRedeemer(), itemDetail2.getInfluenceRedeemer()) &&
+      Objects.equals(itemDetail1.getInfluenceHunter(), itemDetail2.getInfluenceHunter()) &&
+      Objects.equals(itemDetail1.getInfluenceWarlord(), itemDetail2.getInfluenceWarlord()) &&
+      Objects.equals(itemDetail1.getEnchantMin(), itemDetail2.getEnchantMin()) &&
+      Objects.equals(itemDetail1.getEnchantMax(), itemDetail2.getEnchantMax());
   }
 
   public static boolean itemBaseEquals(ItemBase base1, ItemBase base2) {

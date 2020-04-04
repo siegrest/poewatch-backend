@@ -1,7 +1,7 @@
-CREATE TABLE IF NOT EXISTS item
+CREATE TABLE IF NOT EXISTS item_detail
 (
-    id                 SERIAL       NOT NULL,
-    item_base_id       INTEGER      NOT NULL,
+    id                 SERIAL  NOT NULL,
+    item_base_id       INTEGER NOT NULL,
     item_level         INTEGER,
     links              INTEGER,
     stack_size         INTEGER,
@@ -24,20 +24,20 @@ CREATE TABLE IF NOT EXISTS item
 );
 
 
-ALTER TABLE item
-    ADD CONSTRAINT pk_item
+ALTER TABLE item_detail
+    ADD CONSTRAINT pk_item_detail
         PRIMARY KEY (id)
 ;
 
-ALTER TABLE item
-    ADD CONSTRAINT uq_item
+ALTER TABLE item_detail
+    ADD CONSTRAINT uq_item_detail
         UNIQUE (item_base_id, stack_size, item_level, links, corrupted, variation, map_tier, map_series,
                 influence_shaper,
                 influence_elder, influence_crusader, influence_redeemer, influence_hunter, influence_warlord,
                 enchantment_min, enchantment_max, gem_level, gem_quality)
 ;
 
-ALTER TABLE item
+ALTER TABLE item_detail
     ADD CONSTRAINT fk_item_base
         FOREIGN KEY (item_base_id) REFERENCES pw.item_base (id) ON DELETE CASCADE
 ;

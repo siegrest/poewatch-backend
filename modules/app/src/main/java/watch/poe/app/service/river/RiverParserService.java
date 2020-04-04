@@ -14,11 +14,11 @@ import watch.poe.app.dto.wrapper.StashWrapper;
 import watch.poe.app.exception.GroupingException;
 import watch.poe.app.exception.ItemParseException;
 import watch.poe.app.service.GsonService;
-import watch.poe.app.service.item.ItemParserService;
+import watch.poe.app.service.item.ItemDetailParserService;
 import watch.poe.app.service.item.NoteParseService;
 import watch.poe.persistence.model.code.DiscardErrorCode;
 import watch.poe.persistence.model.code.ParseErrorCode;
-import watch.poe.persistence.model.item.Item;
+import watch.poe.persistence.model.item.ItemDetail;
 import watch.poe.persistence.model.leagueItem.LeagueItemEntry;
 import watch.poe.persistence.utility.HashUtility;
 import watch.poe.stats.model.code.StatType;
@@ -38,7 +38,7 @@ public class RiverParserService {
   private final GsonService gsonService;
   private final StatTimerService statTimerService;
   private final NoteParseService noteParseService;
-  private final ItemParserService itemParserService;
+  private final ItemDetailParserService itemDetailParserService;
 
   @Value("${item.accept.missing.price}")
   private boolean acceptMissingPrice;
@@ -87,12 +87,12 @@ public class RiverParserService {
         var itemWrapper = ItemWrapper.builder()
           .itemDto(itemDto)
           .discardReasons(new ArrayList<>())
-          .item(Item.builder().build())
+          .itemDetail(ItemDetail.builder().build())
           .build();
 
-        Item item, priceCurrencyItem;
+        ItemDetail itemDetail, priceCurrencyItem;
         try {
-          item = itemParserService.parse(itemWrapper);
+          itemDetail = itemDetailParserService.parse(itemWrapper);
           priceCurrencyItem = noteParseService.priceToItem(price);
         } catch (ItemParseException ex) {
           // todo: remove this
@@ -116,7 +116,7 @@ public class RiverParserService {
 
         var entry = LeagueItemEntry.builder()
           .id(HashUtility.hash(itemDto.getId()))
-          .item(item)
+          .itemDetail(itemDetail)
           .price(price == null ? null : price.getPrice())
           .priceItem(priceCurrencyItem)
           .stackSize(itemDto.getStackSize())

@@ -42,7 +42,7 @@ public class FutureHandlerService {
   private final CategoryCacheService categoryCacheService;
   private final GroupCacheService groupCacheService;
   private final ItemBaseCacheService itemBaseCacheService;
-  private final ItemCacheService itemCacheService;
+  private final ItemDetailCacheService itemDetailCacheService;
 
   @Async
   public Future<String> process(List<RiverWrapper> wrappers) {
@@ -97,7 +97,7 @@ public class FutureHandlerService {
 
     // todo: filter out duplicates
     for (LeagueItemEntry entry : entries) {
-      var item = entry.getItem();
+      var item = entry.getItemDetail();
       var base = item.getBase();
 
       var category = categoryCacheService.get(base.getCategory().getName());
@@ -117,7 +117,7 @@ public class FutureHandlerService {
       }
 
       item.setBase(itemBaseCacheService.getOrSave(base));
-      entry.setItem(itemCacheService.getOrSave(item));
+      entry.setItemDetail(itemDetailCacheService.getOrSave(item));
     }
   }
 

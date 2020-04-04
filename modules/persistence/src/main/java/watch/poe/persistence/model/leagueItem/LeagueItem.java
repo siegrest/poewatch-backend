@@ -3,7 +3,7 @@ package watch.poe.persistence.model.leagueItem;
 import lombok.Getter;
 import lombok.Setter;
 import watch.poe.persistence.model.League;
-import watch.poe.persistence.model.item.Item;
+import watch.poe.persistence.model.item.ItemDetail;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class LeagueItem {
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "item_id", nullable = false)
-  private Item item;
+  private ItemDetail itemDetail;
 
   @Column
   private LocalDateTime found;
