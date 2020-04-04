@@ -9,7 +9,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import watch.poe.stats.model.code.StatType;
-import watch.poe.stats.service.StatisticsService;
+import watch.poe.stats.service.StatTimerService;
 
 import javax.annotation.PreDestroy;
 
@@ -20,7 +20,7 @@ import javax.annotation.PreDestroy;
 @RequiredArgsConstructor
 public class AppApplication {
 
-  private final StatisticsService statisticsService;
+  private final StatTimerService statTimerService;
 
   public static void main(String[] args) {
     SpringApplication.run(AppApplication.class, args);
@@ -28,12 +28,12 @@ public class AppApplication {
 
   @EventListener(ApplicationStartedEvent.class)
   public void run() {
-    statisticsService.addValue(StatType.MISC_APP_STARTUP);
+    statTimerService.addValue(StatType.MISC_APP_STARTUP);
   }
 
   @PreDestroy
   public void onExit() {
-    statisticsService.addValue(StatType.MISC_APP_SHUTDOWN);
+    statTimerService.addValue(StatType.MISC_APP_SHUTDOWN);
   }
 
 }

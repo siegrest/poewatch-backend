@@ -1,6 +1,7 @@
 package watch.poe.stats.model;
 
 import lombok.*;
+import watch.poe.stats.model.code.StatType;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,15 +12,17 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@IdClass(StatisticPk.class)
 @Table(name = "statistic_history", schema = "pw")
-public class StatisticHistory {
+public class StatHistory {
 
   @Id
-  @Column(name = "type", length = 64, nullable = false)
-  private String type;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-  @Id
+  @Column
+  @Enumerated(EnumType.STRING)
+  private StatType type;
+
   @Column
   private LocalDateTime time;
 

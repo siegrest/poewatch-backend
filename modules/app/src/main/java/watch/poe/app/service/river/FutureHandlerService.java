@@ -19,7 +19,7 @@ import watch.poe.persistence.model.Character;
 import watch.poe.persistence.model.Stash;
 import watch.poe.persistence.model.leagueItem.LeagueItemEntry;
 import watch.poe.stats.model.code.StatType;
-import watch.poe.stats.service.StatisticsService;
+import watch.poe.stats.service.StatTimerService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FutureHandlerService {
 
-  private final StatisticsService statisticsService;
+  private final StatTimerService statTimerService;
   private final StashService stashRepositoryService;
   private final AccountService accountService;
   private final LeagueItemEntryService leagueItemEntryService;
@@ -46,43 +46,43 @@ public class FutureHandlerService {
 
   @Async
   public Future<String> process(List<RiverWrapper> wrappers) {
-    statisticsService.startTimer(StatType.TIME_PROCESS_RIVER);
+    statTimerService.startTimer(StatType.TIME_PROCESS_RIVER);
 
     var stashWrappers = wrappers.stream()
       .map(RiverWrapper::getStashes)
       .flatMap(Collection::stream)
       .collect(Collectors.toList());
 
-    statisticsService.startTimer(StatType.TIME_INDEX_ITEM);
+    statTimerService.startTimer(StatType.TIME_INDEX_ITEM);
     indexItems(stashWrappers);
-    statisticsService.clkTimer(StatType.TIME_INDEX_ITEM, true);
+    statTimerService.clkTimer(StatType.TIME_INDEX_ITEM, true);
 
-    statisticsService.startTimer(StatType.TIME_PERSIST_ACCOUNT);
+    statTimerService.startTimer(StatType.TIME_PERSIST_ACCOUNT);
     var accounts = saveAccounts(stashWrappers);
-    statisticsService.clkTimer(StatType.TIME_PERSIST_ACCOUNT, true);
+    statTimerService.clkTimer(StatType.TIME_PERSIST_ACCOUNT, true);
 
-    statisticsService.startTimer(StatType.TIME_PERSIST_CHARACTER);
+    statTimerService.startTimer(StatType.TIME_PERSIST_CHARACTER);
     saveCharacters(stashWrappers, accounts);
-    statisticsService.clkTimer(StatType.TIME_PERSIST_CHARACTER, true);
+    statTimerService.clkTimer(StatType.TIME_PERSIST_CHARACTER, true);
 
-    statisticsService.startTimer(StatType.TIME_MARK_ITEMS_STALE);
+    statTimerService.startTimer(StatType.TIME_MARK_ITEMS_STALE);
     markItemsStale(stashWrappers);
-    statisticsService.clkTimer(StatType.TIME_MARK_ITEMS_STALE, true);
+    statTimerService.clkTimer(StatType.TIME_MARK_ITEMS_STALE, true);
 
-    statisticsService.startTimer(StatType.TIME_PERSIST_STASHES);
+    statTimerService.startTimer(StatType.TIME_PERSIST_STASHES);
     var stashes = saveStashes(stashWrappers, accounts);
-    statisticsService.clkTimer(StatType.TIME_PERSIST_STASHES, true);
+    statTimerService.clkTimer(StatType.TIME_PERSIST_STASHES, true);
 
-    statisticsService.startTimer(StatType.TIME_PERSIST_STASH_ENTRIES);
+    statTimerService.startTimer(StatType.TIME_PERSIST_STASH_ENTRIES);
     saveEntries(stashWrappers, stashes);
-    statisticsService.clkTimer(StatType.TIME_PERSIST_STASH_ENTRIES, true);
+    statTimerService.clkTimer(StatType.TIME_PERSIST_STASH_ENTRIES, true);
 
     var newestJob = wrappers.stream()
       .map(RiverWrapper::getJob)
       .min(ChangeIdUtility::comparator)
       .orElse(null);
 
-    statisticsService.clkTimer(StatType.TIME_PROCESS_RIVER);
+    statTimerService.clkTimer(StatType.TIME_PROCESS_RIVER);
     return CompletableFuture.completedFuture(newestJob);
   }
 

@@ -10,7 +10,7 @@ import watch.poe.app.exception.RiverDownloadException;
 import watch.poe.app.service.ChangeIdService;
 import watch.poe.persistence.model.changeId.ChangeIdType;
 import watch.poe.stats.model.code.StatType;
-import watch.poe.stats.service.StatisticsService;
+import watch.poe.stats.service.StatTimerService;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,7 +28,7 @@ public class RiverWorkerManagerService {
   private final RiverWorkerService riverWorkerService;
   private final ChangeIdService changeIdService;
   private final FutureHandlerService futureHandlerService;
-  private final StatisticsService statisticsService;
+  private final StatTimerService statTimerService;
   private final JobService jobService;
 
   @Value("${stash.worker.count}")
@@ -52,11 +52,11 @@ public class RiverWorkerManagerService {
     }
 
     if (riverFutures.size() >= maxWorkerCount) {
-      statisticsService.startTimer(StatType.TIME_WORKERS_IDLE, false, false);
+      statTimerService.startTimer(StatType.TIME_WORKERS_IDLE, false, false);
       return;
     }
 
-    statisticsService.clkTimer(StatType.TIME_WORKERS_IDLE, false);
+    statTimerService.clkTimer(StatType.TIME_WORKERS_IDLE, false);
 
     var nextJob = jobService.getJob();
     if (nextJob.isEmpty()) {

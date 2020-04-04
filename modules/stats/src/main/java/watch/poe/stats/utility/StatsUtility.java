@@ -2,7 +2,10 @@ package watch.poe.stats.utility;
 
 
 import watch.poe.persistence.model.code.RiverErrorCode;
+import watch.poe.stats.model.StatCollector;
 import watch.poe.stats.model.code.StatType;
+
+import java.time.LocalDateTime;
 
 public class StatsUtility {
 
@@ -22,6 +25,15 @@ public class StatsUtility {
       default:
         return null;
     }
+  }
+
+  public static boolean hasValues(StatCollector collector) {
+    return collector.getCount() > 0;
+  }
+
+  public static boolean isExpired(StatCollector collector) {
+    LocalDateTime endTime = LocalDateTime.now().plusNanos(collector.getTimespan() * 1000000L);
+    return LocalDateTime.now().isAfter(endTime);
   }
 
 }

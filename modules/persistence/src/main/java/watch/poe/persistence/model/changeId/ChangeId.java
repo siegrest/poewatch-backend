@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Table(name = "change_id", schema = "pw")
 public class ChangeId {
   @Id
-  @Enumerated(value = EnumType.STRING)
+  @Enumerated(EnumType.STRING)
   private ChangeIdType type;
 
   @Column(length = 64)

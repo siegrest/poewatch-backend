@@ -11,7 +11,7 @@ import watch.poe.app.exception.RiverDownloadException;
 import watch.poe.app.utility.ChangeIdUtility;
 import watch.poe.persistence.model.code.RiverErrorCode;
 import watch.poe.stats.model.code.StatType;
-import watch.poe.stats.service.StatisticsService;
+import watch.poe.stats.service.StatTimerService;
 import watch.poe.stats.utility.StatsUtility;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class RiverWorkerService {
 
   private final JobService jobSchedulerService;
   private final RiverParserService riverParserService;
-  private final StatisticsService statisticsService;
+  private final StatTimerService statTimerService;
 
   @Value("${stash.fetch.url}")
   private String endpointUrl;
@@ -40,7 +40,7 @@ public class RiverWorkerService {
   @Async
   public Future<RiverWrapper> queryNext(String job) throws RiverDownloadException {
     log.info("Started worker with job {}", job);
-    statisticsService.addValue(StatType.COUNT_API_CALLS);
+    statTimerService.addValue(StatType.COUNT_API_CALLS);
 
     var stashStringBuilder = downloadStashJson(job);
     if (stashStringBuilder == null) {
@@ -51,7 +51,7 @@ public class RiverWorkerService {
   }
 
   private StringBuilder downloadStashJson(String changeId) {
-    statisticsService.startTimer(StatType.TIME_API_REPLY_DOWNLOAD);
+    statTimerService.startTimer(StatType.TIME_API_REPLY_DOWNLOAD);
 
     StringBuilder streamResult = null;
     InputStream stream = null;
@@ -62,7 +62,7 @@ public class RiverWorkerService {
       connection.setReadTimeout(readTimeOut);
       connection.setConnectTimeout(connectTimeOut);
 
-      statisticsService.startTimer(StatType.TIME_API_TTFB);
+      statTimerService.startTimer(StatType.TIME_API_TTFB);
 
       stream = connection.getInputStream();
       streamResult = streamStashes(stream);
@@ -78,15 +78,15 @@ public class RiverWorkerService {
       var exception = new RiverDownloadException(ex);
       var statType = StatsUtility.getErrorType(exception.getBasis());
       if (statType != null) {
-        statisticsService.addValue(statType);
+        statTimerService.addValue(statType);
       }
 
       throw exception;
 
     } finally {
-      statisticsService.clkTimer(StatType.TIME_API_REPLY_DOWNLOAD);
+      statTimerService.clkTimer(StatType.TIME_API_REPLY_DOWNLOAD);
       // precaution if the stream method finished abruptly
-      statisticsService.clkTimer(StatType.TIME_API_TTFB);
+      statTimerService.clkTimer(StatType.TIME_API_TTFB);
 
       try {
         if (stream != null) {
@@ -110,7 +110,7 @@ public class RiverWorkerService {
 
     while ((byteCount = stream.read(byteBuffer, 0, 128)) != -1) {
       if (!gotFirstByte) {
-        statisticsService.clkTimer(StatType.TIME_API_TTFB);
+        statTimerService.clkTimer(StatType.TIME_API_TTFB);
         gotFirstByte = true;
       }
 
@@ -137,7 +137,7 @@ public class RiverWorkerService {
       }
     }
 
-    statisticsService.addValue(StatType.COUNT_REPLY_SIZE, totalByteCount);
+    statTimerService.addValue(StatType.COUNT_REPLY_SIZE, totalByteCount);
     return jsonBuffer;
   }
 

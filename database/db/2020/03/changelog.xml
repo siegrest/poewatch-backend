@@ -49,8 +49,8 @@
         <sqlFile path="db/2020/03/2020.03.19.19.10-league_item_history.sql"/>
     </changeSet>
 
-    <changeSet id="2020.03.19.19.11-statistic_partial.sql" author="siegrest">
-        <sqlFile path="db/2020/03/2020.03.19.19.11-statistic_partial.sql"/>
+    <changeSet id="2020.03.19.19.11-statistic_collector.sql" author="siegrest">
+        <sqlFile path="db/2020/03/2020.03.19.19.11-statistic_collector.sql"/>
     </changeSet>
 
     <changeSet id="2020.03.19.19.12-statistic_history.sql" author="siegrest">

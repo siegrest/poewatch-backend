@@ -22,7 +22,7 @@ import watch.poe.persistence.model.item.Item;
 import watch.poe.persistence.model.leagueItem.LeagueItemEntry;
 import watch.poe.persistence.utility.HashUtility;
 import watch.poe.stats.model.code.StatType;
-import watch.poe.stats.service.StatisticsService;
+import watch.poe.stats.service.StatTimerService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ import java.util.concurrent.Future;
 public class RiverParserService {
 
   private final GsonService gsonService;
-  private final StatisticsService statisticsService;
+  private final StatTimerService statTimerService;
   private final NoteParseService noteParseService;
   private final ItemParserService itemParserService;
 
@@ -46,13 +46,13 @@ public class RiverParserService {
   @Async
 //  @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
   public Future<RiverWrapper> process(String job, StringBuilder stashStringBuilder) {
-    statisticsService.startTimer(StatType.TIME_REPLY_DESERIALIZE);
+    statTimerService.startTimer(StatType.TIME_REPLY_DESERIALIZE);
     var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
-    statisticsService.clkTimer(StatType.TIME_REPLY_DESERIALIZE);
+    statTimerService.clkTimer(StatType.TIME_REPLY_DESERIALIZE);
 
-    statisticsService.startTimer(StatType.TIME_REPLY_PARSE);
+    statTimerService.startTimer(StatType.TIME_REPLY_PARSE);
     var stashes = processRiver(riverDto);
-    statisticsService.clkTimer(StatType.TIME_REPLY_PARSE);
+    statTimerService.clkTimer(StatType.TIME_REPLY_PARSE);
 
     var wrapper = RiverWrapper.builder()
       .stashes(stashes)
@@ -67,7 +67,7 @@ public class RiverParserService {
     var stashes = new ArrayList<StashWrapper>();
 
     for (StashDto stashDto : riverDto.getStashes()) {
-      statisticsService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
+      statTimerService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
 
       var stashWrapper = StashWrapper.builder()
         .id(stashDto.getId())
