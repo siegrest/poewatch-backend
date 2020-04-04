@@ -81,7 +81,7 @@ public class StatCollectorService {
 
   private void validateCollectors() {
     List<StatType> missingTypes = Arrays.stream(StatType.values()).filter(type -> {
-      return collectors.stream().anyMatch(c -> c.getType() == type);
+      return collectors.stream().noneMatch(c -> c.getType() == type);
     }).collect(Collectors.toList());
 
     if (!missingTypes.isEmpty()) {
