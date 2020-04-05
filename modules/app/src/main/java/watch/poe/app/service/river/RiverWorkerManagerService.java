@@ -33,8 +33,6 @@ public class RiverWorkerManagerService {
 
   @Value("${stash.worker.count}")
   private int maxWorkerCount;
-  @Value("${stash.fetch.enabled}")
-  private boolean enabled;
   @Value("${stash.parse.batch.size}")
   private int batchSize;
 
@@ -43,11 +41,8 @@ public class RiverWorkerManagerService {
 
   @Scheduled(fixedRateString = "${stash.worker.query.rate}", initialDelay = 2000)
   public void scheduleWorker() {
-    if (!enabled) {
-      return;
-    }
-
     if (riverFutures.isEmpty() && jobService.isJobEmpty()) {
+      // todo: custom exception
       throw new RuntimeException("No active workers and next change id is empty");
     }
 
@@ -58,12 +53,10 @@ public class RiverWorkerManagerService {
 
     statTimerService.clkTimer(StatType.TIME_WORKERS_IDLE, false);
 
-    var nextJob = jobService.getJob();
-    if (nextJob.isEmpty()) {
-      return;
-    }
-
-    riverFutures.add(riverWorkerService.queryNext(nextJob.get()));
+    jobService.getJob().ifPresent(job -> {
+      Future<RiverWrapper> riverWrapperFuture = riverWorkerService.queryNext(job);
+      riverFutures.add(riverWrapperFuture);
+    });
   }
 
   @Scheduled(fixedRateString = "${stash.worker.check.rate}")

@@ -7,9 +7,11 @@ import org.springframework.stereotype.Service;
 import watch.poe.app.config.AppModuleConfig;
 import watch.poe.app.service.ChangeIdService;
 import watch.poe.app.utility.ChangeIdUtility;
+import watch.poe.app.utility.DateTimeUtility;
 import watch.poe.persistence.model.changeId.ChangeIdType;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -25,7 +27,7 @@ public class JobService {
 
   // todo: query job from repository
   private String job;
-  private long lastPollTime;
+  private LocalDateTime lastPollTime;
 
   @PostConstruct
   public void init() {
@@ -33,7 +35,7 @@ public class JobService {
     if (ChangeIdUtility.isChangeId(changeIdOverride)) {
       job = changeIdOverride;
     } else {
-      changeIdService.find(ChangeIdType.APP).ifPresentOrElse(id -> job = id.getValue(), () -> job = "0-0-0-0-0");
+      changeIdService.find(ChangeIdType.APP).ifPresent(id -> job = id.getValue());
     }
   }
 
@@ -42,7 +44,7 @@ public class JobService {
       return Optional.empty();
     }
 
-    lastPollTime = System.currentTimeMillis();
+    lastPollTime = LocalDateTime.now();
     var returnJob = Optional.ofNullable(job);
     job = null;
 
@@ -72,7 +74,7 @@ public class JobService {
   }
 
   public boolean isRequestCooldown() {
-    return System.currentTimeMillis() - lastPollTime < fetchCooldown;
+    return LocalDateTime.now().isBefore(DateTimeUtility.addMs(lastPollTime, fetchCooldown));
   }
 
 }

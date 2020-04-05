@@ -9,4 +9,8 @@
         <sqlFile path="db/2020/04/2020.04.03.13.10-statistic_collectors.sql"/>
     </changeSet>
 
+    <changeSet id="2020.04.05.09.17-change_id_initial_values.sql" author="siegrest">
+        <sqlFile path="db/2020/04/2020.04.05.09.17-change_id_initial_values.sql"/>
+    </changeSet>
+
 </databaseChangeLog>
