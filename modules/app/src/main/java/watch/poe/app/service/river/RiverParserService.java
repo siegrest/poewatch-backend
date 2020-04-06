@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import watch.poe.app.dto.PriceDto;
 import watch.poe.app.dto.river.ItemDto;
 import watch.poe.app.dto.river.RiverDto;
 import watch.poe.app.dto.river.StashDto;
@@ -26,9 +27,10 @@ import watch.poe.stats.service.StatTimerService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,96 +46,101 @@ public class RiverParserService {
   private boolean acceptMissingPrice;
 
   @Async
-//  @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
   public Future<RiverWrapper> process(String job, StringBuilder stashStringBuilder) {
     statTimerService.startTimer(StatType.TIME_REPLY_DESERIALIZE);
-    var riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
+    RiverDto riverDto = gsonService.toObject(stashStringBuilder.toString(), RiverDto.class);
     statTimerService.clkTimer(StatType.TIME_REPLY_DESERIALIZE);
 
     statTimerService.startTimer(StatType.TIME_REPLY_PARSE);
-    var stashes = processRiver(riverDto);
+    RiverWrapper riverWrapper = processRiver(riverDto);
     statTimerService.clkTimer(StatType.TIME_REPLY_PARSE);
 
-    var wrapper = RiverWrapper.builder()
-      .stashes(stashes)
-      .job(job)
-      .completionTime(LocalDateTime.now())
-      .build();
+    riverWrapper.setJob(job);
 
-    return CompletableFuture.completedFuture(wrapper);
+    return CompletableFuture.completedFuture(riverWrapper);
   }
 
-  private List<StashWrapper> processRiver(RiverDto riverDto) {
-    var stashes = new ArrayList<StashWrapper>();
+  private RiverWrapper processRiver(RiverDto riverDto) {
+    var stashes = riverDto.getStashes().stream()
+      .map(this::processStash)
+      .collect(Collectors.toList());
 
-    for (StashDto stashDto : riverDto.getStashes()) {
-      statTimerService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
+    return RiverWrapper.builder()
+      .stashes(stashes)
+      .completionTime(LocalDateTime.now())
+      .build();
+  }
 
-      var stashWrapper = StashWrapper.builder()
-        .id(stashDto.getId())
-        .league(stashDto.getLeague())
-        .account(stashDto.getAccountName())
-        .character(stashDto.getLastCharacterName())
-        .build();
+  private StashWrapper processStash(StashDto stashDto) {
+    statTimerService.addValue(StatType.COUNT_TOTAL_ITEMS, stashDto.getItems().size());
 
-      ArrayList<LeagueItemEntry> entries = new ArrayList<>();
+    var stashWrapper = StashWrapper.builder()
+      .id(stashDto.getId())
+      .league(stashDto.getLeague())
+      .account(stashDto.getAccountName())
+      .character(stashDto.getLastCharacterName())
+      .build();
 
-      for (ItemDto itemDto : stashDto.getItems()) {
-        var price = noteParseService.parsePrice(stashDto.getStashName(), itemDto.getNote());
-        if (price == null && !acceptMissingPrice) {
-          continue;
-        }
+    ArrayList<LeagueItemEntry> entries = new ArrayList<>();
 
-        var itemWrapper = ItemWrapper.builder()
-          .itemDto(itemDto)
-          .discardReasons(new ArrayList<>())
-          .itemDetail(ItemDetail.builder().build())
-          .build();
-
-        ItemDetail itemDetail, priceCurrencyItem;
-        try {
-          itemDetail = itemDetailParserService.parse(itemWrapper);
-          priceCurrencyItem = noteParseService.priceToItem(price);
-        } catch (ItemParseException ex) {
-          // todo: remove this
-          if (ex.getParseErrorCode() != ParseErrorCode.MISSING_CURRENCY
-            && ex.getParseErrorCode() != ParseErrorCode.PARSE_UNID_UNIQUE_ITEM
-            && ex.getDiscardErrorCode() != DiscardErrorCode.PARSE_COMPLEX_MAGIC
-            && ex.getDiscardErrorCode() != DiscardErrorCode.UNIQUE_ONLY
-            && ex.getDiscardErrorCode() != DiscardErrorCode.PARSE_COMPLEX_RARE) {
-            log.error("Parse exception for {}", itemWrapper, ex);
-          }
-
-          continue;
-        } catch (GroupingException ex) {
-          log.info("Grouping exception \"{}\" for {}", ex.getMessage(), itemWrapper);
-          continue;
-        }
-
-        if (itemWrapper.isDiscard()) {
-          continue;
-        }
-
-        var entry = LeagueItemEntry.builder()
-          .id(HashUtility.hash(itemDto.getId()))
-          .itemDetail(itemDetail)
-          .price(price == null ? null : price.getPrice())
-          .priceItem(priceCurrencyItem)
-          .stackSize(itemDto.getStackSize())
-          .stash(null)
-          .found(LocalDateTime.now())
-          .seen(LocalDateTime.now())
-          .updates(0)
-          .build();
-
-        entries.add(entry);
-      }
-
-      stashWrapper.setEntries(entries);
-      stashes.add(stashWrapper);
+    for (ItemDto itemDto : stashDto.getItems()) {
+      PriceDto price = noteParseService.parsePrice(stashDto.getStashName(), itemDto.getNote());
+      processItem(itemDto, price)
+        .map(entries::add);
     }
 
-    return stashes;
+    stashWrapper.setEntries(entries);
+    return stashWrapper;
+  }
+
+  private Optional<LeagueItemEntry> processItem(ItemDto itemDto, PriceDto price) {
+    if (price == null && !acceptMissingPrice) {
+      return Optional.empty();
+    }
+
+    var itemWrapper = ItemWrapper.builder()
+      .itemDto(itemDto)
+      .discardReasons(new ArrayList<>())
+      .itemDetail(ItemDetail.builder().build())
+      .build();
+
+    ItemDetail itemDetail, priceCurrencyItem;
+    try {
+      itemDetail = itemDetailParserService.parse(itemWrapper);
+      priceCurrencyItem = noteParseService.priceToItem(price);
+    } catch (ItemParseException ex) {
+      // todo: remove this
+      if (ex.getParseErrorCode() != ParseErrorCode.MISSING_CURRENCY
+        && ex.getParseErrorCode() != ParseErrorCode.PARSE_UNID_UNIQUE_ITEM
+        && ex.getDiscardErrorCode() != DiscardErrorCode.PARSE_COMPLEX_MAGIC
+        && ex.getDiscardErrorCode() != DiscardErrorCode.UNIQUE_ONLY
+        && ex.getDiscardErrorCode() != DiscardErrorCode.PARSE_COMPLEX_RARE) {
+        log.error("Parse exception for {}", itemWrapper, ex);
+      }
+
+      return Optional.empty();
+    } catch (GroupingException ex) {
+      log.info("Grouping exception \"{}\" for {}", ex.getMessage(), itemWrapper);
+      return Optional.empty();
+    }
+
+    if (itemWrapper.isDiscard()) {
+      return Optional.empty();
+    }
+
+    var entry = LeagueItemEntry.builder()
+      .id(HashUtility.hash(itemDto.getId()))
+      .itemDetail(itemDetail)
+      .price(price == null ? null : price.getPrice())
+      .priceItem(priceCurrencyItem)
+      .stackSize(itemDto.getStackSize())
+      .stash(null)
+      .found(LocalDateTime.now())
+      .seen(LocalDateTime.now())
+      .updates(0)
+      .build();
+
+    return Optional.of(entry);
   }
 
 }
