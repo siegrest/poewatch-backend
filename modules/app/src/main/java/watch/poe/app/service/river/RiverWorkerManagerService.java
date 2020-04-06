@@ -7,8 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import watch.poe.app.dto.wrapper.RiverWrapper;
 import watch.poe.app.exception.RiverDownloadException;
-import watch.poe.app.service.ChangeIdService;
-import watch.poe.persistence.model.changeId.ChangeIdType;
 import watch.poe.stats.model.code.StatType;
 import watch.poe.stats.service.StatTimerService;
 
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 public class RiverWorkerManagerService {
 
   private final RiverWorkerService riverWorkerService;
-  private final ChangeIdService changeIdService;
   private final FutureHandlerService futureHandlerService;
   private final StatTimerService statTimerService;
   private final JobService jobService;
@@ -53,7 +50,7 @@ public class RiverWorkerManagerService {
 
     statTimerService.clkTimer(StatType.TIME_WORKERS_IDLE, false);
 
-    jobService.getJob().ifPresent(job -> {
+    jobService.getNextJob().ifPresent(job -> {
       Future<RiverWrapper> riverWrapperFuture = riverWorkerService.queryNext(job);
       riverFutures.add(riverWrapperFuture);
     });
@@ -67,8 +64,7 @@ public class RiverWorkerManagerService {
       }
 
       // todo: handle index exceptions
-      var completedJob = indexFuture.get();
-      changeIdService.saveIfNewer(ChangeIdType.APP, completedJob);
+      jobService.setCompletedJob(indexFuture.get());
       indexFuture = null;
     }
 

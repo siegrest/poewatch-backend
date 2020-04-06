@@ -3,10 +3,11 @@ package watch.poe.app.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import watch.poe.app.utility.ChangeIdUtility;
-import watch.poe.persistence.model.changeId.ChangeIdType;
 import watch.poe.persistence.model.changeId.ChangeId;
+import watch.poe.persistence.model.changeId.ChangeIdType;
 import watch.poe.persistence.repository.ChangeIdRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -15,22 +16,24 @@ public class ChangeIdService {
 
   private final ChangeIdRepository changeIdRepository;
 
-  public void saveIfNewer(ChangeIdType id, String changeId) {
-    var job = changeIdRepository.findById(id);
-    if (job.isEmpty() || ChangeIdUtility.isNewerThan(changeId, job.get().getValue())) {
-      save(id, changeId);
-    }
+  public void saveIfNewer(ChangeIdType type, String value) {
+    changeIdRepository.findById(type).ifPresent(changeId -> {
+      if (ChangeIdUtility.isNewerThan(value, changeId.getValue())) {
+        save(type, value);
+      }
+    });
   }
 
-  public ChangeId save(ChangeIdType id, String changeIdString) {
+  public ChangeId save(ChangeIdType type, String value) {
     var changeId = ChangeId.builder()
-      .type(id)
-      .value(changeIdString)
+      .type(type)
+      .value(value)
+      .time(LocalDateTime.now())
       .build();
     return changeIdRepository.save(changeId);
   }
 
-  public Optional<ChangeId> find(ChangeIdType id) {
+  public Optional<ChangeId> findById(ChangeIdType id) {
     return changeIdRepository.findById(id);
   }
 

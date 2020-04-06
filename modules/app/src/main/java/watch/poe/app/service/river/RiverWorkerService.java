@@ -73,7 +73,7 @@ public class RiverWorkerService {
 
     } catch (IOException ex) {
 
-      jobSchedulerService.setJob(changeId);
+      jobSchedulerService.setNextJob(changeId);
 
       var exception = new RiverDownloadException(ex);
       var statType = StatsUtility.getErrorType(exception.getBasis());
@@ -132,7 +132,7 @@ public class RiverWorkerService {
         String nextChangeId = ChangeIdUtility.find(jsonBuffer.toString());
         if (nextChangeId != null) {
           isCheckNextChangeId = false;
-          jobSchedulerService.setJob(nextChangeId);
+          jobSchedulerService.setNextJob(nextChangeId);
         }
       }
     }
